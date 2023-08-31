@@ -37,7 +37,7 @@ namespace WebTimetableApi.Schedules
                 throw new ScheduleNotLoadedException(ex, groupId, "Error during loading/deserializing.");
             }
 
-            return response != null ? response["d"] : new List<Lesson>();
+            return response != null ? response["d"] : new List<Lesson>(0);
         }
     }
 }

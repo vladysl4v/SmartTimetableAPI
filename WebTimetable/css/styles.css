@@ -6,3 +6,13 @@ body {
 .btn-container button {
     min-width: 110px;
 }
+
+.img-status {
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+}
+
+[data-bs-content=''] {
+visibility: hidden;
+}

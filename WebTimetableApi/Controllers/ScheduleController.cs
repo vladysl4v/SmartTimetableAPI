@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
+using WebTimetableApi.Handlers.Abstractions;
 using WebTimetableApi.Models;
 using WebTimetableApi.Schedules;
 using WebTimetableApi.Schedules.Abstractions;
@@ -13,18 +14,19 @@ namespace WebTimetableApi.Controllers
     public class ScheduleController : ControllerBase
     {
         private readonly ILogger<ScheduleController> _logger;
+        private readonly IOutagesHandler _outagesHandler;
 
         private readonly IScheduleSource _scheduleSource;
 
-        public ScheduleController(ILogger<ScheduleController> logger, IHttpClientFactory httpClientFactory)
+        public ScheduleController(ILogger<ScheduleController> logger, IScheduleSource scheduleSource, IOutagesHandler outagesHandler)
         {
             _logger = logger;
-
-            _scheduleSource = new VnzOsvitaSchedule(httpClientFactory);
+            _scheduleSource = scheduleSource;
+            _outagesHandler = outagesHandler;
         }
 
         [HttpGet]
-        public async Task<List<Lesson>> Get(string date)
+        public async Task<List<Lesson>> Get(string date, bool provideOutages)
         {
             var selectedDate = DateTime.Parse(date);
             List<Lesson> lessons;
@@ -36,6 +38,14 @@ namespace WebTimetableApi.Controllers
             {
                 _logger.LogError(ex, "Error retrieving schedule.");
                 throw;
+            }
+
+            if (provideOutages)
+            {
+                foreach (var lesson in lessons)
+                {
+                    lesson.Outages = _outagesHandler.GetOutages(lesson.Start, lesson.End, lesson.Date.DayOfWeek);
+                }
             }
 
             return lessons;

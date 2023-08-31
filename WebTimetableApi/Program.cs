@@ -1,3 +1,9 @@
+using WebTimetableApi.Handlers.Abstractions;
+using WebTimetableApi.Handlers;
+using WebTimetableApi.Schedules;
+using WebTimetableApi.Schedules.Abstractions;
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
@@ -15,6 +21,17 @@ builder.Services.AddCors(options =>
         });
 });
 
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddSingleton<IOutagesHandler, FakeOutagesHandler>();
+}
+else
+{
+    builder.Services.AddSingleton<IOutagesHandler, DtekOutagesHandler>();
+}
+
+builder.Services.AddScoped<IScheduleSource, VnzOsvitaSchedule>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -30,5 +47,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+await app.Services.GetRequiredService<IOutagesHandler>().InitializeOutages();
 
 app.Run();
