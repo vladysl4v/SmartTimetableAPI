@@ -2,7 +2,6 @@
 
 using WebTimetableApi.Handlers.Abstractions;
 using WebTimetableApi.Models;
-using WebTimetableApi.Schedules;
 using WebTimetableApi.Schedules.Abstractions;
 using WebTimetableApi.Schedules.Exceptions;
 
@@ -26,9 +25,12 @@ namespace WebTimetableApi.Controllers
         }
 
         [HttpGet]
-        public async Task<List<Lesson>> Get(string date, bool provideOutages)
+        public async Task<IActionResult> GetSchedule(string date, bool provideOutages)
         {
-            var selectedDate = DateTime.Parse(date);
+            if (!DateTime.TryParse(date, out var selectedDate))
+            {
+                return BadRequest();
+            }
             List<Lesson> lessons;
             try
             {
@@ -37,7 +39,7 @@ namespace WebTimetableApi.Controllers
             catch (ScheduleNotLoadedException ex)
             {
                 _logger.LogError(ex, "Error retrieving schedule.");
-                throw;
+                return StatusCode(502);
             }
 
             if (provideOutages)
@@ -48,7 +50,7 @@ namespace WebTimetableApi.Controllers
                 }
             }
 
-            return lessons;
+            return Ok(lessons);
         }
     }
 }

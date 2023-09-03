@@ -5,6 +5,8 @@ VisualStudioVersion = 17.4.33110.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebTimetableApi", "WebTimetableApi\WebTimetableApi.csproj", "{98607919-5722-4D1F-A3B1-403DF664FB36}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebTimetableApi.DAL", "WebTimetableApi.DAL\WebTimetableApi.DAL.csproj", "{C8A283A3-2F09-43DF-9BD9-71CA78088AF9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{98607919-5722-4D1F-A3B1-403DF664FB36}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98607919-5722-4D1F-A3B1-403DF664FB36}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{98607919-5722-4D1F-A3B1-403DF664FB36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8A283A3-2F09-43DF-9BD9-71CA78088AF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8A283A3-2F09-43DF-9BD9-71CA78088AF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8A283A3-2F09-43DF-9BD9-71CA78088AF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8A283A3-2F09-43DF-9BD9-71CA78088AF9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
