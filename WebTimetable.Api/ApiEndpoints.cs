@@ -12,10 +12,12 @@ public static class ApiEndpoints
         public const string GetPersonal = $"{Base}/me/{{date}}";
     }
 
-    public static class Authorization
+    public static class Settings
     {
-        private const string Base = $"{ApiBase}/auth";
+        private const string Base = $"{ApiBase}/settings";
 
-        public const string Authorize = Base;
+        public const string Filters = $"{Base}/filters";
+        public const string StudyGroups = $"{Base}/studyGroups";
+        public const string OutageGroups = $"{Base}/outageGroups";
     }
 }

@@ -41,6 +41,7 @@ else
     builder.Services.AddSingleton<IOutagesService, DtekOutagesService>();
 }
 
+builder.Services.AddScoped<ISettingsService, SettingsService>();
 builder.Services.AddScoped<IScheduleSource, VnzOsvitaSchedule>();
 
 var app = builder.Build();

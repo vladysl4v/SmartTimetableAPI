@@ -19,8 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\WebTimetable.Application\WebTimetable.Application.csproj" />
     <ProjectReference Include="..\WebTimetable.Contracts\WebTimetable.Contracts.csproj" />
-    <ProjectReference Include="..\WebTimetableApi.DAL\WebTimetable.Application.csproj" />
   </ItemGroup>
 
 </Project>
