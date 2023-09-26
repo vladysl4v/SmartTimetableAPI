@@ -1,9 +1,9 @@
-﻿using Microsoft.Graph.Models;
+﻿using WebTimetable.Application.Models;
 
 namespace WebTimetable.Application.Services.Abstractions
 {
     public interface IEventsService
     {
-        public List<Event> GetEvents(DateOnly date, TimeOnly startTime, TimeOnly endTime);
+        public void ConfigureEvents(IEnumerable<Lesson> schedule);
     }
 }

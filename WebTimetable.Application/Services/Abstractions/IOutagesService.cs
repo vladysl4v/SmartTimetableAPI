@@ -6,6 +6,7 @@ namespace WebTimetable.Application.Services.Abstractions
     public interface IOutagesService
     {
         public Task InitializeOutages();
-        public List<Outage> GetOutages(TimeOnly startTime, TimeOnly endTime, DayOfWeek dayOfWeek, int outageGroup);
+        public Dictionary<string, string> GetOutageGroups();
+        public void ConfigureOutages(IEnumerable<Lesson> schedule, int outageGroup);
     }
 }

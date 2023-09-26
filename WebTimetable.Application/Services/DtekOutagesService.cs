@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Text.RegularExpressions;
 
 using WebTimetable.Application.Deserializers;
@@ -12,14 +13,26 @@ namespace WebTimetable.Application.Services
     public class DtekOutagesService : IOutagesService
     {
         private Dictionary<int, Dictionary<DayOfWeek, List<Outage>>> _outages;
+        private Dictionary<string, string> _outageGroups;
+
         private readonly IHttpClientFactory _httpFactory;
         public DtekOutagesService(IHttpClientFactory httpFactory)
         {
             _httpFactory = httpFactory;
         }
-        public List<Outage> GetOutages(TimeOnly startTime, TimeOnly endTime, DayOfWeek dayOfWeek, int outageGroup)
+
+        public void ConfigureOutages(IEnumerable<Lesson> schedule, int outageGroup)
         {
-            return _outages[outageGroup][dayOfWeek].Where(x => IsIntervalsIntersects(startTime, endTime, x.Start, x.End)).ToList();
+            foreach (var lesson in schedule)
+            {
+                lesson.Outages = _outages[outageGroup][lesson.Date.DayOfWeek]
+                    .Where(x => IsIntervalsIntersects(lesson.Start, lesson.End, x.Start, x.End)).ToList();
+            }
+        }
+
+        public Dictionary<string, string> GetOutageGroups()
+        {
+            return _outageGroups;
         }
 
         public async Task InitializeOutages()
@@ -30,12 +43,20 @@ namespace WebTimetable.Application.Services
             {
                 var request = await httpClient.GetStringAsync(source);
                 var serializedData = Regex.Match(request, "\"data\":{.*").Value[7..^1];
+                var serializedGroups = Regex.Match(request, "\"sch_names\":{.*?}").Value[12..];
+
+                _outageGroups = DeserializeGroups(serializedGroups);
                 _outages = DeserializeObject(serializedData);
             }
             catch (Exception ex)
             {
                 throw new OutagesNotLoadedException(ex, source, "Error during loading/deserializing.");
             }
+        }
+
+        private Dictionary<string, string> DeserializeGroups(string serializedGroups)
+        {
+            return JsonConvert.DeserializeObject<Dictionary<string, string>>(serializedGroups)!;
         }
 
         private Dictionary<int, Dictionary<DayOfWeek, List<Outage>>> DeserializeObject(string serializedData)

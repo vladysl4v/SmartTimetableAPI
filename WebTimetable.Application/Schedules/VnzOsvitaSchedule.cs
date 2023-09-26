@@ -15,29 +15,29 @@ namespace WebTimetable.Application.Schedules
         {
             _httpFactory = httpFactory;
         }
-        public async Task<List<Lesson>> GetSchedule(DateTime date, string groupId)
+        public async Task<IEnumerable<Lesson>> GetSchedule(DateTime startDate, DateTime endDate, string groupId)
         {
             var httpClient = _httpFactory.CreateClient();
             string url =
                 "https://vnz.osvita.net/BetaSchedule.asmx/GetScheduleDataX?" +
-                "aVuzID=99999&" +
+                "aVuzID=11784&" +
                 "aStudyGroupID=\"" + groupId + "\"&" +
-                "aStartDate=\"" + date.ToShortDateString() + "\"&" +
-                "aEndDate=\"" + date.ToShortDateString() + "\"&" +
+                "aStartDate=\"" + startDate.ToShortDateString() + "\"&" +
+                "aEndDate=\"" + endDate.ToShortDateString() + "\"&" +
                 "aStudyTypeID=null";
 
-            Dictionary<string, List<Lesson>>? response;
+            Dictionary<string, IEnumerable<Lesson>>? response;
             try
             {
                 string stringResponse = await httpClient.GetStringAsync(url);
-                response = JsonConvert.DeserializeObject<Dictionary<string, List<Lesson>>>(stringResponse, new LessonFactory());
+                response = JsonConvert.DeserializeObject<Dictionary<string, IEnumerable<Lesson>>>(stringResponse, new LessonFactory());
             }
             catch (Exception ex)
             {
                 throw new ScheduleNotLoadedException(ex, groupId, "Error during loading/deserializing.");
             }
 
-            return response != null ? response["d"] : new List<Lesson>(0);
+            return response != null ? response["d"] : Enumerable.Empty<Lesson>();
         }
     }
 }
