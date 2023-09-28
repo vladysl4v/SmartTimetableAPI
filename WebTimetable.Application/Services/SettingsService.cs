@@ -12,26 +12,16 @@ public class SettingsService : ISettingsService
     {
         _httpFactory = httpFactory;
     }
-    public async Task<Dictionary<string, Dictionary<string, string>>?> GetFilters()
+
+    public async Task<Dictionary<string, Dictionary<string, string>>> GetFilters()
     {
         var url = "https://vnz.osvita.net/BetaSchedule.asmx/GetStudentScheduleFiltersData?&" +
                   "aVuzID=11784";
 
         var httpClient = _httpFactory.CreateClient();
-        string serializedData;
-        try
-        {
-            serializedData = await httpClient.GetStringAsync(url);
-        }
-        catch
-        {
-            return null;
-        }
+        string serializedData = await httpClient.GetStringAsync(url);
 
         var jsonData = JObject.Parse(serializedData)["d"];
-
-        if (jsonData == null)
-            return null;
 
         return new Dictionary<string, Dictionary<string, string>>
         {
@@ -52,7 +42,7 @@ public class SettingsService : ISettingsService
         };
     }
 
-    public async Task<Dictionary<string, string>> GetStudyGroups(string faculty, string course, string educForm)
+    public async Task<Dictionary<string, string>> GetStudyGroups(string faculty, int course, int educForm)
     {
         var url = $"https://vnz.osvita.net/BetaSchedule.asmx/GetStudyGroups?&" +
                   $"aVuzID=11784&" +
@@ -62,19 +52,8 @@ public class SettingsService : ISettingsService
                   $"aGiveStudyTimes=false";
 
         var httpClient = _httpFactory.CreateClient();
-        string serializedData;
-        try
-        {
-            serializedData = await httpClient.GetStringAsync(url);
-        }
-        catch
-        {
-            return null;
-        }
+        string serializedData = await httpClient.GetStringAsync(url);
         var jsonData = JObject.Parse(serializedData)["d"];
-
-        if (jsonData == null)
-            return null;
 
         return ((JArray)jsonData["studyGroups"]!)
             .ToObject<List<KeyValuePair<string, string>>>()?

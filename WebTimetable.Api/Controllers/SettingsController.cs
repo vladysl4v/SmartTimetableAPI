@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
+using WebTimetable.Api.Mapping;
 using WebTimetable.Application.Services.Abstractions;
 using WebTimetable.Contracts.Requests;
+using WebTimetable.Contracts.Responses;
 
 
 namespace WebTimetable.Api.Controllers
@@ -18,37 +19,35 @@ namespace WebTimetable.Api.Controllers
             _outagesService = outagesService;
         }
 
+
+        [ProducesResponseType(typeof(OutageGroupsResponse), 200)]
+        [HttpGet(ApiEndpoints.Settings.OutageGroups)]
+        public IActionResult GetOutageGroups()
+        {
+            var outageGroups = _outagesService.GetOutageGroups();
+            var response = outageGroups.MapToOutageGroupsResponse();
+
+            return Ok(response);
+        }
+
+        [ProducesResponseType(typeof(FiltersResponse), 200)]
         [HttpGet(ApiEndpoints.Settings.Filters)]
         public async Task<IActionResult> GetFilters()
         {
-            var request = await _settingsService.GetFilters();
-            if (request == null)
-            {
-                return BadRequest();
-            }
-            return Ok(request);
+            var filters = await _settingsService.GetFilters();
+            var response = filters.MapToFiltersResponse();
+
+            return Ok(response);
         }
 
-        [HttpGet(ApiEndpoints.Settings.OutageGroups)]
-        public IActionResult GetOutages()
-        {
-            var request = _outagesService.GetOutageGroups();
-            if (request == null)
-            {
-                return BadRequest();
-            }
-            return Ok(request);
-        }
-
+        [ProducesResponseType(typeof(StudyGroupsResponse), 200)]
         [HttpGet(ApiEndpoints.Settings.StudyGroups)]
-        public async Task<IActionResult> GetStudyGroups(string faculty, string course, string educForm)
+        public async Task<IActionResult> GetStudyGroups([FromQuery] StudyGroupsRequest request)
         {
-            var output = await _settingsService.GetStudyGroups(faculty, course, educForm);
-            if (output == null)
-            {
-                return BadRequest();
-            }
-            return Ok(output);
+            var studyGroups = await _settingsService.GetStudyGroups(request.Faculty, request.Course, request.EducationForm);
+            var response = studyGroups.MapToStudyGroupsResponse();
+
+            return Ok(response);
         }
     }
 }
