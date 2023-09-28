@@ -1,4 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using System.Security.Cryptography;
+using System.Text;
+
+using Newtonsoft.Json;
 
 using WebTimetable.Application.Deserializers;
 using WebTimetable.Application.Models;
@@ -15,7 +18,7 @@ namespace WebTimetable.Application.Schedules
         {
             _httpFactory = httpFactory;
         }
-        public async Task<IEnumerable<Lesson>> GetSchedule(DateTime startDate, DateTime endDate, string groupId)
+        public async Task<List<Lesson>> GetSchedule(DateTime startDate, DateTime endDate, string groupId)
         {
             var httpClient = _httpFactory.CreateClient();
             string url =
@@ -26,18 +29,35 @@ namespace WebTimetable.Application.Schedules
                 "aEndDate=\"" + endDate.ToShortDateString() + "\"&" +
                 "aStudyTypeID=null";
 
-            Dictionary<string, IEnumerable<Lesson>>? response;
+            Dictionary<string, List<Lesson>>? response;
             try
             {
                 string stringResponse = await httpClient.GetStringAsync(url);
-                response = JsonConvert.DeserializeObject<Dictionary<string, IEnumerable<Lesson>>>(stringResponse, new LessonFactory());
+                response = JsonConvert.DeserializeObject<Dictionary<string, List<Lesson>>>(stringResponse, new LessonFactory());
             }
             catch (Exception ex)
             {
                 throw new ScheduleNotLoadedException(ex, groupId, "Error during loading/deserializing.");
             }
 
-            return response != null ? response["d"] : Enumerable.Empty<Lesson>();
+            if (response == null)
+            {
+                return new List<Lesson>(0);
+            }
+
+            foreach (var lesson in response["d"])
+            {
+                lesson.Id = GenerateLessonIdentifier(lesson, groupId);
+            }
+            return response != null ? response["d"] : new List<Lesson>(0);
+        }
+
+        private Guid GenerateLessonIdentifier(Lesson lesson, string groupId)
+        {
+            string compressedValue = lesson.Discipline + lesson.StudyType + groupId + lesson.Date.ToShortDateString();
+            var md5Hasher = MD5.Create();
+            var data = md5Hasher.ComputeHash(Encoding.Default.GetBytes(compressedValue));
+            return new Guid(data);
         }
     }
 }

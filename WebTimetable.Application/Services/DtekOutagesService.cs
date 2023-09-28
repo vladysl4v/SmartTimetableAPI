@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Text.RegularExpressions;
 
 using WebTimetable.Application.Deserializers;
@@ -67,7 +66,7 @@ namespace WebTimetable.Application.Services
 
             return allGroups.ToDictionary(group => int.Parse(group.Key),
                     group => group.Value.ToDictionary(item => ConvertToDayOfWeek(item.Key),
-                        item => item.Value.Where(x => x.Type != OutageType.Not).ToList()));
+                        item => item.Value.Where(x => x.IsDefinite is not null).ToList()));
         }
 
         private DayOfWeek ConvertToDayOfWeek(string value)

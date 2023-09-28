@@ -10,18 +10,11 @@ namespace WebTimetable.Application.Deserializers
             var output = new List<Outage>();
             foreach (var pair in arguments)
             {
-                string message = pair.Value switch
+                bool? isDefinite = pair.Value switch
                 {
-                    "yes" => "Світла немає",
-                    "maybe" => "Можливо відключення",
-                    _ => "Світло є"
-                };
-
-                OutageType outage = pair.Value switch
-                {
-                    "yes" => OutageType.Definite,
-                    "maybe" => OutageType.Possible,
-                    _ => OutageType.Not
+                    "yes" => true,
+                    "maybe" => false,
+                    _ => null
                 };
                 int time = int.Parse(pair.Key);
 
@@ -31,10 +24,9 @@ namespace WebTimetable.Application.Deserializers
                 }
                 output.Add(new Outage
                 {
-                    Type = outage,
+                    IsDefinite = isDefinite,
                     Start = TimeOnly.ParseExact((time - 1).ToString(), "%H"),
                     End = outageEnd,
-                    Text = message
                 });
             }
 

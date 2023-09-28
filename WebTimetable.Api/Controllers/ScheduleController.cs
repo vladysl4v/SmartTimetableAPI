@@ -3,12 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.Resource;
 
-using WebTimetable.Application.Entities;
-using WebTimetable.Application.Repositories;
+using WebTimetable.Api.Mapping;
 using WebTimetable.Application.Models;
 using WebTimetable.Application.Schedules.Abstractions;
 using WebTimetable.Application.Schedules.Exceptions;
 using WebTimetable.Application.Services.Abstractions;
+using WebTimetable.Contracts.Requests;
+using WebTimetable.Contracts.Responses;
 
 
 namespace WebTimetable.Api.Controllers
@@ -19,23 +20,22 @@ namespace WebTimetable.Api.Controllers
     public class ScheduleController : ControllerBase
     {
         private readonly ILogger<ScheduleController> _logger;
-        private readonly IOutagesService _outagesHandler;
-        private readonly IDbRepository _dbRepository;
-
+        private readonly IOutagesService _outagesService;
         private readonly IScheduleSource _scheduleSource;
 
         public ScheduleController(ILogger<ScheduleController> logger, IScheduleSource scheduleSource,
-            IOutagesService outagesHandler, IDbRepository dbRepository)
+            IOutagesService outagesService)
         {
             _logger = logger;
             _dbRepository = dbRepository;
             _scheduleSource = scheduleSource;
-            _outagesHandler = outagesHandler;
+            _outagesService = outagesService;
         }
 
-        [AllowAnonymous]
-        [HttpGet(ApiEndpoints.Schedule.Get)]
-        public async Task<IActionResult> GetAnonymousSchedule([FromRoute]string date)
+        [ProducesResponseType(502)]
+        [ProducesResponseType(typeof(AnonymousScheduleResponse), 200)]
+        [HttpGet(ApiEndpoints.Schedule.GetSchedule)]
+        public async Task<IActionResult> GetAnonymousSchedule([FromQuery] AnonymousScheduleRequest request)
         {
             if (!DateTime.TryParse(date, out var selectedDate))
             {
@@ -45,7 +45,7 @@ namespace WebTimetable.Api.Controllers
             List<Lesson> lessons;
             try
             {
-                lessons = await _scheduleSource.GetSchedule(selectedDate, "VZGSIZREGG8Y");
+                lessons = await _scheduleSource.GetSchedule(request.Start, request.End, request.StudyGroup);
             }
             catch (ScheduleNotLoadedException ex)
             {
@@ -53,16 +53,13 @@ namespace WebTimetable.Api.Controllers
                 return StatusCode(502);
             }
 
-            return Ok(lessons);
+            if (request.OutageGroup != 0)
+            {
+                _outagesService.ConfigureOutages(lessons, request.OutageGroup);
         }
 
-        
-        [HttpGet(ApiEndpoints.Schedule.GetPersonal)]
-        public async Task<IActionResult> GetAuthorizedSchedule([FromRoute] string date)
-        {
-            if (!DateTime.TryParse(date, out var selectedDate))
-            {
-                return BadRequest();
+            var response = lessons.MapToAnonymousScheduleResponse();
+            return Ok(response);
             }
 
             var userEntity = _dbRepository.Get<UserEntity>(x => x.Id == User.GetObjectId()).SingleOrDefault();
