@@ -14,8 +14,6 @@ using WebTimetable.Contracts.Responses;
 
 namespace WebTimetable.Api.Controllers
 {
-    [Authorize]
-    [RequiredScope("access_as_user")]
     [ApiController]
     public class ScheduleController : ControllerBase
     {
@@ -37,11 +35,6 @@ namespace WebTimetable.Api.Controllers
         [HttpGet(ApiEndpoints.Schedule.GetSchedule)]
         public async Task<IActionResult> GetAnonymousSchedule([FromQuery] AnonymousScheduleRequest request)
         {
-            if (!DateTime.TryParse(date, out var selectedDate))
-            {
-                return BadRequest();
-            }
-
             List<Lesson> lessons;
             try
             {

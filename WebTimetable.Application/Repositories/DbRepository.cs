@@ -1,6 +1,5 @@
 ﻿using System.Linq.Expressions;
 
-using WebTimetable.Application;
 
 
 namespace WebTimetable.Application.Repositories

@@ -1,10 +1,7 @@
 using Microsoft.Identity.Web;
+using Microsoft.OpenApi.Models;
 
 using WebTimetable.Application;
-using WebTimetable.Application.Services;
-using WebTimetable.Application.Services.Abstractions;
-using WebTimetable.Application.Schedules;
-using WebTimetable.Application.Schedules.Abstractions;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,17 +29,41 @@ builder.Services.AddCors(options =>
         });
 });
 
-if (builder.Environment.IsDevelopment())
-{
-    builder.Services.AddSingleton<IOutagesService, FakeOutagesService>();
-}
-else
-{
-    builder.Services.AddSingleton<IOutagesService, DtekOutagesService>();
-}
+builder.Services.AddApplication(builder.Environment.IsDevelopment());
 
-builder.Services.AddScoped<ISettingsService, SettingsService>();
-builder.Services.AddScoped<IScheduleSource, VnzOsvitaSchedule>();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "SmartTimetable API",
+        Description = "Web API for schedule-based projects.",
+        Contact = new OpenApiContact
+        {
+            Name = "Vladyslav Arkhypenkov",
+            Email = "ArchipenkovV@krok.edu.ua",
+            Url = new Uri("https://github.com/vladysl4v/"),
+        },
+        License = new OpenApiLicense
+        {
+            Name = "The GNU General Public License v3.0",
+            Url = new Uri("https://www.gnu.org/licenses/gpl-3.0.html#license-text")
+        }
+    });
+    // Activate swagger controllers documentation
+    options.CustomSchemaIds(type => type.ToString());
+
+    var currentAssembly = System.Reflection.Assembly.GetExecutingAssembly();
+    var xmlDocs = currentAssembly.GetReferencedAssemblies()
+        .Union(new[] { currentAssembly.GetName() })
+        .Select(a => Path.Combine(Path.GetDirectoryName(currentAssembly.Location)!, $"{a.Name}.xml"))
+        .Where(File.Exists).ToArray();
+
+    foreach (var doc in xmlDocs)
+    {
+        options.IncludeXmlComments(doc);
+    }
+});
 
 var app = builder.Build();
 
@@ -62,6 +83,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-await app.Services.GetRequiredService<IOutagesService>().InitializeOutages();
+await app.Services.InitializeApplicationAsync();
 
 app.Run();
