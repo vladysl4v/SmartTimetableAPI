@@ -18,4 +18,12 @@ public static class ApiEndpoints
         public const string StudyGroups = $"{Base}/studyGroups";
         public const string OutageGroups = $"{Base}/outageGroups";
     }
+
+    public static class Notes
+    {
+        private const string Base = $"{ApiBase}/notes";
+
+        public const string AddNote = $"{ApiBase}/notes";
+        public const string GetNotes = $"{ApiBase}/notes/{{lessonId:guid}}";
+    }
 }

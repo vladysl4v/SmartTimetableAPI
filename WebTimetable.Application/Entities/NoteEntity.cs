@@ -2,10 +2,12 @@
 {
     public class NoteEntity
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
-        public UserEntity User { get; set; }
-        public string Text { get; set; }
-        public long LessonHashCode { get; set; }
+        public Guid NoteId { get; set; } = Guid.NewGuid();
+        public Guid AuthorId { get; set; }
+        public Guid LessonId { get; set; }
+        public string Message { get; set; }
+        public string AuthorGroup { get; set; }
+        public string AuthorName { get; set; }
         public DateTime CreationDate { get; set; } = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);
     }
 }

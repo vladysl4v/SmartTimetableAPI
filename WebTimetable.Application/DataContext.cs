@@ -13,9 +13,10 @@ namespace WebTimetable.Application
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<UserEntity>()
+            modelBuilder.Entity<NoteEntity>().HasKey(x => x.NoteId);
             modelBuilder.Entity<NoteEntity>().HasIndex(x => x.LessonId).HasMethod("hash");
-                .WithOne(e => e.User);
+            modelBuilder.Entity<NoteEntity>().Property(x => x.AuthorGroup).HasMaxLength(40);
+            modelBuilder.Entity<NoteEntity>().Property(x => x.AuthorName).HasMaxLength(60);
         }
     }
 }
