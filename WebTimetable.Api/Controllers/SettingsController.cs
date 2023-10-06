@@ -3,7 +3,6 @@
 using WebTimetable.Api.Mapping;
 using WebTimetable.Application.Services.Abstractions;
 using WebTimetable.Contracts.Requests;
-using WebTimetable.Contracts.Responses;
 
 
 namespace WebTimetable.Api.Controllers
@@ -19,8 +18,6 @@ namespace WebTimetable.Api.Controllers
             _outagesService = outagesService;
         }
 
-
-        [ProducesResponseType(typeof(OutageGroupsResponse), 200)]
         [HttpGet(ApiEndpoints.Settings.GetOutageGroups)]
         public IActionResult GetOutageGroups()
         {
@@ -30,21 +27,19 @@ namespace WebTimetable.Api.Controllers
             return Ok(response);
         }
 
-        [ProducesResponseType(typeof(FiltersResponse), 200)]
         [HttpGet(ApiEndpoints.Settings.GetFilters)]
-        public async Task<IActionResult> GetFilters()
+        public async Task<IActionResult> GetFilters(CancellationToken token)
         {
-            var filters = await _settingsService.GetFilters();
+            var filters = await _settingsService.GetFilters(token);
             var response = filters.MapToFiltersResponse();
 
             return Ok(response);
         }
 
-        [ProducesResponseType(typeof(StudyGroupsResponse), 200)]
         [HttpGet(ApiEndpoints.Settings.GetStudyGroups)]
-        public async Task<IActionResult> GetStudyGroups([FromQuery] StudyGroupsRequest request)
+        public async Task<IActionResult> GetStudyGroups([FromQuery] StudyGroupsRequest request, CancellationToken token)
         {
-            var studyGroups = await _settingsService.GetStudyGroups(request.Faculty, request.Course, request.EducationForm);
+            var studyGroups = await _settingsService.GetStudyGroups(request.Faculty, request.Course, request.EducationForm, token);
             var response = studyGroups.MapToStudyGroupsResponse();
 
             return Ok(response);

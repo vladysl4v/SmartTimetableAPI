@@ -9,7 +9,6 @@ using WebTimetable.Application.Schedules.Abstractions;
 using WebTimetable.Application.Schedules.Exceptions;
 using WebTimetable.Application.Services.Abstractions;
 using WebTimetable.Contracts.Requests;
-using WebTimetable.Contracts.Responses;
 
 
 namespace WebTimetable.Api.Controllers
@@ -33,15 +32,13 @@ namespace WebTimetable.Api.Controllers
             _outagesService = outagesService;
         }
 
-        [ProducesResponseType(502)]
-        [ProducesResponseType(typeof(AnonymousScheduleResponse), 200)]
-        [HttpGet(ApiEndpoints.Schedule.GetSchedule)]
-        public async Task<IActionResult> GetAnonymousSchedule([FromQuery] AnonymousScheduleRequest request)
+        [HttpGet(ApiEndpoints.Schedule.GetAnonymousSchedule)]
+        public async Task<IActionResult> GetAnonymousSchedule([FromQuery] AnonymousScheduleRequest request, CancellationToken token)
         {
             List<Lesson> lessons;
             try
             {
-                lessons = await _scheduleSource.GetSchedule(request.Start, request.End, request.StudyGroup);
+                lessons = await _scheduleSource.GetSchedule(request.Start, request.End, request.StudyGroup, token);
             }
             catch (ScheduleNotLoadedException ex)
             {
@@ -58,18 +55,15 @@ namespace WebTimetable.Api.Controllers
             return Ok(response);
         }
 
-
         [Authorize]
         [RequiredScope("access_as_user")]
-        [ProducesResponseType(502)]
-        [ProducesResponseType(typeof(PersonalScheduleResponse), 200)]
         [HttpGet(ApiEndpoints.Schedule.GetPersonalSchedule)]
-        public async Task<IActionResult> GetPersonalSchedule([FromQuery] PersonalScheduleRequest request)
+        public async Task<IActionResult> GetPersonalSchedule([FromQuery] PersonalScheduleRequest request, CancellationToken token)
         {
             List<Lesson> lessons;
             try
             {
-                lessons = await _scheduleSource.GetSchedule(request.Start, request.End, request.StudyGroup);
+                lessons = await _scheduleSource.GetSchedule(request.Start, request.End, request.StudyGroup, token);
             }
             catch (ScheduleNotLoadedException ex)
             {
@@ -85,7 +79,7 @@ namespace WebTimetable.Api.Controllers
             var user = await _graphClient.Me.GetAsync((requestConfiguration) =>
             {
                 requestConfiguration.QueryParameters.Select = new[] { "department" };
-            });
+            }, token);
 
             _notesService.ConfigureNotes(lessons, user.Department);
 

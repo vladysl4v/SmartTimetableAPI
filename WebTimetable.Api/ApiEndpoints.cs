@@ -6,10 +6,12 @@ public static class ApiEndpoints
 
     public static class Schedule
     {
-        public const string GetSchedule = $"{ApiBase}/anonymous/schedule";
-        public const string GetPersonalSchedule = $"{ApiBase}/me/schedule";
-    }
+        private const string Base = $"{ApiBase}/schedule";
 
+        public const string GetAnonymousSchedule = $"{Base}";
+        public const string GetPersonalSchedule = $"{Base}/me";
+    }
+    
     public static class Settings
     {
         private const string Base = $"{ApiBase}/settings";

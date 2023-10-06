@@ -13,13 +13,13 @@ public class SettingsService : ISettingsService
         _httpFactory = httpFactory;
     }
 
-    public async Task<Dictionary<string, Dictionary<string, string>>> GetFilters()
+    public async Task<Dictionary<string, Dictionary<string, string>>> GetFilters(CancellationToken token)
     {
         var url = "https://vnz.osvita.net/BetaSchedule.asmx/GetStudentScheduleFiltersData?&" +
                   "aVuzID=11784";
 
         var httpClient = _httpFactory.CreateClient();
-        string serializedData = await httpClient.GetStringAsync(url);
+        string serializedData = await httpClient.GetStringAsync(url, token);
 
         var jsonData = JObject.Parse(serializedData)["d"];
 
@@ -42,7 +42,7 @@ public class SettingsService : ISettingsService
         };
     }
 
-    public async Task<Dictionary<string, string>> GetStudyGroups(string faculty, int course, int educForm)
+    public async Task<Dictionary<string, string>> GetStudyGroups(string faculty, int course, int educForm, CancellationToken token)
     {
         var url = $"https://vnz.osvita.net/BetaSchedule.asmx/GetStudyGroups?&" +
                   $"aVuzID=11784&" +
@@ -52,7 +52,7 @@ public class SettingsService : ISettingsService
                   $"aGiveStudyTimes=false";
 
         var httpClient = _httpFactory.CreateClient();
-        string serializedData = await httpClient.GetStringAsync(url);
+        string serializedData = await httpClient.GetStringAsync(url, token);
         var jsonData = JObject.Parse(serializedData)["d"];
 
         return ((JArray)jsonData["studyGroups"]!)

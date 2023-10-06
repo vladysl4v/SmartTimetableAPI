@@ -18,6 +18,6 @@ namespace WebTimetable.Application.Repositories
         void Update<T>(T entity) where T : class;
         void UpdateRange<T>(IEnumerable<T> entities) where T : class;
 
-        Task SaveChangesAsync();
+        Task SaveChangesAsync(CancellationToken token);
     }
 }

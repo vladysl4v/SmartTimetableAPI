@@ -1,5 +1,4 @@
 using Microsoft.Identity.Web;
-using Microsoft.OpenApi.Models;
 
 using WebTimetable.Api;
 using WebTimetable.Application;
@@ -8,7 +7,7 @@ using WebTimetable.Application;
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 
-builder.Services.AddDatabaseContext(config.GetConnectionString("PostgresConnection")!);
+builder.Services.AddDatabaseContext(config.GetConnectionString("RenderPostgresConnection")!);
 
 builder.Services.AddMicrosoftIdentityWebApiAuthentication(config)
         .EnableTokenAcquisitionToCallDownstreamApi()
@@ -23,11 +22,11 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: "PublicCORSPolicy", policy =>
-        {
-            policy.AllowAnyHeader()
-                .AllowAnyMethod()
-                .AllowAnyOrigin();
-        });
+    {
+        policy.AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowAnyOrigin();
+    });
 });
 
 builder.Services.AddApplication(builder.Environment.IsDevelopment());

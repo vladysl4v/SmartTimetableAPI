@@ -53,9 +53,9 @@ namespace WebTimetable.Application.Repositories
             _context.Set<T>().UpdateRange(entities);
         }
 
-        public async Task SaveChangesAsync()
+        public async Task SaveChangesAsync(CancellationToken token)
         {
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(token);
         }
 
         public IQueryable<T> GetAll<T>() where T : class

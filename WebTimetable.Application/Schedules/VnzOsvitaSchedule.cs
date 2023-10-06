@@ -18,7 +18,7 @@ namespace WebTimetable.Application.Schedules
         {
             _httpFactory = httpFactory;
         }
-        public async Task<List<Lesson>> GetSchedule(DateTime startDate, DateTime endDate, string groupId)
+        public async Task<List<Lesson>> GetSchedule(DateTime startDate, DateTime endDate, string groupId, CancellationToken token)
         {
             var httpClient = _httpFactory.CreateClient();
             string url =
@@ -32,7 +32,7 @@ namespace WebTimetable.Application.Schedules
             Dictionary<string, List<Lesson>>? response;
             try
             {
-                string stringResponse = await httpClient.GetStringAsync(url);
+                string stringResponse = await httpClient.GetStringAsync(url, token);
                 response = JsonConvert.DeserializeObject<Dictionary<string, List<Lesson>>>(stringResponse, new LessonFactory());
             }
             catch (Exception ex)
