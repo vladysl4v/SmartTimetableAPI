@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-
 namespace WebTimetable.Contracts.Requests;
 
-public class AnonymousScheduleRequest
+public class PersonalScheduleRequest
 {
     /// <summary>
     /// Identifier of user study group.

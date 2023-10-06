@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Web;
+using Microsoft.Graph;
 using Microsoft.Identity.Web.Resource;
 
 using WebTimetable.Api.Mapping;
@@ -18,14 +18,17 @@ namespace WebTimetable.Api.Controllers
     public class ScheduleController : ControllerBase
     {
         private readonly ILogger<ScheduleController> _logger;
+        private readonly GraphServiceClient _graphClient;
         private readonly IOutagesService _outagesService;
         private readonly IScheduleSource _scheduleSource;
+        private readonly INotesService _notesService;
 
         public ScheduleController(ILogger<ScheduleController> logger, IScheduleSource scheduleSource,
-            IOutagesService outagesService)
+            IOutagesService outagesService, INotesService notesService, GraphServiceClient graphClient)
         {
             _logger = logger;
-            _dbRepository = dbRepository;
+            _graphClient = graphClient;
+            _notesService = notesService;
             _scheduleSource = scheduleSource;
             _outagesService = outagesService;
         }
@@ -49,39 +52,45 @@ namespace WebTimetable.Api.Controllers
             if (request.OutageGroup != 0)
             {
                 _outagesService.ConfigureOutages(lessons, request.OutageGroup);
-        }
+            }
 
             var response = lessons.MapToAnonymousScheduleResponse();
             return Ok(response);
-            }
+        }
 
-            var userEntity = _dbRepository.Get<UserEntity>(x => x.Id == User.GetObjectId()).SingleOrDefault();
 
-            if (userEntity == null)
-            {
-                return Unauthorized();
-            }
-
+        [Authorize]
+        [RequiredScope("access_as_user")]
+        [ProducesResponseType(502)]
+        [ProducesResponseType(typeof(PersonalScheduleResponse), 200)]
+        [HttpGet(ApiEndpoints.Schedule.GetPersonalSchedule)]
+        public async Task<IActionResult> GetPersonalSchedule([FromQuery] PersonalScheduleRequest request)
+        {
             List<Lesson> lessons;
             try
             {
-                lessons = await _scheduleSource.GetSchedule(selectedDate, userEntity.StudyGroupId);
+                lessons = await _scheduleSource.GetSchedule(request.Start, request.End, request.StudyGroup);
             }
             catch (ScheduleNotLoadedException ex)
             {
                 _logger.LogError(ex, "Error retrieving schedule.");
                 return StatusCode(502);
             }
-            
-            if (userEntity.OutagesGroup != 0)
+
+            if (request.OutageGroup != 0)
             {
-                foreach (var lesson in lessons)
-                {
-                    lesson.Outages = _outagesHandler.GetOutages(lesson.Start, lesson.End, lesson.Date.DayOfWeek, userEntity.OutagesGroup);
-                }
+                _outagesService.ConfigureOutages(lessons, request.OutageGroup);
             }
 
-            return Ok(lessons);
+            var user = await _graphClient.Me.GetAsync((requestConfiguration) =>
+            {
+                requestConfiguration.QueryParameters.Select = new[] { "department" };
+            });
+
+            _notesService.ConfigureNotes(lessons, user.Department);
+
+            var response = lessons.MapToPersonalScheduleResponse();
+            return Ok(response);
         }
     }
 }

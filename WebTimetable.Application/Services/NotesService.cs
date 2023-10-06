@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography;
-using System.Text;
+﻿using System.Linq.Expressions;
 
 using WebTimetable.Application.Entities;
 using WebTimetable.Application.Models;
@@ -23,8 +22,31 @@ public class NotesService : INotesService
         await _dbRepository.SaveChangesAsync();
     }
 
-    public List<NoteEntity> GetNotesByLessonId(Guid lessonId, string group)
+    public void ConfigureNotes(IEnumerable<Lesson> schedule, string group)
     {
-        return _dbRepository.Get<NoteEntity>(x => x.LessonId == lessonId && x.AuthorGroup == group).ToList();
+        foreach (var lesson in schedule)
+        {
+            lesson.Notes = GetNotesByLessonId(lesson.Id, group);
+        }
+    }
+    public NoteEntity? GetNoteById(Guid id)
+    {
+        Expression<Func<NoteEntity, bool>> expression = entity => entity.NoteId == id;
+
+        return _dbRepository.Get<NoteEntity>(expression).SingleOrDefault();
+    }
+
+    public async Task RemoveNote(NoteEntity note)
+    {
+        _dbRepository.Remove(note);
+        await _dbRepository.SaveChangesAsync();
+    }
+
+    private List<NoteEntity> GetNotesByLessonId(Guid lessonId, string group)
+    {
+        Expression<Func<NoteEntity, bool>> expression = entity =>
+            entity.LessonId == lessonId && entity.AuthorGroup == group;
+
+        return _dbRepository.Get<NoteEntity>(expression).ToList();
     }
 }

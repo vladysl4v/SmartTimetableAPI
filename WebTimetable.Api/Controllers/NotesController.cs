@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Graph;
+using Microsoft.Graph.Models;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.Resource;
 
 using WebTimetable.Api.Mapping;
 using WebTimetable.Application.Services.Abstractions;
 using WebTimetable.Contracts.Requests;
-using WebTimetable.Contracts.Responses;
 
 
 namespace WebTimetable.Api.Controllers;
@@ -26,35 +26,46 @@ public class NotesController : ControllerBase
         _notesService = notesService;
     }
 
-    [ProducesResponseType(400)]
-    [ProducesResponseType(502)]
-    [ProducesResponseType(typeof(NoteResponse), 201)]
     [HttpPost(ApiEndpoints.Notes.AddNote)]
-    public async Task<IActionResult> AddNote([FromBody]AddNoteRequest request)
+    public async Task<IActionResult> AddNote([FromBody] AddNoteRequest request)
     {
-        string? userStudyGroup;
+        User? user;
         try
         {
-            var user = await _graphClient.Me.GetAsync((requestConfiguration) =>
+            user = await _graphClient.Me.GetAsync((requestConfiguration) =>
             {
-                requestConfiguration.QueryParameters.Select = new[] { "department" };
+                requestConfiguration.QueryParameters.Select = new[] { "department", "displayName", "id" };
             });
-            userStudyGroup = user?.Department;
         }
         catch (Exception ex)
         {
             return StatusCode(502, "Error occurred while retrieving the Microsoft information profile. Details: " + ex.Message);
         }
 
-        if (User.GetObjectId() is null || User.GetDisplayName() is null || userStudyGroup is null)
+        if (user.Id is null || user.DisplayName is null || user.Department is null)
         {
             return BadRequest();
         }
 
-        var note = request.MapToNote(User.GetObjectId()!, User.GetDisplayName()!, userStudyGroup);
-
+        var note = request.MapToNote(user.Id, user.DisplayName, user.Department);
         await _notesService.AddNoteAsync(note);
 
-        return Created(nameof(ScheduleController.GetAnonymousSchedule), note.MapToNoteResponse());
+        return Created(nameof(ScheduleController.GetPersonalSchedule), note.MapToNoteResponse());
+    }
+
+    [HttpDelete(ApiEndpoints.Notes.RemoveNote)]
+    public async Task<IActionResult> RemoveNote([FromRoute] Guid id)
+    {
+        var note = _notesService.GetNoteById(id);
+        if (note is null)
+        {
+            return NotFound();
+        }
+        if (note.AuthorId != Guid.Parse(User.GetObjectId()!))
+        {
+            return Unauthorized();
+        }
+        await _notesService.RemoveNote(note);
+        return Ok();
     }
 }

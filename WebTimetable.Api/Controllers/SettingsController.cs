@@ -21,7 +21,7 @@ namespace WebTimetable.Api.Controllers
 
 
         [ProducesResponseType(typeof(OutageGroupsResponse), 200)]
-        [HttpGet(ApiEndpoints.Settings.OutageGroups)]
+        [HttpGet(ApiEndpoints.Settings.GetOutageGroups)]
         public IActionResult GetOutageGroups()
         {
             var outageGroups = _outagesService.GetOutageGroups();
@@ -31,7 +31,7 @@ namespace WebTimetable.Api.Controllers
         }
 
         [ProducesResponseType(typeof(FiltersResponse), 200)]
-        [HttpGet(ApiEndpoints.Settings.Filters)]
+        [HttpGet(ApiEndpoints.Settings.GetFilters)]
         public async Task<IActionResult> GetFilters()
         {
             var filters = await _settingsService.GetFilters();
@@ -41,7 +41,7 @@ namespace WebTimetable.Api.Controllers
         }
 
         [ProducesResponseType(typeof(StudyGroupsResponse), 200)]
-        [HttpGet(ApiEndpoints.Settings.StudyGroups)]
+        [HttpGet(ApiEndpoints.Settings.GetStudyGroups)]
         public async Task<IActionResult> GetStudyGroups([FromQuery] StudyGroupsRequest request)
         {
             var studyGroups = await _settingsService.GetStudyGroups(request.Faculty, request.Course, request.EducationForm);

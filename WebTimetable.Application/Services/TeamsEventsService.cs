@@ -1,6 +1,6 @@
 ﻿using Microsoft.Graph;
-using Microsoft.Graph.Models;
 
+using WebTimetable.Application.Models;
 using WebTimetable.Application.Services.Abstractions;
 
 
@@ -13,7 +13,8 @@ namespace WebTimetable.Application.Services
         {
             _graphClient = graphServiceClient;
         }
-        public List<Event> GetEvents(DateOnly date, TimeOnly startTime, TimeOnly endTime)
+
+        public void ConfigureEvents(IEnumerable<Lesson> schedule)
         {
             throw new NotImplementedException();
         }

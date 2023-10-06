@@ -1,4 +1,7 @@
-﻿namespace WebTimetable.Application.Models
+﻿using WebTimetable.Application.Entities;
+
+
+namespace WebTimetable.Application.Models
 {
     public class Lesson
     {
@@ -11,6 +14,7 @@
         public string Cabinet { get; set; }
         public string Teacher { get; set; }
         public string Subgroup { get; set; }
+        public List<NoteEntity> Notes { get; set; } = new();
         public List<Outage> Outages { get; set; } = new();
     }
 }

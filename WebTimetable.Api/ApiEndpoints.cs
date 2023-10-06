@@ -14,16 +14,16 @@ public static class ApiEndpoints
     {
         private const string Base = $"{ApiBase}/settings";
 
-        public const string Filters = $"{Base}/filters";
-        public const string StudyGroups = $"{Base}/studyGroups";
-        public const string OutageGroups = $"{Base}/outageGroups";
+        public const string GetFilters = $"{Base}/filters";
+        public const string GetStudyGroups = $"{Base}/studyGroups";
+        public const string GetOutageGroups = $"{Base}/outageGroups";
     }
 
     public static class Notes
     {
         private const string Base = $"{ApiBase}/notes";
 
-        public const string AddNote = $"{ApiBase}/notes";
-        public const string GetNotes = $"{ApiBase}/notes/{{lessonId:guid}}";
+        public const string AddNote = $"{Base}";
+        public const string RemoveNote = $"{Base}/{{id:guid}}";
     }
 }

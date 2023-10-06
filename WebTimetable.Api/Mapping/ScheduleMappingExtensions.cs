@@ -22,7 +22,7 @@ public static class ScheduleMappingExtensions
             Subgroup = lesson.Subgroup,
             Outages = lesson.Outages.Select(outage => new OutageItem
             {
-                IsDefinite = outage.IsDefinite.Value,
+                IsDefinite = (bool)outage.IsDefinite,
                 Start = outage.Start,
                 End = outage.End
             }).ToList()
@@ -46,6 +46,16 @@ public static class ScheduleMappingExtensions
             Cabinet = lesson.Cabinet,
             Teacher = lesson.Teacher,
             Subgroup = lesson.Subgroup,
+            Notes = lesson.Notes.Select(note => new NoteItem
+            {
+                NoteId = note.NoteId,
+                AuthorId = note.AuthorId,
+                AuthorName = note.AuthorName,
+                AuthorGroup = note.AuthorGroup,
+                LessonId = note.LessonId,
+                Message = note.Message,
+                CreationDate = note.CreationDate
+            }).ToList(),
             Outages = lesson.Outages.Select(outage => new OutageItem
             {
                 IsDefinite = outage.IsDefinite.Value,

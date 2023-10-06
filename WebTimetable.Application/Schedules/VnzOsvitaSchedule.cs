@@ -54,7 +54,8 @@ namespace WebTimetable.Application.Schedules
 
         private Guid GenerateLessonIdentifier(Lesson lesson, string groupId)
         {
-            string compressedValue = lesson.Discipline + lesson.StudyType + groupId + lesson.Date.ToShortDateString();
+            string compressedValue = lesson.Discipline + lesson.StudyType + groupId + lesson.Date.ToShortDateString() +
+                                        lesson.Start.ToShortTimeString();
             var md5Hasher = MD5.Create();
             var data = md5Hasher.ComputeHash(Encoding.Default.GetBytes(compressedValue));
             return new Guid(data);
