@@ -1,4 +1,5 @@
 using WebTimetable.Api;
+using WebTimetable.Api.Middleware;
 using WebTimetable.Application;
 
 
@@ -28,7 +29,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseMiddleware<ExceptionsMiddleware>();
 app.UseCors("PublicCORSPolicy");
 app.UseOutputCache();
 

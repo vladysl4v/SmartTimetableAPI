@@ -2,9 +2,9 @@
 using System.Text.RegularExpressions;
 
 using WebTimetable.Application.Deserializers;
+using WebTimetable.Application.Exceptions;
 using WebTimetable.Application.Models;
 using WebTimetable.Application.Services.Abstractions;
-using WebTimetable.Application.Services.Exceptions;
 
 
 namespace WebTimetable.Application.Services
@@ -49,7 +49,8 @@ namespace WebTimetable.Application.Services
             }
             catch (Exception ex)
             {
-                throw new OutagesNotLoadedException(ex, source, "Error during loading/deserializing.");
+                throw new InternalServiceException(ex, "Outages data cannot be received.",
+                    "Error during loading/deserializing data from DTEK-KEM.");
             }
         }
 

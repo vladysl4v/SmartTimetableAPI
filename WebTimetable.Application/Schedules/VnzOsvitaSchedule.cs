@@ -4,9 +4,9 @@ using System.Text;
 using Newtonsoft.Json;
 
 using WebTimetable.Application.Deserializers;
+using WebTimetable.Application.Exceptions;
 using WebTimetable.Application.Models;
 using WebTimetable.Application.Schedules.Abstractions;
-using WebTimetable.Application.Schedules.Exceptions;
 
 
 namespace WebTimetable.Application.Schedules
@@ -21,13 +21,12 @@ namespace WebTimetable.Application.Schedules
         public async Task<List<Lesson>> GetSchedule(DateTime startDate, DateTime endDate, string groupId, CancellationToken token)
         {
             var httpClient = _httpFactory.CreateClient();
-            string url =
-                "https://vnz.osvita.net/BetaSchedule.asmx/GetScheduleDataX?" +
-                "aVuzID=11784&" +
-                "aStudyGroupID=\"" + groupId + "\"&" +
-                "aStartDate=\"" + startDate.ToShortDateString() + "\"&" +
-                "aEndDate=\"" + endDate.ToShortDateString() + "\"&" +
-                "aStudyTypeID=null";
+            string url = "https://vnz.osvita.net/BetaSchedule.asmx/GetScheduleDataX?" +
+                         "aVuzID=11784&" +
+                         "aStudyGroupID=\"" + groupId + "\"&" +
+                         "aStartDate=\"" + startDate.ToShortDateString() + "\"&" +
+                         "aEndDate=\"" + endDate.ToShortDateString() + "\"&" +
+                         "aStudyTypeID=null";
 
             Dictionary<string, List<Lesson>>? response;
             try
@@ -35,21 +34,24 @@ namespace WebTimetable.Application.Schedules
                 string stringResponse = await httpClient.GetStringAsync(url, token);
                 response = JsonConvert.DeserializeObject<Dictionary<string, List<Lesson>>>(stringResponse, new LessonFactory());
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is not TaskCanceledException)
             {
-                throw new ScheduleNotLoadedException(ex, groupId, "Error during loading/deserializing.");
+                throw new InternalServiceException(ex, "Schedule data cannot be received.",
+                    "Error during loading/deserializing data from the VNZ Osvita.");
             }
 
-            if (response == null)
+            if (response == null || !response.ContainsKey("d"))
             {
-                return new List<Lesson>(0);
+                throw new InternalServiceException("Schedule data cannot be received.",
+                    "Requested schedule cannot be properly deserialized.");
             }
 
             foreach (var lesson in response["d"])
             {
                 lesson.Id = GenerateLessonIdentifier(lesson, groupId);
             }
-            return response != null ? response["d"] : new List<Lesson>(0);
+
+            return response["d"];
         }
 
         private Guid GenerateLessonIdentifier(Lesson lesson, string groupId)

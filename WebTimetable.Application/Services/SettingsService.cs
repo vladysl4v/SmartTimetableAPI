@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 
+using WebTimetable.Application.Exceptions;
 using WebTimetable.Application.Services.Abstractions;
 
 
@@ -19,27 +20,38 @@ public class SettingsService : ISettingsService
                   "aVuzID=11784";
 
         var httpClient = _httpFactory.CreateClient();
-        string serializedData = await httpClient.GetStringAsync(url, token);
 
-        var jsonData = JObject.Parse(serializedData)["d"];
-
-        return new Dictionary<string, Dictionary<string, string>>
+        try
         {
-            {   "faculties", ((JArray)jsonData["faculties"]!)
-                    .ToObject<List<KeyValuePair<string, string>>>()?
-                        .ToDictionary(k => k.Key, v => v.Value)
-            },
+            string serializedData = await httpClient.GetStringAsync(url, token);
+            var jsonData = JObject.Parse(serializedData)["d"];
+
+            var outputFilters = new Dictionary<string, Dictionary<string, string>>
             {
-                "educForms", ((JArray)jsonData["educForms"]!)
-                    .ToObject<List<KeyValuePair<string, string>>>()?
-                        .ToDictionary(k => k.Key, v => v.Value)
-            },
-            {
-                "courses", ((JArray) jsonData["courses"]!)
-                    .ToObject<List<KeyValuePair<string, string>>>()?
-                        .ToDictionary(k => k.Key, v => v.Value)
-            }
-        };
+                {
+                    "faculties", ((JArray)jsonData["faculties"]!)
+                                    .ToObject<List<KeyValuePair<string, string>>>()!
+                                    .ToDictionary(k => k.Key, v => v.Value)
+                },
+                {
+                    "educForms", ((JArray)jsonData["educForms"]!)
+                                    .ToObject<List<KeyValuePair<string, string>>>()!
+                                    .ToDictionary(k => k.Key, v => v.Value)
+                },
+                {
+                    "courses", ((JArray)jsonData["courses"]!)
+                                    .ToObject<List<KeyValuePair<string, string>>>()!
+                                    .ToDictionary(k => k.Key, v => v.Value)
+                }
+            };
+
+            return outputFilters;
+        }
+        catch (Exception ex) when (ex is not TaskCanceledException)
+        {
+            throw new InternalServiceException(ex, "Settings filters cannot be received.",
+                "Error during loading/deserializing data from VNZ Osvita.");
+        }
     }
 
     public async Task<Dictionary<string, string>> GetStudyGroups(string faculty, int course, int educForm, CancellationToken token)
@@ -52,11 +64,19 @@ public class SettingsService : ISettingsService
                   $"aGiveStudyTimes=false";
 
         var httpClient = _httpFactory.CreateClient();
-        string serializedData = await httpClient.GetStringAsync(url, token);
-        var jsonData = JObject.Parse(serializedData)["d"];
+        try
+        {
+            string serializedData = await httpClient.GetStringAsync(url, token);
+            var jsonData = JObject.Parse(serializedData)["d"];
 
-        return ((JArray)jsonData["studyGroups"]!)
-            .ToObject<List<KeyValuePair<string, string>>>()?
-            .ToDictionary(k => k.Key, v => v.Value);
+            return ((JArray)jsonData["studyGroups"]!)
+                                .ToObject<List<KeyValuePair<string, string>>>()!
+                                .ToDictionary(k => k.Key, v => v.Value);
+        }
+        catch (Exception ex) when (ex is not TaskCanceledException)
+        {
+            throw new InternalServiceException(ex, "Study groups filters cannot be received.",
+                "Error during loading/deserializing data from VNZ Osvita.");
+        }
     }
 }

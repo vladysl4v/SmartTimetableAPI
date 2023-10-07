@@ -31,22 +31,14 @@ namespace WebTimetable.Api.Controllers
         [HttpPost(ApiEndpoints.Notes.AddNote)]
         public async Task<IActionResult> AddNote([FromBody] AddNoteRequest request, CancellationToken token)
         {
-            User? user;
-            try
+            var user = await _graphClient.Me.GetAsync((requestConfiguration) =>
             {
-                user = await _graphClient.Me.GetAsync((requestConfiguration) =>
-                {
-                    requestConfiguration.QueryParameters.Select = new[] { "department", "displayName", "id" };
-                }, token);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(502, "Error occurred while retrieving the Microsoft information profile. Details: " + ex.Message);
-            }
+                requestConfiguration.QueryParameters.Select = new[] { "department", "displayName", "id" };
+            }, token);
 
-            if (user.Id is null || user.DisplayName is null || user.Department is null)
+            if (user.Department is null)
             {
-                return BadRequest();
+                return BadRequest("User department cannot be accessed.");
             }
 
             var note = request.MapToNote(user.Id, user.DisplayName, user.Department);

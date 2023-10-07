@@ -9,7 +9,6 @@ using Microsoft.Identity.Web.Resource;
 using WebTimetable.Api.Mapping;
 using WebTimetable.Application.Models;
 using WebTimetable.Application.Schedules.Abstractions;
-using WebTimetable.Application.Schedules.Exceptions;
 using WebTimetable.Application.Services.Abstractions;
 using WebTimetable.Contracts.Requests;
 
@@ -40,17 +39,19 @@ namespace WebTimetable.Api.Controllers
         [HttpGet(ApiEndpoints.Schedule.GetAnonymousSchedule)]
         public async Task<IActionResult> GetAnonymousSchedule([FromQuery] AnonymousScheduleRequest request, CancellationToken token)
         {
-            List<Lesson> lessons;
-            try
+            if (!DateTime.TryParse(request.StartDate, out var start) ||
+                !DateTime.TryParse(request.EndDate, out var end))
             {
-                lessons = await _scheduleSource.GetSchedule(DateTime.Parse(request.StartDate), DateTime.Parse(request.EndDate), request.StudyGroup, token);
-            }
-            catch (ScheduleNotLoadedException ex)
-            {
-                _logger.LogError(ex, "Error retrieving schedule.");
-                return StatusCode(502);
+                return BadRequest(
+                    new ValidationProblemDetails(new Dictionary<string, string[]>
+                        {
+                            { "startDate", new[] { "The given value cannot be converted to DateTime." } },
+                            { "endDate", new[] { "The given value cannot be converted to DateTime." } }
+                        }));
             }
 
+            var lessons = await _scheduleSource.GetSchedule(start, end, request.StudyGroup, token);
+            
             if (request.OutageGroup != 0)
             {
                 _outagesService.ConfigureOutages(lessons, request.OutageGroup);
@@ -65,16 +66,17 @@ namespace WebTimetable.Api.Controllers
         [HttpGet(ApiEndpoints.Schedule.GetPersonalSchedule)]
         public async Task<IActionResult> GetPersonalSchedule([FromQuery] PersonalScheduleRequest request, CancellationToken token)
         {
-            List<Lesson> lessons;
-            try
+            if (!DateTime.TryParse(request.StartDate, out var start) ||
+                !DateTime.TryParse(request.EndDate, out var end))
             {
-                lessons = await _scheduleSource.GetSchedule(DateTime.Parse(request.StartDate), DateTime.Parse(request.EndDate), request.StudyGroup, token);
+                return BadRequest(
+                    new ValidationProblemDetails(new Dictionary<string, string[]>
+                    {
+                        { "startDate", new[] { "The given value cannot be converted to DateTime." } },
+                        { "endDate", new[] { "The given value cannot be converted to DateTime." } }
+                    }));
             }
-            catch (ScheduleNotLoadedException ex)
-            {
-                _logger.LogError(ex, "Error retrieving schedule.");
-                return StatusCode(502);
-            }
+            var lessons = await _scheduleSource.GetSchedule(start, end, request.StudyGroup, token);
 
             if (request.OutageGroup != 0)
             {
