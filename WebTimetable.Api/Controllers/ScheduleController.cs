@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Asp.Versioning;
+
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.Graph;
 using Microsoft.Identity.Web.Resource;
 
@@ -13,6 +16,7 @@ using WebTimetable.Contracts.Requests;
 
 namespace WebTimetable.Api.Controllers
 {
+    [ApiVersion(1.0)]
     [ApiController]
     public class ScheduleController : ControllerBase
     {
@@ -32,13 +36,14 @@ namespace WebTimetable.Api.Controllers
             _outagesService = outagesService;
         }
 
+        [OutputCache(PolicyName = "ScheduleCache")]
         [HttpGet(ApiEndpoints.Schedule.GetAnonymousSchedule)]
         public async Task<IActionResult> GetAnonymousSchedule([FromQuery] AnonymousScheduleRequest request, CancellationToken token)
         {
             List<Lesson> lessons;
             try
             {
-                lessons = await _scheduleSource.GetSchedule(request.Start, request.End, request.StudyGroup, token);
+                lessons = await _scheduleSource.GetSchedule(DateTime.Parse(request.StartDate), DateTime.Parse(request.EndDate), request.StudyGroup, token);
             }
             catch (ScheduleNotLoadedException ex)
             {
@@ -63,7 +68,7 @@ namespace WebTimetable.Api.Controllers
             List<Lesson> lessons;
             try
             {
-                lessons = await _scheduleSource.GetSchedule(request.Start, request.End, request.StudyGroup, token);
+                lessons = await _scheduleSource.GetSchedule(DateTime.Parse(request.StartDate), DateTime.Parse(request.EndDate), request.StudyGroup, token);
             }
             catch (ScheduleNotLoadedException ex)
             {

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Asp.Versioning;
+
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Graph;
 using Microsoft.Graph.Models;
@@ -12,6 +14,7 @@ using WebTimetable.Contracts.Requests;
 
 namespace WebTimetable.Api.Controllers
 {
+    [ApiVersion(1.0)]
     [ApiController]
     public class NotesController : ControllerBase
     {

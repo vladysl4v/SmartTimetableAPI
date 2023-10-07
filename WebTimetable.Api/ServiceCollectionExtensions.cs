@@ -1,11 +1,68 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Asp.Versioning;
+
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
 
 namespace WebTimetable.Api;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddSwaggerConfiguration(this IServiceCollection services)
+    public static IServiceCollection ConfigureCors(this IServiceCollection services)
+    {
+        services.AddCors(options =>
+        {
+            options.AddPolicy(name: "PublicCORSPolicy", policy =>
+            {
+                policy.AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowAnyOrigin();
+            });
+        });
+        return services;
+    }
+
+    public static IServiceCollection ConfigureMicrosoftIdentityAuthentication(this IServiceCollection services,
+        ConfigurationManager config)
+    {
+        services.AddMicrosoftIdentityWebApiAuthentication(config)
+            .EnableTokenAcquisitionToCallDownstreamApi()
+            .AddMicrosoftGraph(config.GetSection("GraphClient"))
+            .AddInMemoryTokenCaches();
+
+        return services;
+    }
+
+    public static IServiceCollection ConfigureCaching(this IServiceCollection services)
+    {
+        services.AddOutputCache(options =>
+        {
+            options.AddBasePolicy(policy => policy.Cache());
+
+            options.AddPolicy("SettingsCache", policy => policy.Cache()
+                .Expire(TimeSpan.FromMinutes(5))
+                .SetVaryByQuery(new[] { "faculty", "educationForm", "course" }));
+
+            options.AddPolicy("ScheduleCache", policy => policy.Cache()
+                .Expire(TimeSpan.FromMinutes(1))
+                .SetVaryByQuery(new[] { "studyGroup", "outageGroup", "startDate", "endDate" }));
+        });
+        return services;
+    }
+
+    public static IServiceCollection ConfigureVersioning(this IServiceCollection services)
+    {
+        services.AddApiVersioning(options =>
+        {
+            options.DefaultApiVersion = new ApiVersion(1.0);
+            options.AssumeDefaultVersionWhenUnspecified = true;
+            options.ReportApiVersions = true;
+            options.ApiVersionReader = new HeaderApiVersionReader("api-version");
+        }).AddMvc();
+        return services;
+    }
+
+    public static IServiceCollection ConfigureSwagger(this IServiceCollection services)
     {
         var apiInformation = new OpenApiInfo
         {
@@ -53,7 +110,7 @@ public static class ServiceCollectionExtensions
 
             // Activate swagger controllers documentation
             options.CustomSchemaIds(type => type.ToString());
-
+            options.DescribeAllParametersInCamelCase();
             var currentAssembly = System.Reflection.Assembly.GetExecutingAssembly();
             var xmlDocs = currentAssembly.GetReferencedAssemblies()
                 .Union(new[] { currentAssembly.GetName() })

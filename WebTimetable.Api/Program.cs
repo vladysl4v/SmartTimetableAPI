@@ -1,5 +1,3 @@
-using Microsoft.Identity.Web;
-
 using WebTimetable.Api;
 using WebTimetable.Application;
 
@@ -8,30 +6,19 @@ var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 
 builder.Services.AddDatabaseContext(config.GetConnectionString("RenderPostgresConnection")!);
-
-builder.Services.AddMicrosoftIdentityWebApiAuthentication(config)
-        .EnableTokenAcquisitionToCallDownstreamApi()
-        .AddMicrosoftGraph(config.GetSection("GraphClient"))
-        .AddInMemoryTokenCaches();
-
-builder.Services.AddControllers();
-builder.Services.AddHttpClient();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(name: "PublicCORSPolicy", policy =>
-    {
-        policy.AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowAnyOrigin();
-    });
-});
-
 builder.Services.AddApplication(builder.Environment.IsDevelopment());
 
-builder.Services.AddSwaggerConfiguration();
+builder.Services.AddHttpClient();
+builder.Services.AddControllers();
+
+builder.Services.AddSwaggerGen();
+builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.ConfigureMicrosoftIdentityAuthentication(config);
+builder.Services.ConfigureVersioning();
+builder.Services.ConfigureCaching();
+builder.Services.ConfigureSwagger();
+builder.Services.ConfigureCors();
 
 var app = builder.Build();
 
@@ -43,6 +30,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("PublicCORSPolicy");
+app.UseOutputCache();
 
 app.UseHttpsRedirection();
 
