@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-
-namespace WebTimetable.Contracts.Requests;
+﻿namespace WebTimetable.Contracts.Requests;
 
 public class AnonymousScheduleRequest
 {

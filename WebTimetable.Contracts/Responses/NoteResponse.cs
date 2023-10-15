@@ -2,10 +2,10 @@
 
 public class NoteResponse
 {
-    public Guid NoteId { get; set; }
-    public Guid AuthorId { get; set; }
-    public string AuthorName { get; set; }
-    public Guid LessonId { get; set; }
-    public string Message { get; set; }
-    public DateTime CreationDate { get; set; }
+    public required Guid NoteId { get; init; }
+    public required Guid LessonId { get; init; }
+    public required Guid AuthorId { get; init; }
+    public required string AuthorName { get; init; }
+    public required string Message { get; init; }
+    public required DateTime CreationDate { get; init; }
 }

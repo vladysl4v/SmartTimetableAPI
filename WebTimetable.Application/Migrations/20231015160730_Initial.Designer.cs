@@ -12,7 +12,7 @@ using WebTimetable.Application;
 namespace WebTimetable.Application.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230926185213_Initial")]
+    [Migration("20231015160730_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -31,18 +31,8 @@ namespace WebTimetable.Application.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("AuthorGroup")
-                        .IsRequired()
-                        .HasMaxLength(40)
-                        .HasColumnType("character varying(40)");
-
                     b.Property<Guid>("AuthorId")
                         .HasColumnType("uuid");
-
-                    b.Property<string>("AuthorName")
-                        .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("character varying(60)");
 
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("timestamp with time zone");
@@ -52,15 +42,61 @@ namespace WebTimetable.Application.Migrations
 
                     b.Property<string>("Message")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.HasKey("NoteId");
+
+                    b.HasIndex("AuthorId");
 
                     b.HasIndex("LessonId");
 
                     NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("LessonId"), "hash");
 
                     b.ToTable("Notes");
+                });
+
+            modelBuilder.Entity("WebTimetable.Application.Entities.UserEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)");
+
+                    b.Property<string>("Group")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)");
+
+                    b.Property<bool>("IsRestricted")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("WebTimetable.Application.Entities.NoteEntity", b =>
+                {
+                    b.HasOne("WebTimetable.Application.Entities.UserEntity", "Author")
+                        .WithMany("Notes")
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Author");
+                });
+
+            modelBuilder.Entity("WebTimetable.Application.Entities.UserEntity", b =>
+                {
+                    b.Navigation("Notes");
                 });
 #pragma warning restore 612, 618
         }

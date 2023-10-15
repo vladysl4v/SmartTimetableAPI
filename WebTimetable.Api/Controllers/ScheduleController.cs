@@ -4,13 +4,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.Graph;
+using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.Resource;
 
 using WebTimetable.Api.Mapping;
-using WebTimetable.Application.Models;
 using WebTimetable.Application.Schedules.Abstractions;
 using WebTimetable.Application.Services.Abstractions;
 using WebTimetable.Contracts.Requests;
+using WebTimetable.Contracts.Responses;
 
 
 namespace WebTimetable.Api.Controllers
@@ -19,22 +20,23 @@ namespace WebTimetable.Api.Controllers
     [ApiController]
     public class ScheduleController : ControllerBase
     {
-        private readonly ILogger<ScheduleController> _logger;
-        private readonly GraphServiceClient _graphClient;
         private readonly IOutagesService _outagesService;
         private readonly IScheduleSource _scheduleSource;
         private readonly INotesService _notesService;
+        private readonly IUsersService _usersService;
 
-        public ScheduleController(ILogger<ScheduleController> logger, IScheduleSource scheduleSource,
-            IOutagesService outagesService, INotesService notesService, GraphServiceClient graphClient)
+        public ScheduleController(IScheduleSource scheduleSource, IOutagesService outagesService,
+            INotesService notesService, IUsersService usersService)
         {
-            _logger = logger;
-            _graphClient = graphClient;
+            _usersService = usersService;
             _notesService = notesService;
             _scheduleSource = scheduleSource;
             _outagesService = outagesService;
         }
 
+        [ProducesResponseType(typeof(ScheduleResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorDetailsResponse), StatusCodes.Status500InternalServerError)]
         [OutputCache(PolicyName = "ScheduleCache")]
         [HttpGet(ApiEndpoints.Schedule.GetAnonymousSchedule)]
         public async Task<IActionResult> GetAnonymousSchedule([FromQuery] AnonymousScheduleRequest request, CancellationToken token)
@@ -57,10 +59,14 @@ namespace WebTimetable.Api.Controllers
                 _outagesService.ConfigureOutages(lessons, request.OutageGroup);
             }
 
-            var response = lessons.MapToAnonymousScheduleResponse();
+            var response = lessons.MapToScheduleResponse();
             return Ok(response);
         }
 
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ScheduleResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorDetailsResponse), StatusCodes.Status500InternalServerError)]
         [Authorize]
         [RequiredScope("access_as_user")]
         [HttpGet(ApiEndpoints.Schedule.GetPersonalSchedule)]
@@ -83,14 +89,16 @@ namespace WebTimetable.Api.Controllers
                 _outagesService.ConfigureOutages(lessons, request.OutageGroup);
             }
 
-            var user = await _graphClient.Me.GetAsync((requestConfiguration) =>
+            var user = await _usersService.GetUser(token);
+
+            if (user is null)
             {
-                requestConfiguration.QueryParameters.Select = new[] { "department" };
-            }, token);
+                return Unauthorized("User department cannot be accessed by server.");
+            }
 
-            _notesService.ConfigureNotes(lessons, user.Department);
+            _notesService.ConfigureNotes(lessons, user.Group);
 
-            var response = lessons.MapToPersonalScheduleResponse();
+            var response = lessons.MapToScheduleResponse(user.Id);
             return Ok(response);
         }
     }

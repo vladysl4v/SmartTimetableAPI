@@ -7,15 +7,13 @@ namespace WebTimetable.Api.Mapping;
 
 public static class NotesMappingExtensions
 {
-    public static NoteEntity MapToNote(this AddNoteRequest request, string authorId, string authorFullName, string authorGroup)
+    public static NoteEntity MapToNote(this AddNoteRequest request, UserEntity user)
     {
         return new NoteEntity
         {
             LessonId = request.LessonId,
             Message = request.Message,
-            AuthorId = Guid.Parse(authorId),
-            AuthorName = ShortenFullName(authorFullName),
-            AuthorGroup = authorGroup
+            Author = user
         };
     }
 
@@ -26,19 +24,9 @@ public static class NotesMappingExtensions
             NoteId = note.NoteId,
             LessonId = note.LessonId,
             Message = note.Message,
-            AuthorId = note.AuthorId,
-            AuthorName = note.AuthorName,
+            AuthorId = note.Author.Id,
+            AuthorName = note.Author.FullName,
             CreationDate = note.CreationDate
         };
-    }
-
-    private static string ShortenFullName(string employee)
-    {
-        if (string.IsNullOrEmpty(employee))
-            return employee;
-
-        string[] EmplSplitted = employee.Split();
-        // if the string is not of format "Surname Name Patronymic"
-        return EmplSplitted.Length != 3 ? employee : $"{EmplSplitted[0]} {EmplSplitted[1][0]}.{EmplSplitted[2][0]}.";
     }
 }

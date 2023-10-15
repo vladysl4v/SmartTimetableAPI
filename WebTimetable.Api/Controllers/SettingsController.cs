@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.OutputCaching;
 using WebTimetable.Api.Mapping;
 using WebTimetable.Application.Services.Abstractions;
 using WebTimetable.Contracts.Requests;
+using WebTimetable.Contracts.Responses;
 
 
 namespace WebTimetable.Api.Controllers
@@ -22,6 +23,7 @@ namespace WebTimetable.Api.Controllers
             _outagesService = outagesService;
         }
 
+        [ProducesResponseType(typeof(OutageGroupsResponse), StatusCodes.Status200OK)]
         [OutputCache(PolicyName = "SettingsCache")]
         [HttpGet(ApiEndpoints.Settings.GetOutageGroups)]
         public IActionResult GetOutageGroups()
@@ -32,6 +34,8 @@ namespace WebTimetable.Api.Controllers
             return Ok(response);
         }
 
+        [ProducesResponseType(typeof(FiltersResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorDetailsResponse), StatusCodes.Status500InternalServerError)]
         [OutputCache(PolicyName = "SettingsCache")]
         [HttpGet(ApiEndpoints.Settings.GetFilters)]
         public async Task<IActionResult> GetFilters(CancellationToken token)
@@ -42,6 +46,9 @@ namespace WebTimetable.Api.Controllers
             return Ok(response);
         }
 
+        [ProducesResponseType(typeof(StudyGroupsResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorDetailsResponse), StatusCodes.Status500InternalServerError)]
         [OutputCache(PolicyName = "SettingsCache")]
         [HttpGet(ApiEndpoints.Settings.GetStudyGroups)]
         public async Task<IActionResult> GetStudyGroups([FromQuery] StudyGroupsRequest request, CancellationToken token)

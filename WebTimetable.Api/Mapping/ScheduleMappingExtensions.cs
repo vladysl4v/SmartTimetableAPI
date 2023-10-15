@@ -7,9 +7,9 @@ namespace WebTimetable.Api.Mapping;
 
 public static class ScheduleMappingExtensions
 {
-    public static AnonymousScheduleResponse MapToAnonymousScheduleResponse(this IEnumerable<Lesson> schedule)
+    public static ScheduleResponse MapToScheduleResponse(this IEnumerable<Lesson> schedule, Guid? userId = null)
     {
-        var convertedSchedule = schedule.Select(lesson => new AnonymousLessonItem
+        var convertedSchedule = schedule.Select(lesson => new LessonItem
         {
             Id = lesson.Id,
             Date = lesson.Date,
@@ -20,41 +20,16 @@ public static class ScheduleMappingExtensions
             Cabinet = lesson.Cabinet,
             Teacher = lesson.Teacher,
             Subgroup = lesson.Subgroup,
-            Outages = lesson.Outages.Select(outage => new OutageItem
-            {
-                IsDefinite = (bool)outage.IsDefinite,
-                Start = outage.Start,
-                End = outage.End
-            }).ToList()
-        });
-        return new AnonymousScheduleResponse
-        {
-            Schedule = convertedSchedule.ToList()
-        };
-    }
-
-    public static PersonalScheduleResponse MapToPersonalScheduleResponse(this IEnumerable<Lesson> schedule)
-    {
-        var convertedSchedule = schedule.Select(lesson => new PersonalLessonItem
-        {
-            Id = lesson.Id,
-            Date = lesson.Date,
-            Start = lesson.Start,
-            End = lesson.End,
-            Discipline = lesson.Discipline,
-            StudyType = lesson.StudyType,
-            Cabinet = lesson.Cabinet,
-            Teacher = lesson.Teacher,
-            Subgroup = lesson.Subgroup,
-            Notes = lesson.Notes.Select(note => new NoteItem
+            Notes = lesson.Notes?.Select(note => new NoteItem
             {
                 NoteId = note.NoteId,
-                AuthorId = note.AuthorId,
-                AuthorName = note.AuthorName,
-                AuthorGroup = note.AuthorGroup,
+                AuthorId = note.Author.Id,
+                AuthorName = note.Author.FullName,
+                AuthorGroup = note.Author.Group,
                 LessonId = note.LessonId,
                 Message = note.Message,
-                CreationDate = note.CreationDate
+                CreationDate = note.CreationDate,
+                IsAuthor = userId == note.Author.Id
             }).ToList(),
             Outages = lesson.Outages.Select(outage => new OutageItem
             {
@@ -63,7 +38,7 @@ public static class ScheduleMappingExtensions
                 End = outage.End
             }).ToList()
         });
-        return new PersonalScheduleResponse
+        return new ScheduleResponse
         {
             Schedule = convertedSchedule.ToList()
         };

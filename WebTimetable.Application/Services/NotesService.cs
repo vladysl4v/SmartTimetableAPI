@@ -16,10 +16,16 @@ public class NotesService : INotesService
         _dbRepository = dbRepository;
     }
 
-    public async Task AddNoteAsync(NoteEntity note, CancellationToken token)
+    public async Task<bool> AddNoteAsync(NoteEntity note, CancellationToken token)
     {
+        var noteExists = _dbRepository.Get<NoteEntity>(x => x.Author.Id == note.Author.Id && x.LessonId == note.LessonId).Any();
+        if (noteExists)
+        {
+            return false;
+        }
         await _dbRepository.Add(note);
         await _dbRepository.SaveChangesAsync(token);
+        return true;
     }
 
     public void ConfigureNotes(IEnumerable<Lesson> schedule, string group)
@@ -45,7 +51,7 @@ public class NotesService : INotesService
     private List<NoteEntity> GetNotesByLessonId(Guid lessonId, string group)
     {
         Expression<Func<NoteEntity, bool>> expression = entity =>
-            entity.LessonId == lessonId && entity.AuthorGroup == group;
+            entity.LessonId == lessonId && entity.Author.Group == group;
 
         return _dbRepository.Get<NoteEntity>(expression).ToList();
     }

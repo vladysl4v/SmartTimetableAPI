@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace WebTimetable.Contracts.Requests;
+﻿namespace WebTimetable.Contracts.Requests;
 
 public class PersonalScheduleRequest
 {
@@ -17,7 +15,6 @@ public class PersonalScheduleRequest
     /// <summary>
     /// The date from which to start the schedule.
     /// </summary>
-
     public required string StartDate { get; init; }
 
     /// <summary>

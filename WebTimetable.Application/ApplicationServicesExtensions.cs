@@ -27,7 +27,7 @@ namespace WebTimetable.Application
             {
                 services.AddSingleton<IOutagesService, DtekOutagesService>();
             }
-
+            services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<INotesService, NotesService>();
             services.AddScoped<ISettingsService, SettingsService>();
             services.AddScoped<IScheduleSource, VnzOsvitaSchedule>();

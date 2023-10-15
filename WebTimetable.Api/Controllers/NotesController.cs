@@ -2,14 +2,13 @@
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Graph;
-using Microsoft.Graph.Models;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.Resource;
 
 using WebTimetable.Api.Mapping;
 using WebTimetable.Application.Services.Abstractions;
 using WebTimetable.Contracts.Requests;
+using WebTimetable.Contracts.Responses;
 
 
 namespace WebTimetable.Api.Controllers
@@ -18,35 +17,45 @@ namespace WebTimetable.Api.Controllers
     [ApiController]
     public class NotesController : ControllerBase
     {
-        private readonly GraphServiceClient _graphClient;
         private readonly INotesService _notesService;
-        public NotesController(GraphServiceClient graphServiceClient, INotesService notesService)
+        private readonly IUsersService _usersService;
+        public NotesController(INotesService notesService, IUsersService usersService)
         {
-            _graphClient = graphServiceClient;
             _notesService = notesService;
+            _usersService = usersService;
         }
 
+        [ProducesResponseType(typeof(NoteResponse), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [Authorize]
         [RequiredScope("access_as_user")]
         [HttpPost(ApiEndpoints.Notes.AddNote)]
         public async Task<IActionResult> AddNote([FromBody] AddNoteRequest request, CancellationToken token)
         {
-            var user = await _graphClient.Me.GetAsync((requestConfiguration) =>
+            var user = await _usersService.GetUser(token);
+            if (user is null)
             {
-                requestConfiguration.QueryParameters.Select = new[] { "department", "displayName", "id" };
-            }, token);
-
-            if (user.Department is null)
-            {
-                return BadRequest("User department cannot be accessed.");
+                return Unauthorized("User department cannt be accessed by server.");
             }
 
-            var note = request.MapToNote(user.Id, user.DisplayName, user.Department);
-            await _notesService.AddNoteAsync(note, token);
+            if (user.IsRestricted)
+            {
+                return Forbid();
+            }
+            var note = request.MapToNote(user);
+            var isSuccessful = await _notesService.AddNoteAsync(note, token);
+            if (!isSuccessful)
+            {
+                return Conflict();
+            }
 
             return Created(nameof(ScheduleController.GetPersonalSchedule), note.MapToNoteResponse());
         }
 
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [Authorize]
         [RequiredScope("access_as_user")]
         [HttpDelete(ApiEndpoints.Notes.RemoveNote)]
@@ -59,7 +68,7 @@ namespace WebTimetable.Api.Controllers
             }
             if (note.AuthorId != Guid.Parse(User.GetObjectId()!))
             {
-                return Unauthorized();
+                return Forbid();
             }
             await _notesService.RemoveNote(note, token);
             return Ok();
