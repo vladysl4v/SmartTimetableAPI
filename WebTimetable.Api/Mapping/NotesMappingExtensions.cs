@@ -17,7 +17,7 @@ public static class NotesMappingExtensions
         };
     }
 
-    public static NoteResponse MapToNoteResponse(this NoteEntity note)
+    public static NoteResponse MapToNoteResponse(this NoteEntity note, Guid userId)
     {
         return new NoteResponse
         {
@@ -26,6 +26,7 @@ public static class NotesMappingExtensions
             Message = note.Message,
             AuthorId = note.Author.Id,
             AuthorName = note.Author.FullName,
+	        IsAuthor = note.Author.Id == userId,
             CreationDate = note.CreationDate
         };
     }

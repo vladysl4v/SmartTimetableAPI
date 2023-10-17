@@ -7,5 +7,6 @@ public class NoteResponse
     public required Guid AuthorId { get; init; }
     public required string AuthorName { get; init; }
     public required string Message { get; init; }
+    public required bool IsAuthor { get; init; }
     public required DateTime CreationDate { get; init; }
 }

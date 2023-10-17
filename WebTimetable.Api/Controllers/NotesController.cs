@@ -50,7 +50,7 @@ namespace WebTimetable.Api.Controllers
                 return Conflict();
             }
 
-            return Created(nameof(ScheduleController.GetPersonalSchedule), note.MapToNoteResponse());
+            return Created(nameof(ScheduleController.GetPersonalSchedule), note.MapToNoteResponse(user.Id));
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
