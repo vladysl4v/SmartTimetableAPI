@@ -4,6 +4,6 @@ namespace WebTimetable.Application.Services.Abstractions
 {
     public interface IEventsService
     {
-        public void ConfigureEvents(IEnumerable<Lesson> schedule);
+        public Task ConfigureEvents(IEnumerable<Lesson> schedule);
     }
 }

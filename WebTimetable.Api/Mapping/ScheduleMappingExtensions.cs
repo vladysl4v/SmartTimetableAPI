@@ -20,6 +20,14 @@ public static class ScheduleMappingExtensions
             Cabinet = lesson.Cabinet,
             Teacher = lesson.Teacher,
             Subgroup = lesson.Subgroup,
+
+            Outages = lesson.Outages.Select(outage => new OutageItem
+            {
+                IsDefinite = outage.IsDefinite.Value,
+                Start = outage.Start,
+                End = outage.End
+            }).ToList(),
+
             Notes = lesson.Notes?.Select(note => new NoteItem
             {
                 NoteId = note.NoteId,
@@ -31,11 +39,13 @@ public static class ScheduleMappingExtensions
                 CreationDate = note.CreationDate,
                 IsAuthor = userId == note.Author.Id
             }).ToList(),
-            Outages = lesson.Outages.Select(outage => new OutageItem
+
+            Meetings = lesson.Events?.Select(meeting => new EventItem
             {
-                IsDefinite = outage.IsDefinite.Value,
-                Start = outage.Start,
-                End = outage.End
+                Start = meeting.StartTime,
+                End = meeting.EndTime,
+                Title = meeting.Title,
+                Link = meeting.Link
             }).ToList()
         });
         return new ScheduleResponse

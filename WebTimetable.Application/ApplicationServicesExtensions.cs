@@ -29,6 +29,7 @@ namespace WebTimetable.Application
             }
             services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<INotesService, NotesService>();
+            services.AddScoped<IEventsService, TeamsEventsService>();
             services.AddScoped<ISettingsService, SettingsService>();
             services.AddScoped<IScheduleSource, VnzOsvitaSchedule>();
 

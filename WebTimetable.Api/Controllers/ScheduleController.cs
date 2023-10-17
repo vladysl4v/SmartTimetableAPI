@@ -3,8 +3,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
-using Microsoft.Graph;
-using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.Resource;
 
 using WebTimetable.Api.Mapping;
@@ -22,14 +20,16 @@ namespace WebTimetable.Api.Controllers
     {
         private readonly IOutagesService _outagesService;
         private readonly IScheduleSource _scheduleSource;
+        private readonly IEventsService _eventsService;
         private readonly INotesService _notesService;
         private readonly IUsersService _usersService;
 
         public ScheduleController(IScheduleSource scheduleSource, IOutagesService outagesService,
-            INotesService notesService, IUsersService usersService)
+            INotesService notesService, IUsersService usersService, IEventsService eventsService)
         {
             _usersService = usersService;
             _notesService = notesService;
+            _eventsService = eventsService;
             _scheduleSource = scheduleSource;
             _outagesService = outagesService;
         }
@@ -96,6 +96,7 @@ namespace WebTimetable.Api.Controllers
                 return Unauthorized("User department cannot be accessed by server.");
             }
 
+            await _eventsService.ConfigureEvents(lessons);
             _notesService.ConfigureNotes(lessons, user.Group);
 
             var response = lessons.MapToScheduleResponse(user.Id);
