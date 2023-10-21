@@ -8,8 +8,8 @@ public static class ApiEndpoints
     {
         private const string Base = $"{ApiBase}/schedule";
 
-        public const string GetAnonymousSchedule = $"{Base}";
-        public const string GetPersonalSchedule = $"{Base}/me";
+        public const string GetAnonymousSchedule = $"{Base}/guest";
+        public const string GetPersonalSchedule = $"{Base}/personal";
     }
     
     public static class Settings
