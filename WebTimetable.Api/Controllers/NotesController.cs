@@ -36,7 +36,7 @@ namespace WebTimetable.Api.Controllers
             var user = await _usersService.GetUser(token);
             if (user is null)
             {
-                return Unauthorized("User department cannt be accessed by server.");
+                return Unauthorized("User department cannot be accessed by server.");
             }
 
             if (user.IsRestricted)

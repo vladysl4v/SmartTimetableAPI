@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
+using WebTimetable.Application.Handlers.Events;
+using WebTimetable.Application.Handlers.Notes;
+using WebTimetable.Application.Handlers.Outages;
+using WebTimetable.Application.Handlers.Schedule;
 using WebTimetable.Application.Repositories;
-using WebTimetable.Application.Schedules;
-using WebTimetable.Application.Schedules.Abstractions;
 using WebTimetable.Application.Services;
 using WebTimetable.Application.Services.Abstractions;
 
@@ -14,24 +16,28 @@ namespace WebTimetable.Application
     {
         public static async Task InitializeApplicationAsync(this IServiceProvider services)
         {
-            await services.GetRequiredService<IOutagesService>().InitializeOutages();
+            await services.GetRequiredService<IOutagesHandler>().InitializeOutages();
         }
 
         public static IServiceCollection AddApplication(this IServiceCollection services, bool isDevelopment)
         {
+            services.AddScoped<IUsersService, UsersService>();
+            services.AddScoped<INotesHandler, NotesHandler>();
+            services.AddScoped<IEventsHandler, TeamsEventsHandler>();
+            services.AddScoped<IScheduleHandler, VnzOsvitaScheduleHandler>();
+
             if (isDevelopment)
             {
-                services.AddSingleton<IOutagesService, FakeOutagesService>();
+                services.AddSingleton<IOutagesHandler, FakeOutagesHandler>();
             }
             else
             {
-                services.AddSingleton<IOutagesService, DtekOutagesService>();
+                services.AddSingleton<IOutagesHandler, DtekOutagesHandler>();
             }
-            services.AddScoped<IUsersService, UsersService>();
+
             services.AddScoped<INotesService, NotesService>();
-            services.AddScoped<IEventsService, TeamsEventsService>();
+            services.AddScoped<IScheduleService, ScheduleService>();
             services.AddScoped<ISettingsService, SettingsService>();
-            services.AddScoped<IScheduleSource, VnzOsvitaSchedule>();
 
             return services;
         }

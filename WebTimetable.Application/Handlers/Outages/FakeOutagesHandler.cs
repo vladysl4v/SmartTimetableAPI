@@ -1,12 +1,11 @@
 ﻿using Newtonsoft.Json;
 
 using WebTimetable.Application.Models;
-using WebTimetable.Application.Services.Abstractions;
 
 
-namespace WebTimetable.Application.Services
+namespace WebTimetable.Application.Handlers.Outages
 {
-    public class FakeOutagesService : IOutagesService
+    public class FakeOutagesHandler : IOutagesHandler
     {
         private Dictionary<int, Dictionary<DayOfWeek, List<Outage>>> _outages;
         private Dictionary<string, string> _outagesGroups;

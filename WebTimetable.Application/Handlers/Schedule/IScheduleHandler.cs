@@ -1,9 +1,9 @@
 ﻿using WebTimetable.Application.Models;
 
 
-namespace WebTimetable.Application.Schedules.Abstractions
+namespace WebTimetable.Application.Handlers.Schedule
 {
-    public interface IScheduleSource
+    public interface IScheduleHandler
     {
         public Task<List<Lesson>> GetSchedule(DateTime startDate, DateTime endDate, string group, CancellationToken token);
     }

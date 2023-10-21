@@ -15,7 +15,7 @@ namespace WebTimetable.Application.Models
         public string Teacher { get; set; }
         public string Subgroup { get; set; }
         public List<Event>? Events { get; set; }
-        public List<NoteEntity>? Notes { get; set; }
+        public List<Note>? Notes { get; set; }
         public List<Outage> Outages { get; set; } = new();
     }
 }

@@ -1,9 +1,9 @@
 ﻿using WebTimetable.Application.Models;
 
 
-namespace WebTimetable.Application.Services.Abstractions
+namespace WebTimetable.Application.Handlers.Outages
 {
-    public interface IOutagesService
+    public interface IOutagesHandler
     {
         public Task InitializeOutages();
         public Dictionary<string, string> GetOutageGroups();

@@ -1,21 +1,21 @@
-﻿using Newtonsoft.Json;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
+
+using Newtonsoft.Json;
 
 using WebTimetable.Application.Deserializers;
 using WebTimetable.Application.Exceptions;
 using WebTimetable.Application.Models;
-using WebTimetable.Application.Services.Abstractions;
 
 
-namespace WebTimetable.Application.Services
+namespace WebTimetable.Application.Handlers.Outages
 {
-    public class DtekOutagesService : IOutagesService
+    public class DtekOutagesHandler : IOutagesHandler
     {
         private Dictionary<int, Dictionary<DayOfWeek, List<Outage>>> _outages;
         private Dictionary<string, string> _outageGroups;
 
         private readonly IHttpClientFactory _httpFactory;
-        public DtekOutagesService(IHttpClientFactory httpFactory)
+        public DtekOutagesHandler(IHttpClientFactory httpFactory)
         {
             _httpFactory = httpFactory;
         }

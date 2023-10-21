@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.Identity.Web.Resource;
 
 using WebTimetable.Api.Mapping;
-using WebTimetable.Application.Schedules.Abstractions;
 using WebTimetable.Application.Services.Abstractions;
 using WebTimetable.Contracts.Requests;
 using WebTimetable.Contracts.Responses;
@@ -18,20 +17,13 @@ namespace WebTimetable.Api.Controllers
     [ApiController]
     public class ScheduleController : ControllerBase
     {
-        private readonly IOutagesService _outagesService;
-        private readonly IScheduleSource _scheduleSource;
-        private readonly IEventsService _eventsService;
-        private readonly INotesService _notesService;
+        private readonly IScheduleService _scheduleService;
         private readonly IUsersService _usersService;
 
-        public ScheduleController(IScheduleSource scheduleSource, IOutagesService outagesService,
-            INotesService notesService, IUsersService usersService, IEventsService eventsService)
+        public ScheduleController(IScheduleService scheduleService, IUsersService usersService)
         {
+            _scheduleService = scheduleService;
             _usersService = usersService;
-            _notesService = notesService;
-            _eventsService = eventsService;
-            _scheduleSource = scheduleSource;
-            _outagesService = outagesService;
         }
 
         [ProducesResponseType(typeof(ScheduleResponse), StatusCodes.Status200OK)]
@@ -52,18 +44,12 @@ namespace WebTimetable.Api.Controllers
                         }));
             }
 
-            var lessons = await _scheduleSource.GetSchedule(start, end, request.StudyGroup, token);
-            
-            if (request.OutageGroup != 0)
-            {
-                _outagesService.ConfigureOutages(lessons, request.OutageGroup);
-            }
+            var lessons = await _scheduleService.GetGuestSchedule(start, end, request.StudyGroup, request.OutageGroup, token);
 
             var response = lessons.MapToScheduleResponse();
             return Ok(response);
         }
 
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ScheduleResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorDetailsResponse), StatusCodes.Status500InternalServerError)]
@@ -82,24 +68,14 @@ namespace WebTimetable.Api.Controllers
                         { "endDate", new[] { "The given value cannot be converted to DateTime." } }
                     }));
             }
-            var lessons = await _scheduleSource.GetSchedule(start, end, request.StudyGroup, token);
-
-            if (request.OutageGroup != 0)
-            {
-                _outagesService.ConfigureOutages(lessons, request.OutageGroup);
-            }
-
             var user = await _usersService.GetUser(token);
-
-            if (user is null)
+            var lessons = await _scheduleService.GetPersonalSchedule(start, end, request.StudyGroup, request.OutageGroup, user, token);
+            if (lessons is null)
             {
-                return Unauthorized("User department cannot be accessed by server.");
+                return Forbid();
             }
 
-            await _eventsService.ConfigureEvents(lessons);
-            _notesService.ConfigureNotes(lessons, user.Group);
-
-            var response = lessons.MapToScheduleResponse(user.Id);
+            var response = lessons.MapToScheduleResponse();
             return Ok(response);
         }
     }

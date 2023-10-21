@@ -6,15 +6,14 @@ using Newtonsoft.Json;
 using WebTimetable.Application.Deserializers;
 using WebTimetable.Application.Exceptions;
 using WebTimetable.Application.Models;
-using WebTimetable.Application.Schedules.Abstractions;
 
 
-namespace WebTimetable.Application.Schedules
+namespace WebTimetable.Application.Handlers.Schedule
 {
-    public class VnzOsvitaSchedule : IScheduleSource
+    public class VnzOsvitaScheduleHandler : IScheduleHandler
     {
         private readonly IHttpClientFactory _httpFactory;
-        public VnzOsvitaSchedule(IHttpClientFactory httpFactory)
+        public VnzOsvitaScheduleHandler(IHttpClientFactory httpFactory)
         {
             _httpFactory = httpFactory;
         }

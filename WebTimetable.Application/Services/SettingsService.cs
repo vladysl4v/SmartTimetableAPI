@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 
 using WebTimetable.Application.Exceptions;
+using WebTimetable.Application.Handlers.Outages;
 using WebTimetable.Application.Services.Abstractions;
 
 
@@ -9,9 +10,16 @@ namespace WebTimetable.Application.Services;
 public class SettingsService : ISettingsService
 {
     private readonly IHttpClientFactory _httpFactory;
-    public SettingsService(IHttpClientFactory httpFactory)
+    private readonly IOutagesHandler _outagesHandler;
+    public SettingsService(IHttpClientFactory httpFactory, IOutagesHandler outagesHandler)
     {
         _httpFactory = httpFactory;
+        _outagesHandler = outagesHandler;
+    }
+
+    public Dictionary<string, string> GetOutageGroups()
+    {
+        return _outagesHandler.GetOutageGroups();
     }
 
     public async Task<Dictionary<string, Dictionary<string, string>>> GetFilters(CancellationToken token)

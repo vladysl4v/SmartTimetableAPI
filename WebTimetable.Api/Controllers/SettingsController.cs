@@ -16,11 +16,9 @@ namespace WebTimetable.Api.Controllers
     public class SettingsController : ControllerBase
     {
         private readonly ISettingsService _settingsService;
-        private readonly IOutagesService _outagesService;
-        public SettingsController(ISettingsService settingsService, IOutagesService outagesService)
+        public SettingsController(ISettingsService settingsService)
         {
             _settingsService = settingsService;
-            _outagesService = outagesService;
         }
 
         [ProducesResponseType(typeof(OutageGroupsResponse), StatusCodes.Status200OK)]
@@ -28,7 +26,7 @@ namespace WebTimetable.Api.Controllers
         [HttpGet(ApiEndpoints.Settings.GetOutageGroups)]
         public IActionResult GetOutageGroups()
         {
-            var outageGroups = _outagesService.GetOutageGroups();
+            var outageGroups = _settingsService.GetOutageGroups();
             var response = outageGroups.MapToOutageGroupsResponse();
 
             return Ok(response);

@@ -2,17 +2,16 @@
 using Microsoft.Graph.Models;
 
 using WebTimetable.Application.Models;
-using WebTimetable.Application.Services.Abstractions;
 
 using EventModel = WebTimetable.Application.Models.Event;
 
-namespace WebTimetable.Application.Services
+namespace WebTimetable.Application.Handlers.Events
 {
-    public class TeamsEventsService : IEventsService
+    public class TeamsEventsHandler : IEventsHandler
     {
         private readonly GraphServiceClient _graphClient;
         private readonly int _utcOffset;
-        public TeamsEventsService(GraphServiceClient graphServiceClient)
+        public TeamsEventsHandler(GraphServiceClient graphServiceClient)
         {
             _graphClient = graphServiceClient;
             _utcOffset = TimeZoneInfo.FindSystemTimeZoneById("FLE Standard Time").

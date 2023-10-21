@@ -7,7 +7,7 @@ namespace WebTimetable.Api.Mapping;
 
 public static class ScheduleMappingExtensions
 {
-    public static ScheduleResponse MapToScheduleResponse(this IEnumerable<Lesson> schedule, Guid? userId = null)
+    public static ScheduleResponse MapToScheduleResponse(this IEnumerable<Lesson> schedule)
     {
         var convertedSchedule = schedule.Select(lesson => new LessonItem
         {
@@ -31,13 +31,12 @@ public static class ScheduleMappingExtensions
             Notes = lesson.Notes?.Select(note => new NoteItem
             {
                 NoteId = note.NoteId,
-                AuthorId = note.Author.Id,
-                AuthorName = note.Author.FullName,
-                AuthorGroup = note.Author.Group,
+                AuthorId = note.AuthorId,
+                AuthorName = note.AuthorName,
                 LessonId = note.LessonId,
                 Message = note.Message,
                 CreationDate = note.CreationDate,
-                IsAuthor = userId == note.Author.Id
+                IsAuthor = note.IsAuthor
             }).ToList(),
 
             Meetings = lesson.Events?.Select(meeting => new EventItem

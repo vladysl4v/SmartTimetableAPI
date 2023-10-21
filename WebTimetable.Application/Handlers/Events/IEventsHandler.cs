@@ -1,8 +1,9 @@
 ﻿using WebTimetable.Application.Models;
 
-namespace WebTimetable.Application.Services.Abstractions
+
+namespace WebTimetable.Application.Handlers.Events
 {
-    public interface IEventsService
+    public interface IEventsHandler
     {
         public Task ConfigureEvents(IEnumerable<Lesson> schedule);
     }

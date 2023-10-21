@@ -28,13 +28,6 @@ public class NotesService : INotesService
         return true;
     }
 
-    public void ConfigureNotes(IEnumerable<Lesson> schedule, string group)
-    {
-        foreach (var lesson in schedule)
-        {
-            lesson.Notes = GetNotesByLessonId(lesson.Id, group);
-        }
-    }
     public NoteEntity? GetNoteById(Guid id)
     {
         Expression<Func<NoteEntity, bool>> expression = entity => entity.NoteId == id;
@@ -46,13 +39,5 @@ public class NotesService : INotesService
     {
         _dbRepository.Remove(note);
         await _dbRepository.SaveChangesAsync(token);
-    }
-
-    private List<NoteEntity> GetNotesByLessonId(Guid lessonId, string group)
-    {
-        Expression<Func<NoteEntity, bool>> expression = entity =>
-            entity.LessonId == lessonId && entity.Author.Group == group;
-
-        return _dbRepository.Get<NoteEntity>(expression).ToList();
     }
 }
