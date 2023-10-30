@@ -14,9 +14,9 @@ namespace WebTimetable.Application.Deserializers
                 Cabinet = arguments["cabinet"],
                 Teacher = arguments["employee"],
                 Subgroup = arguments["study_subgroup"],
-                Date = DateOnly.Parse(arguments["full_date"]),
-                Start = TimeOnly.Parse(arguments["study_time_begin"]),
-                End = TimeOnly.Parse(arguments["study_time_end"])
+                Date = DateOnly.ParseExact(arguments["full_date"], "dd.MM.yyyy"),
+                Start = TimeOnly.ParseExact(arguments["study_time_begin"],"HH:mm"),
+                End = TimeOnly.ParseExact(arguments["study_time_end"], "HH:mm")
             };
         }
     }

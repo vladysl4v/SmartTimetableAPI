@@ -23,9 +23,10 @@ public static class ServiceCollectionExtensions
     }
 
     public static IServiceCollection ConfigureMicrosoftIdentityAuthentication(this IServiceCollection services,
-        ConfigurationManager config)
+        IConfiguration config)
     {
-        services.AddMicrosoftIdentityWebApiAuthentication(config)
+        var sectionName = config.GetSection("ASPNETCORE_ENVIRONMENT").Value == "Production" ? "AzureProd" : "AzureAd";
+        services.AddMicrosoftIdentityWebApiAuthentication(config, configSectionName: sectionName)
             .EnableTokenAcquisitionToCallDownstreamApi()
             .AddMicrosoftGraph(config.GetSection("GraphClient"))
             .AddInMemoryTokenCaches();

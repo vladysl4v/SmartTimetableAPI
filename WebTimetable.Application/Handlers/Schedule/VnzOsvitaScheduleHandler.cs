@@ -23,8 +23,8 @@ namespace WebTimetable.Application.Handlers.Schedule
             string url = "https://vnz.osvita.net/BetaSchedule.asmx/GetScheduleDataX?" +
                          "aVuzID=11784&" +
                          "aStudyGroupID=\"" + groupId + "\"&" +
-                         "aStartDate=\"" + startDate.ToShortDateString() + "\"&" +
-                         "aEndDate=\"" + endDate.ToShortDateString() + "\"&" +
+                         "aStartDate=\"" + startDate.ToString("dd.MM.yyyy") + "\"&" +
+                         "aEndDate=\"" + endDate.ToString("dd.MM.yyyy") + "\"&" +
                          "aStudyTypeID=null";
 
             Dictionary<string, List<Lesson>>? response;
@@ -39,7 +39,7 @@ namespace WebTimetable.Application.Handlers.Schedule
                     "Error during loading/deserializing data from the VNZ Osvita.");
             }
 
-            if (response == null || !response.ContainsKey("d"))
+            if (response == null || !response.ContainsKey("d") || response["d"] == null)
             {
                 throw new InternalServiceException("Schedule data cannot be received.",
                     "Requested schedule cannot be properly deserialized.");
@@ -55,8 +55,8 @@ namespace WebTimetable.Application.Handlers.Schedule
 
         private Guid GenerateLessonIdentifier(Lesson lesson, string groupId)
         {
-            string compressedValue = lesson.Discipline + lesson.StudyType + groupId + lesson.Date.ToShortDateString() +
-                                        lesson.Start.ToShortTimeString();
+            string compressedValue = lesson.Discipline + lesson.StudyType + groupId + lesson.Date.ToString("dd.MM.yyyy") +
+                                        lesson.Start.ToString("HH:mm");
             var md5Hasher = MD5.Create();
             var data = md5Hasher.ComputeHash(Encoding.Default.GetBytes(compressedValue));
             return new Guid(data);

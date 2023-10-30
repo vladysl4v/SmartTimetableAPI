@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using WebTimetable.Application.Handlers.Events;
@@ -32,7 +33,8 @@ namespace WebTimetable.Application
             }
             else
             {
-                services.AddSingleton<IOutagesHandler, DtekOutagesHandler>();
+                //services.AddSingleton<IOutagesHandler, DtekOutagesHandler>();
+                services.AddSingleton<IOutagesHandler, FakeOutagesHandler>();
             }
 
             services.AddScoped<INotesService, NotesService>();
@@ -42,11 +44,12 @@ namespace WebTimetable.Application
             return services;
         }
 
-        public static IServiceCollection AddDatabaseContext(this IServiceCollection services, string connectionString)
+        public static IServiceCollection AddDatabaseContext(this IServiceCollection services, IConfiguration config)
         {
+            var connStringKey = config.GetSection("ASPNETCORE_ENVIRONMENT").Value == "Production" ? "DatabaseProd" : "Database";
             services.AddDbContext<DataContext>(options =>
             {
-                options.UseNpgsql(connectionString);
+                options.UseNpgsql(config.GetConnectionString(connStringKey));
             });
             services.AddScoped<IDbRepository, DbRepository>();
 
