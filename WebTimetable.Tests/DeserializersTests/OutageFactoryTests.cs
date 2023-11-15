@@ -8,7 +8,6 @@ namespace WebTimetable.Tests.DeserializersTests;
 
 public class OutageFactoryTests
 {
-    // SUT
     private readonly OutageFactory _outageFactory = new OutageFactory();
 
     [Fact]

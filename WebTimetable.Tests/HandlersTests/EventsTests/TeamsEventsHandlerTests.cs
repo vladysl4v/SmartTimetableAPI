@@ -6,6 +6,7 @@ using Microsoft.Kiota.Abstractions.Serialization;
 using Moq;
 using WebTimetable.Application.Handlers.Events;
 using WebTimetable.Application.Models;
+using WebTimetable.Tests.TestingUtilities;
 using Xunit;
 
 using GraphEvent = Microsoft.Graph.Models.Event;
@@ -21,7 +22,7 @@ public class TeamsEventsHandlerTests
     public async Task TeamsEventsHandler_ConfigureEvents_ReturnLessonWithEvents()
     {
         // Arrange
-        var mockTeamsHandler = CreateMockTeamsEventsHandler(new EventCollectionResponse
+        var mockGraphFactory = new MockGraphClientFactory().Setup(new EventCollectionResponse
         {
             Value = new List<GraphEvent>
             {
@@ -43,6 +44,7 @@ public class TeamsEventsHandlerTests
                 }
             }
         });
+        var teamsHandler = new TeamsEventsHandler(mockGraphFactory.CreateClient());
         
         var lessons = new List<Lesson>
         {
@@ -73,7 +75,7 @@ public class TeamsEventsHandlerTests
         };
 
         // Act
-        await mockTeamsHandler.ConfigureEvents(lessons);
+        await teamsHandler.ConfigureEvents(lessons);
 
         // Assert
         lessons.Should().HaveCount(3);
@@ -85,7 +87,8 @@ public class TeamsEventsHandlerTests
     public async Task TeamsEventHandler_ConfigureEvents_ReturnsListWithoutEvents()
     {
         // Arrange
-        var mockTeamsHandler = CreateMockTeamsEventsHandler(null);
+        var mockGraphFactory = new MockGraphClientFactory().Setup((EventCollectionResponse)null!);
+        var mockTeamsHandler = new TeamsEventsHandler(mockGraphFactory.CreateClient());
         
         var lessons = new List<Lesson>
         {
@@ -105,17 +108,5 @@ public class TeamsEventsHandlerTests
         // Assert
         lessons.Should().HaveCount(1);
         lessons.First().Events.Should().BeNull();
-    }
-
-    private TeamsEventsHandler CreateMockTeamsEventsHandler(EventCollectionResponse? requiredResponse)
-    {
-        var mockRequestAdapter = new Mock<IRequestAdapter>();
-
-        mockRequestAdapter
-            .Setup(a => a.SendAsync(It.IsAny<RequestInformation>(), It.IsAny<ParsableFactory<EventCollectionResponse>>(), It.IsAny<Dictionary<string, ParsableFactory<IParsable>>?>(),  It.IsAny<CancellationToken>()))
-            .ReturnsAsync(() => requiredResponse);
-        
-        var mockGraphServiceClient = new Mock<GraphServiceClient>(mockRequestAdapter.Object, "");
-        return new TeamsEventsHandler(mockGraphServiceClient.Object);
     }
 }

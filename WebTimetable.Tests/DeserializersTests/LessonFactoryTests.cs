@@ -8,7 +8,6 @@ namespace WebTimetable.Tests.DeserializersTests;
 
 public class LessonFactoryTests
 {
-    // SUT
     private readonly LessonFactory _lessonFactory = new LessonFactory();
 
     [Fact]
