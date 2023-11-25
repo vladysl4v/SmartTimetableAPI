@@ -16,9 +16,9 @@ namespace WebTimetable.Api.Controllers
         }
         
         [HttpPut(ApiEndpoints.Administration.UpdateOutages)]
-        public async Task<IActionResult> UpdateOutages(bool detailedLogging)
+        public async Task<IActionResult> UpdateOutages()
         {
-            var isSuccessful = await _command.ExecuteAsync(detailedLogging);
+            var isSuccessful = await _command.ExecuteAsync();
             return isSuccessful ? Ok() : Problem();
         }
     }

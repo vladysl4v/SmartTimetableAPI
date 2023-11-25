@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.HttpOverrides;
-using Moesif.Middleware;
 using WebTimetable.Api;
 using WebTimetable.Api.Middleware;
 using WebTimetable.Application;
@@ -25,7 +24,7 @@ if (builder.Environment.IsProduction())
     });
 }
 
-builder.Services.AddDatabaseContext(config);
+builder.Services.AddDatabaseContext(config, "Database");
 builder.Services.AddApplication();
 builder.Services.AddHttpClient();
 builder.Services.AddControllers();
@@ -33,11 +32,11 @@ builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.ConfigureMicrosoftIdentityAuthentication(config);
+builder.Services.ConfigureMicrosoftIdentityAuthentication(config, "AzureAd", "GraphClient");
 builder.Services.ConfigureVersioning();
 builder.Services.ConfigureCaching();
 builder.Services.ConfigureSwagger();
-builder.Services.ConfigureCors();
+builder.Services.ConfigureCors("PublicCORSPolicy");
 
 var app = builder.Build();
 
@@ -50,9 +49,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseMiddleware<ExceptionsMiddleware>();
-app.UseMiddleware<MoesifMiddleware>(new Dictionary<string, object> {
-    {"ApplicationId", config.GetValue<string>("MoesifKey")!}
-});
+app.UseMoesif("MoesifKey");
 
 app.UseCors("PublicCORSPolicy");
 app.UseOutputCache();

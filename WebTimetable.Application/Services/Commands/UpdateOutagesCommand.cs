@@ -11,10 +11,11 @@ namespace WebTimetable.Application.Services.Commands;
 
 public partial class UpdateOutagesCommand
 {
-    private readonly DateTime _lastUpdate = DateTime.MinValue;
     private readonly ILogger<UpdateOutagesCommand> _logger;
     private readonly IHttpClientFactory _httpFactory;
     private readonly IDbRepository _dbRepository;
+    
+    private DateTime _lastUpdate = DateTime.MinValue;
     
     public UpdateOutagesCommand(IDbRepository dbRepository, IHttpClientFactory httpFactory,
         ILogger<UpdateOutagesCommand> logger)
@@ -24,7 +25,7 @@ public partial class UpdateOutagesCommand
         _dbRepository = dbRepository;
     }
 
-    public async Task<bool> ExecuteAsync(bool detailedLogging)
+    public async Task<bool> ExecuteAsync()
     {
         if (!(DateTime.Now - _lastUpdate >= TimeSpan.FromHours(4)))
         {
@@ -35,10 +36,7 @@ public partial class UpdateOutagesCommand
         var source = "https://www.dtek-kem.com.ua/ua/shutdowns";
         var httpClient = _httpFactory.CreateClient();
         var request = await httpClient.GetStringAsync(source);
-        if (detailedLogging)
-        {
-            _logger.LogInformation(request);
-        }
+        
         var serializedData = OutagesRegex().Match(request).Value[7..^1];
         var serializedGroups = OutageGroupsRegex().Match(request).Value[12..];
 
@@ -52,10 +50,15 @@ public partial class UpdateOutagesCommand
         }
         
         var isSuccessful = await FillDatabase(outageGroups, outages);
+        if (isSuccessful)
+        {
+            _lastUpdate = DateTime.Now;
+        }
         return isSuccessful;
     }
     
-    private async Task<bool> FillDatabase(Dictionary<string, string> outageGroups, Dictionary<int, Dictionary<DayOfWeek, List<Outage>>> outages)
+    private async Task<bool> FillDatabase(Dictionary<string, string> outageGroups,
+        Dictionary<int, Dictionary<DayOfWeek, List<Outage>>> outages)
     {
         try
         {

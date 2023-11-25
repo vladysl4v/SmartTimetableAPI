@@ -3,16 +3,25 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
+using Moesif.Middleware;
 
 namespace WebTimetable.Api;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection ConfigureCors(this IServiceCollection services)
+    public static WebApplication UseMoesif(this WebApplication app, string key)
+    {
+        
+        app.UseMiddleware<MoesifMiddleware>(new Dictionary<string, object> {
+            {"ApplicationId", app.Configuration.GetValue<string>(key)!}
+        });
+        return app;
+    }
+    public static IServiceCollection ConfigureCors(this IServiceCollection services, string policyName)
     {
         services.AddCors(options =>
         {
-            options.AddPolicy(name: "PublicCORSPolicy", policy =>
+            options.AddPolicy(name: policyName, policy =>
             {
                 policy.AllowAnyHeader()
                     .AllowAnyMethod()
@@ -23,12 +32,11 @@ public static class ServiceCollectionExtensions
     }
 
     public static IServiceCollection ConfigureMicrosoftIdentityAuthentication(this IServiceCollection services,
-        IConfiguration config)
+        IConfiguration config, string azureSection, string graphSection)
     {
-        var sectionName = config.GetSection("ASPNETCORE_ENVIRONMENT").Value == "Production" ? "AzureProd" : "AzureAd";
-        services.AddMicrosoftIdentityWebApiAuthentication(config, configSectionName: sectionName)
+        services.AddMicrosoftIdentityWebApiAuthentication(config, configSectionName: azureSection)
             .EnableTokenAcquisitionToCallDownstreamApi()
-            .AddMicrosoftGraph(config.GetSection("GraphClient"))
+            .AddMicrosoftGraph(config.GetSection(graphSection))
             .AddInMemoryTokenCaches();
 
         return services;

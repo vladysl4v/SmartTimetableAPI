@@ -16,7 +16,6 @@ namespace WebTimetable.Application
 {
     public static class ApplicationServicesExtensions
     {
-
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
             services.AddScoped<IUsersService, UsersService>();
@@ -32,12 +31,12 @@ namespace WebTimetable.Application
             return services;
         }
 
-        public static IServiceCollection AddDatabaseContext(this IServiceCollection services, IConfiguration config)
+        public static IServiceCollection AddDatabaseContext(this IServiceCollection services, IConfiguration config,
+            string connectionStringName)
         {
-            var connStringKey = config.GetSection("ASPNETCORE_ENVIRONMENT").Value == "Production" ? "DatabaseProd" : "Database";
             services.AddDbContext<DataContext>(options =>
             {
-                options.UseNpgsql(config.GetConnectionString(connStringKey));
+                options.UseNpgsql(config.GetConnectionString(connectionStringName));
             });
             services.AddScoped<IDbRepository, DbRepository>();
 
