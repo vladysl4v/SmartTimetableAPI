@@ -36,6 +36,7 @@ builder.Services.ConfigureMicrosoftIdentityAuthentication(config, "AzureAd", "Gr
 builder.Services.ConfigureVersioning();
 builder.Services.ConfigureCaching();
 builder.Services.ConfigureSwagger();
+builder.Services.ConfigureValidation();
 builder.Services.ConfigureCors("PublicCORSPolicy");
 
 var app = builder.Build();

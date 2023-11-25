@@ -35,8 +35,7 @@ public static class ScheduleMappingExtensions
                 AuthorName = note.AuthorName,
                 LessonId = note.LessonId,
                 Message = note.Message,
-                CreationDate = note.CreationDate,
-                IsAuthor = note.IsAuthor
+                CreationDate = note.CreationDate
             }).ToList(),
 
             Meetings = lesson.Events?.Select(meeting => new EventItem

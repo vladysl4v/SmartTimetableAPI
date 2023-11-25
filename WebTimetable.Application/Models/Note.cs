@@ -7,6 +7,5 @@ public class Note
     public string Message { get; set; }
     public Guid AuthorId { get; set; }
     public string AuthorName { get; set; }
-    public bool IsAuthor { get; set; }
     public DateTime CreationDate { get; set; }
 }

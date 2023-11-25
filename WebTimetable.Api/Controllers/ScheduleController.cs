@@ -33,16 +33,7 @@ namespace WebTimetable.Api.Controllers
         [HttpGet(ApiEndpoints.Schedule.GetAnonymousSchedule)]
         public async Task<IActionResult> GetAnonymousSchedule([FromQuery] AnonymousScheduleRequest request, CancellationToken token)
         {
-            if (!DateTime.TryParse(request.Date, out var dateTime))
-            {
-                return BadRequest(
-                    new ValidationProblemDetails(new Dictionary<string, string[]>
-                        {
-                            { "date", new[] { "The given value cannot be converted to DateTime." } }
-                        }));
-            }
-
-            var lessons = await _scheduleService.GetGuestSchedule(dateTime, request.StudyGroup, request.OutageGroup, token);
+            var lessons = await _scheduleService.GetGuestSchedule(DateTime.Parse(request.Date), request.StudyGroup, request.OutageGroup, token);
 
             var response = lessons.MapToScheduleResponse();
             return Ok(response);
@@ -56,16 +47,9 @@ namespace WebTimetable.Api.Controllers
         [HttpGet(ApiEndpoints.Schedule.GetPersonalSchedule)]
         public async Task<IActionResult> GetPersonalSchedule([FromQuery] PersonalScheduleRequest request, CancellationToken token)
         {
-            if (!DateTime.TryParse(request.Date, out var dateTime))
-            {
-                return BadRequest(
-                    new ValidationProblemDetails(new Dictionary<string, string[]>
-                    {
-                        { "Date", new[] { "The given value cannot be converted to DateTime." } }
-                    }));
-            }
+            
             var user = await _usersService.GetUser(token);
-            var lessons = await _scheduleService.GetPersonalSchedule(dateTime, request.StudyGroup, request.OutageGroup, user, token);
+            var lessons = await _scheduleService.GetPersonalSchedule(DateTime.Parse(request.Date), request.StudyGroup, request.OutageGroup, user, token);
             if (lessons is null)
             {
                 return Forbid();

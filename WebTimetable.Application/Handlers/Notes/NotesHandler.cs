@@ -34,7 +34,6 @@ public class NotesHandler : INotesHandler
             NoteId = x.NoteId,
             Message = x.Message,
             AuthorName = x.Author.FullName,
-            IsAuthor = x.AuthorId == userId
         }).ToList();
     }
 }

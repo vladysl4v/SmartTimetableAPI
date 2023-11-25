@@ -26,7 +26,6 @@ public static class NotesMappingExtensions
             Message = note.Message,
             AuthorId = note.Author.Id,
             AuthorName = note.Author.FullName,
-	        IsAuthor = note.Author.Id == userId,
             CreationDate = note.CreationDate
         };
     }

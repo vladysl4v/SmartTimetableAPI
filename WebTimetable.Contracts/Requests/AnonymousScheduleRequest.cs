@@ -8,7 +8,7 @@ public class AnonymousScheduleRequest
     public required string StudyGroup { get; init; }
 
     /// <summary>
-    /// Number of outage group, or leave zero to skip.
+    /// Number of outage group, or leave empty to skip.
     /// </summary>
     public required string OutageGroup { get; init; }
 

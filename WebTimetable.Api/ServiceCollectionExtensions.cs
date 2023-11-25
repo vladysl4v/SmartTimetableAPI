@@ -1,9 +1,11 @@
 ﻿using Asp.Versioning;
-
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
 using Moesif.Middleware;
+using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
+using WebTimetable.Api.Validators;
 
 namespace WebTimetable.Api;
 
@@ -31,6 +33,13 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+    public static IServiceCollection ConfigureValidation(this IServiceCollection services)
+    {
+        services.AddValidatorsFromAssemblyContaining<AddNoteValidator>();
+        services.AddFluentValidationAutoValidation();
+        return services;
+    }
+    
     public static IServiceCollection ConfigureMicrosoftIdentityAuthentication(this IServiceCollection services,
         IConfiguration config, string azureSection, string graphSection)
     {
