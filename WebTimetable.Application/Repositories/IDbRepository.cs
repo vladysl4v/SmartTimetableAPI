@@ -14,7 +14,9 @@ namespace WebTimetable.Application.Repositories
 
         void Remove<T>(T entity) where T : class;
         void RemoveRange<T>(IEnumerable<T> entities) where T : class;
-
+        
+        Task<T?> FindAsync<T>(params object?[]? objects) where T : class;
+        
         void Update<T>(T entity) where T : class;
         void UpdateRange<T>(IEnumerable<T> entities) where T : class;
 

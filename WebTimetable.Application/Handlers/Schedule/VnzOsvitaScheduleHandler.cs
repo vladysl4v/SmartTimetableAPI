@@ -17,14 +17,15 @@ namespace WebTimetable.Application.Handlers.Schedule
         {
             _httpFactory = httpFactory;
         }
-        public async Task<List<Lesson>> GetSchedule(DateTime startDate, DateTime endDate, string groupId, CancellationToken token)
+        public async Task<List<Lesson>> GetSchedule(DateTime date, string groupId, CancellationToken token)
         {
             var httpClient = _httpFactory.CreateClient();
+            var formattedDate = date.ToString("dd.MM.yyyy");
             string url = "https://vnz.osvita.net/BetaSchedule.asmx/GetScheduleDataX?" +
                          "aVuzID=11784&" +
                          "aStudyGroupID=\"" + groupId + "\"&" +
-                         "aStartDate=\"" + startDate.ToString("dd.MM.yyyy") + "\"&" +
-                         "aEndDate=\"" + endDate.ToString("dd.MM.yyyy") + "\"&" +
+                         "aStartDate=\"" + formattedDate + "\"&" +
+                         "aEndDate=\"" + formattedDate + "\"&" +
                          "aStudyTypeID=null";
 
             Dictionary<string, List<Lesson>>? response;

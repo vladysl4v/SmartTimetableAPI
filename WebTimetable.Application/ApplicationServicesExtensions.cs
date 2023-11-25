@@ -9,34 +9,21 @@ using WebTimetable.Application.Handlers.Schedule;
 using WebTimetable.Application.Repositories;
 using WebTimetable.Application.Services;
 using WebTimetable.Application.Services.Abstractions;
+using WebTimetable.Application.Services.Commands;
 
 
 namespace WebTimetable.Application
 {
     public static class ApplicationServicesExtensions
     {
-        public static async Task InitializeApplicationAsync(this IServiceProvider services)
-        {
-            await services.GetRequiredService<IOutagesHandler>().InitializeOutages();
-        }
 
-        public static IServiceCollection AddApplication(this IServiceCollection services, bool isDevelopment)
+        public static IServiceCollection AddApplication(this IServiceCollection services)
         {
             services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<INotesHandler, NotesHandler>();
             services.AddScoped<IEventsHandler, TeamsEventsHandler>();
             services.AddScoped<IScheduleHandler, VnzOsvitaScheduleHandler>();
-
-            if (isDevelopment)
-            {
-                services.AddSingleton<IOutagesHandler, FakeOutagesHandler>();
-            }
-            else
-            {
-                //services.AddSingleton<IOutagesHandler, DtekOutagesHandler>();
-                services.AddSingleton<IOutagesHandler, FakeOutagesHandler>();
-            }
-
+            services.AddScoped<IOutagesHandler, DtekOutagesHandler>();
             services.AddScoped<INotesService, NotesService>();
             services.AddScoped<IScheduleService, ScheduleService>();
             services.AddScoped<ISettingsService, SettingsService>();

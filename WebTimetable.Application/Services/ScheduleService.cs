@@ -19,8 +19,7 @@ public class ScheduleService : IScheduleService
     public ScheduleService(IEventsHandler events,
         IScheduleHandler schedule,
         IOutagesHandler outages,
-        INotesHandler notes,
-        IUsersService users)
+        INotesHandler notes)
     {
         _schedule = schedule;
         _outages = outages;
@@ -28,30 +27,30 @@ public class ScheduleService : IScheduleService
         _notes = notes;
     }
 
-    public async Task<List<Lesson>?> GetPersonalSchedule(DateTime start, DateTime end, string studyGroup, int outageGroup, UserEntity? user, CancellationToken token)
+    public async Task<List<Lesson>?> GetPersonalSchedule(DateTime date, string studyGroup, string outageGroup, UserEntity? user, CancellationToken token)
     {
         if (user is null)
         {
             return null;
         }
-        var lessons = await _schedule.GetSchedule(start, end, studyGroup, token);
+        var lessons = await _schedule.GetSchedule(date, studyGroup, token);
 
         _notes.ConfigureNotes(lessons, user.Group, user.Id);
         await _events.ConfigureEvents(lessons);
-        if (outageGroup != 0)
+        if (outageGroup != string.Empty)
         {
-            _outages.ConfigureOutages(lessons, outageGroup);
+            await _outages.ConfigureOutagesAsync(lessons, outageGroup, "Kyiv");
         }
         
         return lessons;
     }
 
-    public async Task<List<Lesson>> GetGuestSchedule(DateTime start, DateTime end, string studyGroup, int outageGroup, CancellationToken token)
+    public async Task<List<Lesson>> GetGuestSchedule(DateTime date, string studyGroup, string outageGroup, CancellationToken token)
     {
-        var lessons = await _schedule.GetSchedule(start, end, studyGroup, token);
-        if (outageGroup != 0)
+        var lessons = await _schedule.GetSchedule(date, studyGroup, token);
+        if (outageGroup != string.Empty)
         {
-            _outages.ConfigureOutages(lessons, outageGroup);
+            await _outages.ConfigureOutagesAsync(lessons, outageGroup, "Kyiv");
         }
 
         return lessons;

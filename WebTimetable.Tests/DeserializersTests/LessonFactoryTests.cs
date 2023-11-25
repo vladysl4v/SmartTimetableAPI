@@ -1,8 +1,6 @@
-using FluentAssertions;
 using Newtonsoft.Json;
 using WebTimetable.Application.Deserializers;
 using WebTimetable.Application.Models;
-using Xunit;
 
 namespace WebTimetable.Tests.DeserializersTests;
 

@@ -10,15 +10,11 @@ public class PersonalScheduleRequest
     /// <summary>
     /// Number of outage group, or leave zero to skip.
     /// </summary>
-    public required int OutageGroup { get; init; }
+    public required string OutageGroup { get; init; }
 
     /// <summary>
     /// The date from which to start the schedule.
     /// </summary>
-    public required string StartDate { get; init; }
+    public required string Date { get; init; }
 
-    /// <summary>
-    /// The date until which to look for the schedule.
-    /// </summary>
-    public required string EndDate { get; init; }
 }

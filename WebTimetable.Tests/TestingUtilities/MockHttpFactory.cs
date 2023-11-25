@@ -1,6 +1,5 @@
 using System.Linq.Expressions;
 using System.Net;
-using Moq;
 using Moq.Protected;
 
 namespace WebTimetable.Tests.TestingUtilities;

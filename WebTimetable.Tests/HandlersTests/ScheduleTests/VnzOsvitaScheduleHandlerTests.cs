@@ -1,9 +1,7 @@
-using FluentAssertions;
 using FluentAssertions.Extensions;
 using WebTimetable.Application.Exceptions;
 using WebTimetable.Application.Handlers.Schedule;
 using WebTimetable.Tests.TestingUtilities;
-using Xunit;
 
 namespace WebTimetable.Tests.HandlersTests.ScheduleTests;
 
@@ -27,7 +25,7 @@ public class VnzOsvitaScheduleHandlerTests
         // Arrange
         var expectedLessons = new List<string> { "Physics", "Math" };
         // Act
-        var result = await _vnzOsvitaSchedule.GetSchedule(1.November(2011), 1.November(2011), "NNN", default);
+        var result = await _vnzOsvitaSchedule.GetSchedule(1.November(2011), "NNN", default);
         
         // Assert
         result.Should().NotBeNull();
@@ -39,7 +37,7 @@ public class VnzOsvitaScheduleHandlerTests
     public async Task VnzOsvitaScheduleHandler_GetSchedule_ReturnEmptyList()
     {
         // Act
-        var result = await _vnzOsvitaSchedule.GetSchedule(2.December(2012), 2.December(2012), "NNN", default);
+        var result = await _vnzOsvitaSchedule.GetSchedule(2.December(2012), "NNN", default);
         
         // Assert
         result.Should().NotBeNull();
@@ -50,7 +48,7 @@ public class VnzOsvitaScheduleHandlerTests
     public async Task VnzOsvitaScheduleHandler_GetSchedule_ThrowsException()
     {
         // Act
-        var act = async () => await _vnzOsvitaSchedule.GetSchedule(10.October(2010), 10.October(2010), "NNN", default);
+        var act = async () => await _vnzOsvitaSchedule.GetSchedule(10.October(2010), "NNN", default);
         
         // Assert
         await act.Should().ThrowAsync<InternalServiceException>();

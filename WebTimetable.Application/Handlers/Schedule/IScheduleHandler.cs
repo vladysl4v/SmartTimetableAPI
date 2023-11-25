@@ -5,6 +5,6 @@ namespace WebTimetable.Application.Handlers.Schedule
 {
     public interface IScheduleHandler
     {
-        public Task<List<Lesson>> GetSchedule(DateTime startDate, DateTime endDate, string group, CancellationToken token);
+        public Task<List<Lesson>> GetSchedule(DateTime date, string group, CancellationToken token);
     }
 }

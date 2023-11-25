@@ -1,81 +1,34 @@
-﻿using System.Text.RegularExpressions;
-
-using Newtonsoft.Json;
-
-using WebTimetable.Application.Deserializers;
-using WebTimetable.Application.Exceptions;
+﻿using WebTimetable.Application.Entities;
 using WebTimetable.Application.Models;
+using WebTimetable.Application.Repositories;
 
 
 namespace WebTimetable.Application.Handlers.Outages
 {
     public class DtekOutagesHandler : IOutagesHandler
     {
-        private Dictionary<int, Dictionary<DayOfWeek, List<Outage>>> _outages;
-        private Dictionary<string, string> _outageGroups;
-
-        private readonly IHttpClientFactory _httpFactory;
-        public DtekOutagesHandler(IHttpClientFactory httpFactory)
+        private readonly IDbRepository _dbRepository;
+        public DtekOutagesHandler(IDbRepository dbRepository)
         {
-            _httpFactory = httpFactory;
+            _dbRepository = dbRepository;
         }
 
-        public void ConfigureOutages(IEnumerable<Lesson> schedule, int outageGroup)
+        public async Task ConfigureOutagesAsync(IEnumerable<Lesson> schedule, string outageGroup, string city)
         {
             foreach (var lesson in schedule)
             {
-                lesson.Outages = _outages[outageGroup][lesson.Date.DayOfWeek]
-                    .Where(x => IsIntervalsIntersects(lesson.Start, lesson.End, x.Start, x.End)).ToList();
+                var outages = await _dbRepository.FindAsync<OutageEntity>("Kyiv", outageGroup, lesson.Date.DayOfWeek);
+                lesson.Outages =
+                    outages?.Outages.Where(x => IsIntervalsIntersects(x.Start, x.End, lesson.Start, lesson.End))
+                        .ToList() ?? new List<Outage>();
             }
         }
 
-        public Dictionary<string, string> GetOutageGroups()
+        public List<string> GetOutageGroups(string city)
         {
-            return _outageGroups;
+            return _dbRepository.Get<OutageEntity>(x => x.City == "Kyiv").Select(y => y.Group).Distinct().ToList();
         }
-
-        public async Task InitializeOutages()
-        {
-            string source = "https://www.dtek-kem.com.ua/ua/shutdowns";
-            var httpClient = _httpFactory.CreateClient();
-            try
-            {
-                var request = await httpClient.GetStringAsync(source);
-                var serializedData = Regex.Match(request, "\"data\":{.*").Value[7..^1];
-                var serializedGroups = Regex.Match(request, "\"sch_names\":{.*?}").Value[12..];
-
-                _outageGroups = DeserializeGroups(serializedGroups);
-                _outages = DeserializeObject(serializedData);
-            }
-            catch (Exception ex)
-            {
-                throw new InternalServiceException(ex, "Outages data cannot be received.",
-                    "Error during loading/deserializing data from DTEK-KEM.");
-            }
-        }
-
-        private Dictionary<string, string> DeserializeGroups(string serializedGroups)
-        {
-            return JsonConvert.DeserializeObject<Dictionary<string, string>>(serializedGroups)!;
-        }
-
-        private Dictionary<int, Dictionary<DayOfWeek, List<Outage>>> DeserializeObject(string serializedData)
-        {
-            var allGroups =
-                JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, List<Outage>>>>(serializedData,
-                    new OutageFactory());
-
-            return allGroups.ToDictionary(group => int.Parse(group.Key),
-                    group => group.Value.ToDictionary(item => ConvertToDayOfWeek(item.Key),
-                        item => item.Value.Where(x => x.IsDefinite is not null).ToList()));
-        }
-
-        private DayOfWeek ConvertToDayOfWeek(string value)
-        {
-            var integer = int.Parse(value);
-            return integer == 7 ? DayOfWeek.Sunday : (DayOfWeek)integer;
-        }
-
+        
         private bool IsIntervalsIntersects(TimeOnly start1, TimeOnly end1, TimeOnly start2, TimeOnly end2)
         {
             var isStartIntersects = start2 <= start1 && start1 < end2;

@@ -1,7 +1,6 @@
 using Microsoft.Graph;
 using Microsoft.Kiota.Abstractions;
 using Microsoft.Kiota.Abstractions.Serialization;
-using Moq;
 
 namespace WebTimetable.Tests.TestingUtilities;
 

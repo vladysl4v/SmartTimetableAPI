@@ -33,6 +33,11 @@ namespace WebTimetable.Application.Repositories
             await _context.Set<T>().AddRangeAsync(newEntities);
         }
 
+        public async Task<T?> FindAsync<T>(params object?[]? objects) where T : class
+        {
+            return await _context.Set<T>().FindAsync(objects);
+        }
+        
         public void Remove<T>(T entity) where T : class
         {
             _context.Set<T>().Remove(entity);

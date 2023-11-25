@@ -33,18 +33,16 @@ namespace WebTimetable.Api.Controllers
         [HttpGet(ApiEndpoints.Schedule.GetAnonymousSchedule)]
         public async Task<IActionResult> GetAnonymousSchedule([FromQuery] AnonymousScheduleRequest request, CancellationToken token)
         {
-            if (!DateTime.TryParse(request.StartDate, out var start) ||
-                !DateTime.TryParse(request.EndDate, out var end))
+            if (!DateTime.TryParse(request.Date, out var dateTime))
             {
                 return BadRequest(
                     new ValidationProblemDetails(new Dictionary<string, string[]>
                         {
-                            { "startDate", new[] { "The given value cannot be converted to DateTime." } },
-                            { "endDate", new[] { "The given value cannot be converted to DateTime." } }
+                            { "date", new[] { "The given value cannot be converted to DateTime." } }
                         }));
             }
 
-            var lessons = await _scheduleService.GetGuestSchedule(start, end, request.StudyGroup, request.OutageGroup, token);
+            var lessons = await _scheduleService.GetGuestSchedule(dateTime, request.StudyGroup, request.OutageGroup, token);
 
             var response = lessons.MapToScheduleResponse();
             return Ok(response);
@@ -58,18 +56,16 @@ namespace WebTimetable.Api.Controllers
         [HttpGet(ApiEndpoints.Schedule.GetPersonalSchedule)]
         public async Task<IActionResult> GetPersonalSchedule([FromQuery] PersonalScheduleRequest request, CancellationToken token)
         {
-            if (!DateTime.TryParse(request.StartDate, out var start) ||
-                !DateTime.TryParse(request.EndDate, out var end))
+            if (!DateTime.TryParse(request.Date, out var dateTime))
             {
                 return BadRequest(
                     new ValidationProblemDetails(new Dictionary<string, string[]>
                     {
-                        { "startDate", new[] { "The given value cannot be converted to DateTime." } },
-                        { "endDate", new[] { "The given value cannot be converted to DateTime." } }
+                        { "Date", new[] { "The given value cannot be converted to DateTime." } }
                     }));
             }
             var user = await _usersService.GetUser(token);
-            var lessons = await _scheduleService.GetPersonalSchedule(start, end, request.StudyGroup, request.OutageGroup, user, token);
+            var lessons = await _scheduleService.GetPersonalSchedule(dateTime, request.StudyGroup, request.OutageGroup, user, token);
             if (lessons is null)
             {
                 return Forbid();

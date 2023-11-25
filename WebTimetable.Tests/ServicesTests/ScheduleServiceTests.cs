@@ -1,5 +1,3 @@
-using FluentAssertions;
-using Moq;
 using WebTimetable.Application.Entities;
 using WebTimetable.Application.Handlers.Events;
 using WebTimetable.Application.Handlers.Notes;
@@ -7,7 +5,6 @@ using WebTimetable.Application.Handlers.Outages;
 using WebTimetable.Application.Handlers.Schedule;
 using WebTimetable.Application.Models;
 using WebTimetable.Application.Services;
-using Xunit;
 
 namespace WebTimetable.Tests.ServicesTests;
 
@@ -18,11 +15,11 @@ public class ScheduleServiceTests
     {
         // Arrange
         var mockScheduleHandler = new Mock<IScheduleHandler>();
-        mockScheduleHandler.Setup(x => x.GetSchedule(It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<string>(),
+        mockScheduleHandler.Setup(x => x.GetSchedule(It.IsAny<DateTime>(), It.IsAny<string>(),
             It.IsAny<CancellationToken>())).ReturnsAsync(new List<Lesson> { new(), new(), new() });
         
         var mockOutagesHandler = new Mock<IOutagesHandler>();
-        mockOutagesHandler.Setup(x => x.ConfigureOutages(It.IsAny<IEnumerable<Lesson>>(), It.IsAny<int>())).Verifiable();
+        mockOutagesHandler.Setup(x => x.ConfigureOutagesAsync(It.IsAny<IEnumerable<Lesson>>(), It.IsAny<string>(), It.IsAny<string>())).Verifiable();
         var mockEventsHandler = new Mock<IEventsHandler>();
         var mockNotesHandler = new Mock<INotesHandler>();
         
@@ -31,10 +28,10 @@ public class ScheduleServiceTests
         
         // Act
         var lessons =
-            await scheduleService.GetGuestSchedule(DateTime.Now, DateTime.Now, "Test", 1, CancellationToken.None);
+            await scheduleService.GetGuestSchedule(DateTime.Now, "Test", "Group 1", CancellationToken.None);
         
         // Assert
-        mockOutagesHandler.Verify(mr => mr.ConfigureOutages(It.IsAny<IEnumerable<Lesson>>(), It.IsAny<int>()), Times.Once());
+        mockOutagesHandler.Verify(mr => mr.ConfigureOutagesAsync(It.IsAny<IEnumerable<Lesson>>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once());
         lessons.Should().NotBeNull();
         lessons.Should().HaveCount(3);
     }
@@ -44,11 +41,11 @@ public class ScheduleServiceTests
     {
         // Arrange
         var mockScheduleHandler = new Mock<IScheduleHandler>();
-        mockScheduleHandler.Setup(x => x.GetSchedule(It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<string>(),
+        mockScheduleHandler.Setup(x => x.GetSchedule(It.IsAny<DateTime>(), It.IsAny<string>(),
             It.IsAny<CancellationToken>())).ReturnsAsync(new List<Lesson> { new(), new(), new() });
         
         var mockOutagesHandler = new Mock<IOutagesHandler>();
-        mockOutagesHandler.Setup(x => x.ConfigureOutages(It.IsAny<IEnumerable<Lesson>>(), It.IsAny<int>())).Verifiable();
+        mockOutagesHandler.Setup(x => x.ConfigureOutagesAsync(It.IsAny<IEnumerable<Lesson>>(), It.IsAny<string>(), It.IsAny<string>())).Verifiable();
         var mockEventsHandler = new Mock<IEventsHandler>();
         var mockNotesHandler = new Mock<INotesHandler>();
         
@@ -57,10 +54,10 @@ public class ScheduleServiceTests
         
         // Act
         var lessons =
-            await scheduleService.GetGuestSchedule(DateTime.Now, DateTime.Now, "Test", 0, CancellationToken.None);
+            await scheduleService.GetGuestSchedule(DateTime.Now, "Test", "", CancellationToken.None);
         
         // Assert
-        mockOutagesHandler.Verify(mr => mr.ConfigureOutages(It.IsAny<IEnumerable<Lesson>>(), It.IsAny<int>()), Times.Never());
+        mockOutagesHandler.Verify(mr => mr.ConfigureOutagesAsync(It.IsAny<IEnumerable<Lesson>>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never());
         lessons.Should().NotBeNull();
         lessons.Should().HaveCount(3);
     }
@@ -71,11 +68,11 @@ public class ScheduleServiceTests
         // Arrange
         var mockScheduleHandler = new Mock<IScheduleHandler>();
         
-        mockScheduleHandler.Setup(x => x.GetSchedule(It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<string>(),
+        mockScheduleHandler.Setup(x => x.GetSchedule(It.IsAny<DateTime>(), It.IsAny<string>(),
             It.IsAny<CancellationToken>())).ReturnsAsync(new List<Lesson> { new(), new(), new() });
         
         var mockOutagesHandler = new Mock<IOutagesHandler>();
-        mockOutagesHandler.Setup(x => x.ConfigureOutages(It.IsAny<IEnumerable<Lesson>>(), It.IsAny<int>())).Verifiable();
+        mockOutagesHandler.Setup(x => x.ConfigureOutagesAsync(It.IsAny<IEnumerable<Lesson>>(), It.IsAny<string>(), It.IsAny<string>())).Verifiable();
         
         var mockEventsHandler = new Mock<IEventsHandler>();
         mockEventsHandler.Setup(x => x.ConfigureEvents(It.IsAny<List<Lesson>>())).Verifiable();
@@ -87,11 +84,11 @@ public class ScheduleServiceTests
             mockOutagesHandler.Object, mockNotesHandler.Object);
         
         // Act
-        var lessons = await scheduleService.GetPersonalSchedule(DateTime.Now, DateTime.Now, "Test", 1, new UserEntity(),
+        var lessons = await scheduleService.GetPersonalSchedule(DateTime.Now, "Test", "Group 1", new UserEntity(),
             CancellationToken.None);
 
         // Assert
-        mockOutagesHandler.Verify(x => x.ConfigureOutages(It.IsAny<IEnumerable<Lesson>>(), It.IsAny<int>()), Times.Once());
+        mockOutagesHandler.Verify(x => x.ConfigureOutagesAsync(It.IsAny<IEnumerable<Lesson>>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once());
         mockEventsHandler.Verify(x => x.ConfigureEvents(It.IsAny<List<Lesson>>()), Times.Once());
         mockNotesHandler.Verify(x => x.ConfigureNotes(It.IsAny<List<Lesson>>(), It.IsAny<string>(), It.IsAny<Guid>()), Times.Once());
         lessons.Should().NotBeNull();
@@ -104,11 +101,11 @@ public class ScheduleServiceTests
         // Arrange
         var mockScheduleHandler = new Mock<IScheduleHandler>();
         
-        mockScheduleHandler.Setup(x => x.GetSchedule(It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<string>(),
+        mockScheduleHandler.Setup(x => x.GetSchedule(It.IsAny<DateTime>(), It.IsAny<string>(),
             It.IsAny<CancellationToken>())).ReturnsAsync(new List<Lesson> { new(), new(), new() });
         
         var mockOutagesHandler = new Mock<IOutagesHandler>();
-        mockOutagesHandler.Setup(x => x.ConfigureOutages(It.IsAny<IEnumerable<Lesson>>(), It.IsAny<int>())).Verifiable();
+        mockOutagesHandler.Setup(x => x.ConfigureOutagesAsync(It.IsAny<IEnumerable<Lesson>>(), It.IsAny<string>(), It.IsAny<string>())).Verifiable();
         
         var mockEventsHandler = new Mock<IEventsHandler>();
         mockEventsHandler.Setup(x => x.ConfigureEvents(It.IsAny<List<Lesson>>())).Verifiable();
@@ -120,11 +117,11 @@ public class ScheduleServiceTests
             mockOutagesHandler.Object, mockNotesHandler.Object);
         
         // Act
-        var lessons = await scheduleService.GetPersonalSchedule(DateTime.Now, DateTime.Now, "Test", 0, new UserEntity(),
+        var lessons = await scheduleService.GetPersonalSchedule(DateTime.Now, "Test", "", new UserEntity(),
             CancellationToken.None);
 
         // Assert
-        mockOutagesHandler.Verify(x => x.ConfigureOutages(It.IsAny<IEnumerable<Lesson>>(), It.IsAny<int>()), Times.Never());
+        mockOutagesHandler.Verify(x => x.ConfigureOutagesAsync(It.IsAny<IEnumerable<Lesson>>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never());
         mockEventsHandler.Verify(x => x.ConfigureEvents(It.IsAny<List<Lesson>>()), Times.Once());
         mockNotesHandler.Verify(x => x.ConfigureNotes(It.IsAny<List<Lesson>>(), It.IsAny<string>(), It.IsAny<Guid>()), Times.Once());
         lessons.Should().NotBeNull();
@@ -145,7 +142,7 @@ public class ScheduleServiceTests
         
         // Act
         var lessons =
-            await scheduleService.GetPersonalSchedule(DateTime.Now, DateTime.Now, "Test", 1, user,
+            await scheduleService.GetPersonalSchedule(DateTime.Now, "Test", "Group 1", user,
                 CancellationToken.None);
 
         // Assert

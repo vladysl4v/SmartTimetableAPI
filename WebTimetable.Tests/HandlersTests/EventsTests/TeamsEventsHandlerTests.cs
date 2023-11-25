@@ -1,14 +1,7 @@
-using FluentAssertions;
-using Microsoft.Graph;
 using Microsoft.Graph.Models;
-using Microsoft.Kiota.Abstractions;
-using Microsoft.Kiota.Abstractions.Serialization;
-using Moq;
 using WebTimetable.Application.Handlers.Events;
 using WebTimetable.Application.Models;
 using WebTimetable.Tests.TestingUtilities;
-using Xunit;
-
 using GraphEvent = Microsoft.Graph.Models.Event;
 
 namespace WebTimetable.Tests.HandlersTests.EventsTests;

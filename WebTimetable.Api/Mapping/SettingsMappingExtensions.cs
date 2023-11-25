@@ -13,7 +13,7 @@ public static class SettingsMappingExtensions
         };
     }
 
-    public static OutageGroupsResponse MapToOutageGroupsResponse(this Dictionary<string, string> outageGroups)
+    public static OutageGroupsResponse MapToOutageGroupsResponse(this List<string> outageGroups)
     {
         return new OutageGroupsResponse
         {

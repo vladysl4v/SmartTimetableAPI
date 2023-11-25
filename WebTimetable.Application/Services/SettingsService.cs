@@ -17,9 +17,9 @@ public class SettingsService : ISettingsService
         _outagesHandler = outagesHandler;
     }
 
-    public Dictionary<string, string> GetOutageGroups()
+    public List<string> GetOutageGroups()
     {
-        return _outagesHandler.GetOutageGroups();
+        return _outagesHandler.GetOutageGroups("Kyiv");
     }
 
     public async Task<Dictionary<string, Dictionary<string, string>>> GetFilters(CancellationToken token)

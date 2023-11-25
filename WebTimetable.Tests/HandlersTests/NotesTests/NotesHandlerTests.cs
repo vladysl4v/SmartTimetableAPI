@@ -1,12 +1,9 @@
 using System.Linq.Expressions;
-using FluentAssertions;
 using Neleus.LambdaCompare;
-using Moq;
 using WebTimetable.Application.Entities;
 using WebTimetable.Application.Handlers.Notes;
 using WebTimetable.Application.Models;
 using WebTimetable.Application.Repositories;
-using Xunit;
 
 namespace WebTimetable.Tests.HandlersTests.NotesTests;
 

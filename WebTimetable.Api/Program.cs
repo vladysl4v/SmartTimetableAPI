@@ -26,8 +26,7 @@ if (builder.Environment.IsProduction())
 }
 
 builder.Services.AddDatabaseContext(config);
-builder.Services.AddApplication(builder.Environment.IsDevelopment());
-
+builder.Services.AddApplication();
 builder.Services.AddHttpClient();
 builder.Services.AddControllers();
 
@@ -69,7 +68,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-await app.Services.InitializeApplicationAsync();
 
 app.Run();

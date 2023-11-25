@@ -1,12 +1,9 @@
 using System.Linq.Expressions;
-using FluentAssertions;
 using Microsoft.Graph.Models;
-using Moq;
 using WebTimetable.Application.Entities;
 using WebTimetable.Application.Repositories;
 using WebTimetable.Application.Services;
 using WebTimetable.Tests.TestingUtilities;
-using Xunit;
 
 namespace WebTimetable.Tests.ServicesTests;
 

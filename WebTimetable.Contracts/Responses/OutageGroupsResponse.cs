@@ -2,6 +2,6 @@
 
 public class OutageGroupsResponse
 {
-    public required Dictionary<string, string> OutageGroups { get; init; }
+    public required List<string> OutageGroups { get; init; }
 }
 

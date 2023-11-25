@@ -5,8 +5,7 @@ namespace WebTimetable.Application.Handlers.Outages
 {
     public interface IOutagesHandler
     {
-        public Task InitializeOutages();
-        public Dictionary<string, string> GetOutageGroups();
-        public void ConfigureOutages(IEnumerable<Lesson> schedule, int outageGroup);
+        public List<string> GetOutageGroups(string city);
+        public Task ConfigureOutagesAsync(IEnumerable<Lesson> schedule, string outageGroup, string city);
     }
 }
