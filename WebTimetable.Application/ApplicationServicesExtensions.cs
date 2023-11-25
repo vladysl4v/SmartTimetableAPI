@@ -40,6 +40,7 @@ namespace WebTimetable.Application
             services.AddScoped<INotesService, NotesService>();
             services.AddScoped<IScheduleService, ScheduleService>();
             services.AddScoped<ISettingsService, SettingsService>();
+            services.AddScoped<UpdateOutagesCommand>();
 
             return services;
         }
