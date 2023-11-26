@@ -3,7 +3,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 
-using WebTimetable.Api.Mapping;
 using WebTimetable.Application.Services.Abstractions;
 using WebTimetable.Contracts.Requests;
 using WebTimetable.Contracts.Responses;
@@ -26,9 +25,10 @@ namespace WebTimetable.Api.Controllers
         [HttpGet(ApiEndpoints.Settings.GetOutageGroups)]
         public IActionResult GetOutageGroups()
         {
-            var outageGroups = _settingsService.GetOutageGroups();
-            var response = outageGroups.MapToOutageGroupsResponse();
-
+            var response = new OutageGroupsResponse
+            {
+                OutageGroups = _settingsService.GetOutageGroups()
+            };
             return Ok(response);
         }
 
@@ -38,9 +38,10 @@ namespace WebTimetable.Api.Controllers
         [HttpGet(ApiEndpoints.Settings.GetFilters)]
         public async Task<IActionResult> GetFilters(CancellationToken token)
         {
-            var filters = await _settingsService.GetFilters(token);
-            var response = filters.MapToFiltersResponse();
-
+            var response = new FiltersResponse
+            {
+                Filters = await _settingsService.GetFilters(token)
+            };
             return Ok(response);
         }
 
@@ -51,9 +52,10 @@ namespace WebTimetable.Api.Controllers
         [HttpGet(ApiEndpoints.Settings.GetStudyGroups)]
         public async Task<IActionResult> GetStudyGroups([FromQuery] StudyGroupsRequest request, CancellationToken token)
         {
-            var studyGroups = await _settingsService.GetStudyGroups(request.Faculty, request.Course, request.EducationForm, token);
-            var response = studyGroups.MapToStudyGroupsResponse();
-
+            var response = new StudyGroupsResponse
+            {
+                StudyGroups = await _settingsService.GetStudyGroups(request.Faculty, request.Course, request.EducationForm, token)
+            };
             return Ok(response);
         }
     }

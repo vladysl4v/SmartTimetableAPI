@@ -2,5 +2,5 @@
 
 public class FiltersResponse
 {
-    public required Dictionary<string, Dictionary<string, string>> Filters { get; init; }
+    public Dictionary<string, Dictionary<string, string>> Filters { get; init; }
 }

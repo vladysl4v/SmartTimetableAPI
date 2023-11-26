@@ -4,8 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.Resource;
-
-using WebTimetable.Api.Mapping;
+using WebTimetable.Api.Components;
 using WebTimetable.Application.Services.Abstractions;
 using WebTimetable.Contracts.Requests;
 using WebTimetable.Contracts.Responses;
@@ -43,14 +42,15 @@ namespace WebTimetable.Api.Controllers
             {
                 return Forbid();
             }
-            var note = request.MapToNote(user);
+
+            var note = request.ToNoteEntity(user);
             var isSuccessful = await _notesService.AddNoteAsync(note, token);
             if (!isSuccessful)
             {
                 return Conflict();
             }
-
-            return Created(nameof(ScheduleController.GetPersonalSchedule), note.MapToNoteResponse(user.Id));
+            
+            return Created("", note.ToNoteResponse());
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]

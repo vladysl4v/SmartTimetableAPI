@@ -2,7 +2,7 @@
 
 public class OutageItem
 {
-    public required bool IsDefinite { get; init; }
-    public required TimeOnly Start { get; init; }
-    public required TimeOnly End { get; init; }
+    public bool IsDefinite { get; init; }
+    public TimeOnly Start { get; init; }
+    public TimeOnly End { get; init; }
 }

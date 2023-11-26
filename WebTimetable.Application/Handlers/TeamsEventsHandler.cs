@@ -2,7 +2,7 @@ using Microsoft.Graph;
 using Microsoft.Graph.Models;
 using WebTimetable.Application.Handlers.Abstractions;
 using WebTimetable.Application.Models;
-using EventModel = WebTimetable.Application.Models.Event;
+using Event = WebTimetable.Application.Models.Event;
 
 namespace WebTimetable.Application.Handlers
 {
@@ -35,7 +35,7 @@ namespace WebTimetable.Application.Handlers
                 return;
             }
 
-            var eventList = calendarData.Value.Select(anEvent => new EventModel
+            var eventList = calendarData.Value.Select(anEvent => new Event
             {
                 Title = anEvent.Subject,
                 Link = anEvent.OnlineMeeting?.JoinUrl,

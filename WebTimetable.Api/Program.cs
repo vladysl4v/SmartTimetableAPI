@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.HttpOverrides;
 using Quartz;
 using WebTimetable.Api;
-using WebTimetable.Api.Middleware;
+using WebTimetable.Api.Components;
 using WebTimetable.Application;
 
 var builder = WebApplication.CreateBuilder(args);

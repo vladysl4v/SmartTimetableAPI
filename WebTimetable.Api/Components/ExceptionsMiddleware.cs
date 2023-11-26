@@ -3,7 +3,7 @@ using WebTimetable.Application.Exceptions;
 using WebTimetable.Contracts.Responses;
 
 
-namespace WebTimetable.Api.Middleware;
+namespace WebTimetable.Api.Components;
 
 public class ExceptionsMiddleware
 {

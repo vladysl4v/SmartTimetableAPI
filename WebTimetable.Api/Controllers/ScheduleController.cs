@@ -4,8 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.Identity.Web.Resource;
-
-using WebTimetable.Api.Mapping;
+using WebTimetable.Api.Components;
 using WebTimetable.Application.Services.Abstractions;
 using WebTimetable.Contracts.Requests;
 using WebTimetable.Contracts.Responses;
@@ -34,8 +33,11 @@ namespace WebTimetable.Api.Controllers
         public async Task<IActionResult> GetAnonymousSchedule([FromQuery] AnonymousScheduleRequest request, CancellationToken token)
         {
             var lessons = await _scheduleService.GetGuestSchedule(DateTime.Parse(request.Date), request.StudyGroup, request.OutageGroup, token);
-
-            var response = lessons.MapToScheduleResponse();
+            
+            var response = new ScheduleResponse
+            {
+                Schedule = lessons.ToLessonItems()
+            };
             return Ok(response);
         }
 
@@ -55,7 +57,10 @@ namespace WebTimetable.Api.Controllers
                 return Forbid();
             }
 
-            var response = lessons.MapToScheduleResponse();
+            var response = new ScheduleResponse
+            {
+                Schedule = lessons.ToLessonItems()
+            };
             return Ok(response);
         }
     }

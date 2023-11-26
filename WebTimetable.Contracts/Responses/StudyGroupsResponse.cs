@@ -2,5 +2,5 @@
 
 public class StudyGroupsResponse
 {
-    public required Dictionary<string, string> StudyGroups { get; init; }
+    public Dictionary<string, string> StudyGroups { get; init; }
 }

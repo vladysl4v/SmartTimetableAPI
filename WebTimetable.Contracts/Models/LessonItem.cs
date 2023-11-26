@@ -2,16 +2,16 @@
 
 public class LessonItem
 {
-    public required Guid Id { get; init; }
-    public required DateOnly Date { get; init; }
-    public required TimeOnly Start { get; init; }
-    public required TimeOnly End { get; init; }
-    public required string Discipline { get; init; }
-    public required string StudyType { get; init; }
-    public required string Cabinet { get; init; }
-    public required string Teacher { get; init; }
-    public required string Subgroup { get; init; }
+    public Guid Id { get; init; }
+    public DateOnly Date { get; init; }
+    public TimeOnly Start { get; init; }
+    public TimeOnly End { get; init; }
+    public string Discipline { get; init; }
+    public string StudyType { get; init; }
+    public string Cabinet { get; init; }
+    public string Teacher { get; init; }
+    public string Subgroup { get; init; }
     public List<EventItem>? Meetings { get; set; }
-    public required List<NoteItem>? Notes { get; init; }
-    public required List<OutageItem> Outages { get; init; }
+    public List<NoteItem>? Notes { get; init; }
+    public List<OutageItem> Outages { get; init; }
 }

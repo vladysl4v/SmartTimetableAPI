@@ -4,5 +4,5 @@ namespace WebTimetable.Contracts.Responses;
 
 public class ScheduleResponse
 {
-    public required List<LessonItem> Schedule { get; init; }
+    public List<LessonItem> Schedule { get; init; }
 }

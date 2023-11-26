@@ -2,6 +2,6 @@
 
 public class OutageGroupsResponse
 {
-    public required List<string> OutageGroups { get; init; }
+    public List<string> OutageGroups { get; init; }
 }
 

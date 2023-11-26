@@ -23,6 +23,7 @@
     <PackageReference Include="Microsoft.Identity.Web.GraphServiceClient" Version="2.13.3" />
     <PackageReference Include="Moesif.Middleware" Version="1.3.25" />
     <PackageReference Include="Quartz.AspNetCore" Version="3.8.0" />
+    <PackageReference Include="Riok.Mapperly" Version="3.2.0" />
     <PackageReference Include="SharpGrip.FluentValidation.AutoValidation.Mvc" Version="1.3.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
@@ -30,10 +31,6 @@
   <ItemGroup>
     <ProjectReference Include="..\WebTimetable.Application\WebTimetable.Application.csproj" />
     <ProjectReference Include="..\WebTimetable.Contracts\WebTimetable.Contracts.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Mapping\" />
   </ItemGroup>
 
 </Project>
