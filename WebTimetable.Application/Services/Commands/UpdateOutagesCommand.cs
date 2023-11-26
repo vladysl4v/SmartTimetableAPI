@@ -2,6 +2,7 @@ using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Quartz;
 using WebTimetable.Application.Deserializers;
 using WebTimetable.Application.Entities;
 using WebTimetable.Application.Models;
@@ -9,13 +10,11 @@ using WebTimetable.Application.Repositories;
 
 namespace WebTimetable.Application.Services.Commands;
 
-public partial class UpdateOutagesCommand
+public partial class UpdateOutagesCommand : IJob
 {
     private readonly ILogger<UpdateOutagesCommand> _logger;
     private readonly IHttpClientFactory _httpFactory;
     private readonly IDbRepository _dbRepository;
-    
-    private DateTime _lastUpdate = DateTime.MinValue;
     
     public UpdateOutagesCommand(IDbRepository dbRepository, IHttpClientFactory httpFactory,
         ILogger<UpdateOutagesCommand> logger)
@@ -25,20 +24,22 @@ public partial class UpdateOutagesCommand
         _dbRepository = dbRepository;
     }
 
-    public async Task<bool> ExecuteAsync()
+    public async Task Execute(IJobExecutionContext context)
     {
-        if (!(DateTime.Now - _lastUpdate >= TimeSpan.FromHours(4)))
-        {
-            _logger.LogInformation("Outages are up to date.");
-            return false;
-        }
-        
         var source = "https://www.dtek-kem.com.ua/ua/shutdowns";
         var httpClient = _httpFactory.CreateClient();
         var request = await httpClient.GetStringAsync(source);
-        
-        var serializedData = OutagesRegex().Match(request).Value[7..^1];
-        var serializedGroups = OutageGroupsRegex().Match(request).Value[12..];
+        string serializedData, serializedGroups;
+        try
+        {
+            serializedData = OutagesRegex().Match(request).Value[7..^1];
+            serializedGroups = OutageGroupsRegex().Match(request).Value[12..];
+        }
+        catch
+        {
+            _logger.LogCritical("Outages or outage groups are empty.");
+            return;
+        }
 
         var outageGroups = DeserializeGroups(serializedGroups);
         var outages = DeserializeObject(serializedData);
@@ -46,15 +47,14 @@ public partial class UpdateOutagesCommand
         if (!outages.Any() || !outageGroups.Any())
         {
             _logger.LogCritical("Outages or outage groups are empty.");
-            return false;
+            return;
         }
         
         var isSuccessful = await FillDatabase(outageGroups, outages);
         if (isSuccessful)
         {
-            _lastUpdate = DateTime.Now;
+            _logger.LogInformation("Outages were successfully updated.");
         }
-        return isSuccessful;
     }
     
     private async Task<bool> FillDatabase(Dictionary<string, string> outageGroups,

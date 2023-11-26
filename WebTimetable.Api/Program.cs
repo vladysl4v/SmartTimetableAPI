@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.HttpOverrides;
+using Quartz;
 using WebTimetable.Api;
 using WebTimetable.Api.Middleware;
 using WebTimetable.Application;
-
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables(prefix: "CONFIG:");
@@ -38,6 +38,9 @@ builder.Services.ConfigureCaching();
 builder.Services.ConfigureSwagger();
 builder.Services.ConfigureValidation();
 builder.Services.ConfigureCors("PublicCORSPolicy");
+builder.Services.ConfigureCronJob("0 0 0/4 * * ?");
+
+builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
 var app = builder.Build();
 

@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
 using Moesif.Middleware;
+using Quartz;
 using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 using WebTimetable.Api.Validators;
+using WebTimetable.Application.Services.Commands;
 
 namespace WebTimetable.Api;
 
@@ -18,6 +20,20 @@ public static class ServiceCollectionExtensions
             {"ApplicationId", app.Configuration.GetValue<string>(key)!}
         });
         return app;
+    }
+
+    public static IServiceCollection ConfigureCronJob(this IServiceCollection services, string cronExpression)
+    {
+        services.AddQuartz(q =>
+        {
+            var jobKey = new JobKey(nameof(UpdateOutagesCommand));
+            q.AddJob<UpdateOutagesCommand>(x => x.WithIdentity(jobKey));
+            q.AddTrigger(x => x
+                .ForJob(jobKey)
+                .WithIdentity(nameof(UpdateOutagesCommand) + "Trigger")
+                .WithCronSchedule(cronExpression));
+        });
+        return services;
     }
     public static IServiceCollection ConfigureCors(this IServiceCollection services, string policyName)
     {

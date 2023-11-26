@@ -28,11 +28,4 @@ public static class ApiEndpoints
         public const string AddNote = $"{Base}";
         public const string RemoveNote = $"{Base}/{{id:guid}}";
     }
-
-    public static class Administration
-    {
-        private const string Base = $"{ApiBase}/administration";
-        
-        public const string UpdateOutages = $"{Base}/commands/update-outages";
-    }
 }
