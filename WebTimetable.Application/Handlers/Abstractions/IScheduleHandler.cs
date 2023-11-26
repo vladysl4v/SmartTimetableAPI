@@ -1,7 +1,6 @@
-﻿using WebTimetable.Application.Models;
+using WebTimetable.Application.Models;
 
-
-namespace WebTimetable.Application.Handlers.Schedule
+namespace WebTimetable.Application.Handlers.Abstractions
 {
     public interface IScheduleHandler
     {

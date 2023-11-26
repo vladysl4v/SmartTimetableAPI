@@ -1,7 +1,6 @@
-﻿using WebTimetable.Application.Models;
+using WebTimetable.Application.Models;
 
-
-namespace WebTimetable.Application.Handlers.Outages
+namespace WebTimetable.Application.Handlers.Abstractions
 {
     public interface IOutagesHandler
     {

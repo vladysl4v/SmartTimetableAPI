@@ -1,10 +1,10 @@
 using Microsoft.Graph.Models;
-using WebTimetable.Application.Handlers.Events;
+using WebTimetable.Application.Handlers;
 using WebTimetable.Application.Models;
 using WebTimetable.Tests.TestingUtilities;
 using GraphEvent = Microsoft.Graph.Models.Event;
 
-namespace WebTimetable.Tests.HandlersTests.EventsTests;
+namespace WebTimetable.Tests.HandlersTests;
 
 public class TeamsEventsHandlerTests
 {

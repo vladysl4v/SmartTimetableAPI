@@ -1,9 +1,9 @@
-﻿using WebTimetable.Application.Entities;
+using WebTimetable.Application.Entities;
+using WebTimetable.Application.Handlers.Abstractions;
 using WebTimetable.Application.Models;
 using WebTimetable.Application.Repositories;
 
-
-namespace WebTimetable.Application.Handlers.Outages
+namespace WebTimetable.Application.Handlers
 {
     public class DtekOutagesHandler : IOutagesHandler
     {

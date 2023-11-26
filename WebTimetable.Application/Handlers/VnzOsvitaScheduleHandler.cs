@@ -1,14 +1,12 @@
-﻿using System.Security.Cryptography;
+using System.Security.Cryptography;
 using System.Text;
-
 using Newtonsoft.Json;
-
 using WebTimetable.Application.Deserializers;
 using WebTimetable.Application.Exceptions;
+using WebTimetable.Application.Handlers.Abstractions;
 using WebTimetable.Application.Models;
 
-
-namespace WebTimetable.Application.Handlers.Schedule
+namespace WebTimetable.Application.Handlers
 {
     public class VnzOsvitaScheduleHandler : IScheduleHandler
     {

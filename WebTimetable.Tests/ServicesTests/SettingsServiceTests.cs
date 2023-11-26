@@ -1,7 +1,6 @@
 using System.Linq.Expressions;
 using WebTimetable.Application.Entities;
 using WebTimetable.Application.Exceptions;
-using WebTimetable.Application.Handlers.Outages;
 using WebTimetable.Application.Repositories;
 using WebTimetable.Application.Services;
 using WebTimetable.Tests.TestingUtilities;

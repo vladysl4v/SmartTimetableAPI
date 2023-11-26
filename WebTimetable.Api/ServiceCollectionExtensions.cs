@@ -90,7 +90,7 @@ public static class ServiceCollectionExtensions
             Contact = new OpenApiContact
             {
                 Name = "Vladyslav Arkhypenkov",
-                Email = "ArchipenkovV@krok.edu.ua",
+                Email = "arkhypenkov.corp@gmail.com",
                 Url = new Uri("https://github.com/vladysl4v/"),
             },
             License = new OpenApiLicense

@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 
 using WebTimetable.Application.Exceptions;
-using WebTimetable.Application.Handlers.Outages;
+using WebTimetable.Application.Handlers.Abstractions;
 using WebTimetable.Application.Services.Abstractions;
 
 

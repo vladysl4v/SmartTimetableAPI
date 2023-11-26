@@ -1,11 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-
-using WebTimetable.Application.Handlers.Events;
-using WebTimetable.Application.Handlers.Notes;
-using WebTimetable.Application.Handlers.Outages;
-using WebTimetable.Application.Handlers.Schedule;
+using WebTimetable.Application.Handlers;
+using WebTimetable.Application.Handlers.Abstractions;
 using WebTimetable.Application.Repositories;
 using WebTimetable.Application.Services;
 using WebTimetable.Application.Services.Abstractions;

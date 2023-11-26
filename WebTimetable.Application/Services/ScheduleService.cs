@@ -1,9 +1,6 @@
 ﻿using WebTimetable.Application.Entities;
+using WebTimetable.Application.Handlers.Abstractions;
 using WebTimetable.Application.Services.Abstractions;
-using WebTimetable.Application.Handlers.Schedule;
-using WebTimetable.Application.Handlers.Outages;
-using WebTimetable.Application.Handlers.Events;
-using WebTimetable.Application.Handlers.Notes;
 using WebTimetable.Application.Models;
 
 

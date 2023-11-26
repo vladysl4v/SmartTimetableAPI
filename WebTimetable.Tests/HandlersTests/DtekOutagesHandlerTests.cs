@@ -1,9 +1,8 @@
 using WebTimetable.Application.Exceptions;
-using WebTimetable.Application.Handlers.Outages;
 using WebTimetable.Application.Models;
 using WebTimetable.Tests.TestingUtilities;
 
-namespace WebTimetable.Tests.HandlersTests.OutagesTests;
+namespace WebTimetable.Tests.HandlersTests;
 /*
 public class DtekOutagesHandlerTests
 {

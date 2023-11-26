@@ -1,9 +1,9 @@
 using FluentAssertions.Extensions;
 using WebTimetable.Application.Exceptions;
-using WebTimetable.Application.Handlers.Schedule;
+using WebTimetable.Application.Handlers;
 using WebTimetable.Tests.TestingUtilities;
 
-namespace WebTimetable.Tests.HandlersTests.ScheduleTests;
+namespace WebTimetable.Tests.HandlersTests;
 
 public class VnzOsvitaScheduleHandlerTests
 {

@@ -1,9 +1,10 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 using WebTimetable.Application.Entities;
+using WebTimetable.Application.Handlers.Abstractions;
 using WebTimetable.Application.Models;
 using WebTimetable.Application.Repositories;
 
-namespace WebTimetable.Application.Handlers.Notes;
+namespace WebTimetable.Application.Handlers;
 
 public class NotesHandler : INotesHandler
 {

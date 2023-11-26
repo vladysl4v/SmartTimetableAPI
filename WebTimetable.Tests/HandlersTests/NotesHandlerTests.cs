@@ -1,11 +1,11 @@
 using System.Linq.Expressions;
 using Neleus.LambdaCompare;
 using WebTimetable.Application.Entities;
-using WebTimetable.Application.Handlers.Notes;
+using WebTimetable.Application.Handlers;
 using WebTimetable.Application.Models;
 using WebTimetable.Application.Repositories;
 
-namespace WebTimetable.Tests.HandlersTests.NotesTests;
+namespace WebTimetable.Tests.HandlersTests;
 
 public class NotesHandlerTests
 {

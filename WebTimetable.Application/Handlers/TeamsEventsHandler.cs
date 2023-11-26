@@ -1,11 +1,10 @@
-﻿using Microsoft.Graph;
+using Microsoft.Graph;
 using Microsoft.Graph.Models;
-
+using WebTimetable.Application.Handlers.Abstractions;
 using WebTimetable.Application.Models;
-
 using EventModel = WebTimetable.Application.Models.Event;
 
-namespace WebTimetable.Application.Handlers.Events
+namespace WebTimetable.Application.Handlers
 {
     public class TeamsEventsHandler : IEventsHandler
     {
