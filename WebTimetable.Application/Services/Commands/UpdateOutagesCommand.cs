@@ -28,7 +28,9 @@ public partial class UpdateOutagesCommand : IJob
     {
         var source = "https://www.dtek-kem.com.ua/ua/shutdowns";
         var httpClient = _httpFactory.CreateClient();
+        
         var request = await httpClient.GetStringAsync(source);
+        _logger.LogInformation(request);
         string serializedData, serializedGroups;
         try
         {
