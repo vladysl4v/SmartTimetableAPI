@@ -34,4 +34,12 @@ public class MockHttpFactory : IHttpClientFactory
                 ItExpr.IsAny<CancellationToken>()).ReturnsAsync(mockResponse);
         return this;
     }
+    
+    public MockHttpFactory SetupException<T>() where T : Exception, new()
+    {
+        _mockHttpMessageHandler.Protected()
+            .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>()).Throws<T>();
+        return this;
+    }
 }

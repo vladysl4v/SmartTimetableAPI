@@ -102,4 +102,21 @@ public class TeamsEventsHandlerTests
         lessons.Should().HaveCount(1);
         lessons.First().Events.Should().BeNull();
     }
+    
+    [Fact]
+    public async Task TeamsEventHandler_ConfigureEvents_ReturnsEmptyList()
+    {
+        // Arrange
+        var mockGraphFactory = new MockGraphClientFactory().Setup((EventCollectionResponse)null!);
+        var mockTeamsHandler = new TeamsEventsHandler(mockGraphFactory.CreateClient());
+        
+        var lessons = new List<Lesson>();
+        
+        // Act
+        var act = async () => await mockTeamsHandler.ConfigureEvents(lessons);
+        
+        // Assert
+        await act.Should().NotThrowAsync();
+        lessons.Should().BeEmpty();
+    }
 }

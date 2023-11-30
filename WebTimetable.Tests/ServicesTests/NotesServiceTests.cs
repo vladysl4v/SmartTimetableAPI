@@ -38,6 +38,29 @@ public class NotesServiceTests
         // Assert
         result.Should().BeTrue();
     }
+    
+    [Fact]
+    public async Task NotesService_AddNoteAsync_ReturnFalse()
+    {
+        // Arrange
+        var note = new NoteEntity
+        {
+            NoteId = Guid.NewGuid()
+        };
+        var dbRepositoryMock = new Mock<IDbRepository>();   
+        dbRepositoryMock
+            .Setup(x => x.Get(It.IsAny<Expression<Func<NoteEntity, bool>>>()))
+            .Returns(new List<NoteEntity> { note }.AsQueryable());
+        
+        var notesService = new NotesService(dbRepositoryMock.Object);
+
+        
+        // Act
+        var result = await notesService.AddNoteAsync(note, CancellationToken.None);
+
+        // Assert
+        result.Should().BeFalse();
+    }
 
     [Fact]
     public void NotesService_GetNoteById_ReturnTrue()

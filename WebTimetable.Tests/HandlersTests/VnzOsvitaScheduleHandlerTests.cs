@@ -1,3 +1,4 @@
+using System.Net;
 using FluentAssertions.Extensions;
 using WebTimetable.Application.Exceptions;
 using WebTimetable.Application.Handlers;
@@ -49,6 +50,20 @@ public class VnzOsvitaScheduleHandlerTests
     {
         // Act
         var act = async () => await _vnzOsvitaSchedule.GetSchedule(10.October(2010), "NNN", default);
+        
+        // Assert
+        await act.Should().ThrowAsync<InternalServiceException>();
+    }
+    
+    [Fact]
+    public async Task VnzOsvitaScheduleHandler_GetSchedule_ThrowsAnotherException()
+    {
+        // Arrange
+        var mockHttpFactory = new MockHttpFactory().SetupException<HttpRequestException>();
+        var scheduleHandler = new VnzOsvitaScheduleHandler(mockHttpFactory);
+        
+        // Act
+        var act = async () => await scheduleHandler.GetSchedule(10.October(2010), "NNN", default);
         
         // Assert
         await act.Should().ThrowAsync<InternalServiceException>();
