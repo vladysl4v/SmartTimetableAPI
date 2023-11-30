@@ -7,7 +7,7 @@ public class InternalServiceException : Exception
     private readonly string _callerName;
     private readonly string _errorDetails;
 
-    public string InformationForClient { get; init; }
+    public string InformationForClient { get; }
 
     public InternalServiceException(string infoForClient, string errorDetails, [CallerMemberName] string callerName = "") : base(errorDetails)
     {
@@ -16,7 +16,7 @@ public class InternalServiceException : Exception
         _errorDetails = errorDetails;
     }
 
-    public InternalServiceException(Exception innerExpection, string infoForClient, string errorDetails, [CallerMemberName] string callerName = "") : base(errorDetails, innerExpection)
+    public InternalServiceException(Exception innerException, string infoForClient, string errorDetails, [CallerMemberName] string callerName = "") : base(errorDetails, innerException)
     {
         InformationForClient = "Internal service error. " + infoForClient;
         _callerName = callerName;

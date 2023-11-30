@@ -1,7 +1,6 @@
 ﻿using System.Linq.Expressions;
 
 
-
 namespace WebTimetable.Application.Repositories
 {
     public class DbRepository : IDbRepository

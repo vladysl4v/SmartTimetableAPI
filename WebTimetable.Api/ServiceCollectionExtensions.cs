@@ -1,4 +1,5 @@
-﻿using Asp.Versioning;
+﻿using System.Text.RegularExpressions;
+using Asp.Versioning;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
@@ -13,6 +14,23 @@ namespace WebTimetable.Api;
 
 public static class ServiceCollectionExtensions
 {
+    public static ConfigurationManager ConfigureEnvironmentVariables(this ConfigurationManager configuration)
+    {
+        configuration.AddEnvironmentVariables(prefix: "CONFIG:");
+        
+        // Parse provided by Heroku environment variable of database
+        var herokuDatabaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+        if (herokuDatabaseUrl == null)
+        {
+            return configuration;
+        }
+        var m = Regex.Match(Environment.GetEnvironmentVariable("DATABASE_URL")!, @"postgres://(.*):(.*)@(.*):(.*)/(.*)");
+        configuration.GetSection("ConnectionStrings:Database").Value =
+            $"Server={m.Groups[3]};Port={m.Groups[4]};User Id={m.Groups[1]};Password={m.Groups[2]};Database={m.Groups[5]};";
+        
+        return configuration;
+    }
+    
     public static WebApplication UseMoesif(this WebApplication app, string key)
     {
         
@@ -33,6 +51,7 @@ public static class ServiceCollectionExtensions
                 .WithIdentity(nameof(UpdateOutagesCommand) + "Trigger")
                 .WithCronSchedule(cronExpression));
         });
+        services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
         return services;
     }
     public static IServiceCollection ConfigureCors(this IServiceCollection services, string policyName)

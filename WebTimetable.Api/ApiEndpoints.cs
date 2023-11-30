@@ -18,7 +18,6 @@ public static class ApiEndpoints
 
         public const string GetFilters = $"{Base}/filters";
         public const string GetStudyGroups = $"{Base}/studyGroups";
-        public const string GetOutageGroups = $"{Base}/outageGroups";
     }
 
     public static class Notes

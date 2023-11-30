@@ -5,10 +5,10 @@ using WebTimetable.Application.Repositories;
 
 namespace WebTimetable.Application.Handlers
 {
-    public class DtekOutagesHandler : IOutagesHandler
+    public class OutagesHandler : IOutagesHandler
     {
         private readonly IDbRepository _dbRepository;
-        public DtekOutagesHandler(IDbRepository dbRepository)
+        public OutagesHandler(IDbRepository dbRepository)
         {
             _dbRepository = dbRepository;
         }
@@ -22,11 +22,6 @@ namespace WebTimetable.Application.Handlers
                     outages?.Outages.Where(x => IsIntervalsIntersects(x.Start, x.End, lesson.Start, lesson.End))
                         .ToList() ?? new List<Outage>();
             }
-        }
-
-        public List<string> GetOutageGroups(string city)
-        {
-            return _dbRepository.Get<OutageEntity>(x => x.City == city).Select(y => y.Group).Distinct().ToList();
         }
         
         private bool IsIntervalsIntersects(TimeOnly start1, TimeOnly end1, TimeOnly start2, TimeOnly end2)

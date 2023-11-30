@@ -2,5 +2,5 @@
 
 public class FiltersResponse
 {
-    public Dictionary<string, Dictionary<string, string>> Filters { get; init; }
+    public Dictionary<string, List<KeyValuePair<string, string>>> Filters { get; init; }
 }

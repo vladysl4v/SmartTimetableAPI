@@ -19,7 +19,7 @@ namespace WebTimetable.Application
             services.AddScoped<INotesHandler, NotesHandler>();
             services.AddScoped<IEventsHandler, TeamsEventsHandler>();
             services.AddScoped<IScheduleHandler, VnzOsvitaScheduleHandler>();
-            services.AddScoped<IOutagesHandler, DtekOutagesHandler>();
+            services.AddScoped<IOutagesHandler, OutagesHandler>();
             services.AddScoped<INotesService, NotesService>();
             services.AddScoped<IScheduleService, ScheduleService>();
             services.AddScoped<ISettingsService, SettingsService>();

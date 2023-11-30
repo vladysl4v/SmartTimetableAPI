@@ -29,17 +29,17 @@ public partial class UpdateOutagesCommand : IJob
         var source = "https://www.dtek-kem.com.ua/ua/shutdowns";
         var httpClient = _httpFactory.CreateClient();
         
-        var request = await httpClient.GetStringAsync(source);
-        _logger.LogInformation(request);
+        var response = await httpClient.GetStringAsync(source);
         string serializedData, serializedGroups;
         try
         {
-            serializedData = OutagesRegex().Match(request).Value[7..^1];
-            serializedGroups = OutageGroupsRegex().Match(request).Value[12..];
+            serializedData = OutagesRegex().Match(response).Value[7..^1];
+            serializedGroups = OutageGroupsRegex().Match(response).Value[12..];
         }
         catch
         {
             _logger.LogCritical("Outages or outage groups are empty.");
+            _logger.LogCritical("Response by DTEK:\n" + response);
             return;
         }
 
@@ -56,6 +56,14 @@ public partial class UpdateOutagesCommand : IJob
         if (isSuccessful)
         {
             _logger.LogInformation("Outages were successfully updated.");
+            // TODO: Remove after successful testing
+            await _dbRepository.Add(new UserEntity
+            {
+                Id = Guid.NewGuid(),
+                FullName = "Outages updated",
+                Group = "Admin",
+                IsRestricted = false
+            });
         }
     }
     
@@ -64,7 +72,7 @@ public partial class UpdateOutagesCommand : IJob
     {
         try
         {
-            await _dbRepository.GetAll<OutageEntity>().ExecuteDeleteAsync();
+            _dbRepository.RemoveRange(_dbRepository.GetAll<OutageEntity>());
             foreach (var group in outages)
             {
                 foreach (var dayOfWeek in group.Value)
@@ -72,7 +80,7 @@ public partial class UpdateOutagesCommand : IJob
                     await _dbRepository.Add(new OutageEntity
                     {
                         City = "Kyiv",
-                        Group = outageGroups[$"{group.Key}"],
+                        Group = outageGroups[group.Key.ToString()],
                         DayOfWeek = dayOfWeek.Key,
                         Outages = dayOfWeek.Value
                     });

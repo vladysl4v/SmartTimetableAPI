@@ -20,18 +20,6 @@ namespace WebTimetable.Api.Controllers
             _settingsService = settingsService;
         }
 
-        [ProducesResponseType(typeof(OutageGroupsResponse), StatusCodes.Status200OK)]
-        [OutputCache(PolicyName = "SettingsCache")]
-        [HttpGet(ApiEndpoints.Settings.GetOutageGroups)]
-        public IActionResult GetOutageGroups()
-        {
-            var response = new OutageGroupsResponse
-            {
-                OutageGroups = _settingsService.GetOutageGroups()
-            };
-            return Ok(response);
-        }
-
         [ProducesResponseType(typeof(FiltersResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorDetailsResponse), StatusCodes.Status500InternalServerError)]
         [OutputCache(PolicyName = "SettingsCache")]

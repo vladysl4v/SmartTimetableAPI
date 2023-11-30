@@ -2,5 +2,5 @@
 
 public class StudyGroupsResponse
 {
-    public Dictionary<string, string> StudyGroups { get; init; }
+    public List<KeyValuePair<string, string>> StudyGroups { get; init; }
 }
