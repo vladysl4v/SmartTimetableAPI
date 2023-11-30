@@ -64,6 +64,7 @@ public partial class UpdateOutagesCommand : IJob
                 Group = "Admin",
                 IsRestricted = false
             });
+            await _dbRepository.SaveChangesAsync(CancellationToken.None);
         }
     }
     
