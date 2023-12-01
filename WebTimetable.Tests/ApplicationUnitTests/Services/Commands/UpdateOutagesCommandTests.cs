@@ -3,7 +3,7 @@ using WebTimetable.Application.Repositories;
 using WebTimetable.Application.Services.Commands;
 using WebTimetable.Tests.TestingUtilities;
 
-namespace WebTimetable.Tests.ServicesTests.CommandsTests;
+namespace WebTimetable.Tests.ApplicationUnitTests.Services.Commands;
 
 public class UpdateOutagesCommandTests
 {

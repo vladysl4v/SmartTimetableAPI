@@ -4,7 +4,7 @@ using WebTimetable.Application.Exceptions;
 using WebTimetable.Application.Handlers;
 using WebTimetable.Tests.TestingUtilities;
 
-namespace WebTimetable.Tests.HandlersTests;
+namespace WebTimetable.Tests.ApplicationUnitTests.Handlers;
 
 public class VnzOsvitaScheduleHandlerTests
 {

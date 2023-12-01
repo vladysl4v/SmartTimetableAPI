@@ -32,4 +32,9 @@
       <ProjectReference Include="..\WebTimetable.Contracts\WebTimetable.Contracts.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="ApiUnitTests\" />
+      <Folder Include="ApplicationUnitTests\" />
+    </ItemGroup>
+
 </Project>

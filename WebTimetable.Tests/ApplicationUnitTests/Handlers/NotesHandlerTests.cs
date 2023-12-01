@@ -5,7 +5,7 @@ using WebTimetable.Application.Handlers;
 using WebTimetable.Application.Models;
 using WebTimetable.Application.Repositories;
 
-namespace WebTimetable.Tests.HandlersTests;
+namespace WebTimetable.Tests.ApplicationUnitTests.Handlers;
 
 public class NotesHandlerTests
 {

@@ -1,15 +1,15 @@
-using WebTimetable.Contracts.Requests;
 using WebTimetable.Api.Validators;
+using WebTimetable.Contracts.Requests;
 
-namespace WebTimetable.Tests.ValidatorsTests;
+namespace WebTimetable.Tests.ApiUnitTests.Validators;
 
-public class AnonymousScheduleValidatorTests
+public class PersonalScheduleValidatorTests
 {
     [Fact]
-    public void AnonymousScheduleRequest_ShouldBeValid()
+    public void PersonalScheduleRequest_ShouldBeValid()
     {
-        var validator = new AnonymousScheduleValidator();
-        var request = new AnonymousScheduleRequest
+        var validator = new PersonalScheduleValidator();
+        var request = new PersonalScheduleRequest
         {
             StudyGroup = "Test group",
             OutageGroup = "Test outage group",
@@ -20,16 +20,16 @@ public class AnonymousScheduleValidatorTests
     }
     
     [Fact]
-    public void AnonymousScheduleRequest_ShouldBeNotValid()
+    public void PersonalScheduleRequest_ShouldBeNotValid()
     {
-        var validator = new AnonymousScheduleValidator();
-        var firstRequest = new AnonymousScheduleRequest
+        var validator = new PersonalScheduleValidator();
+        var firstRequest = new PersonalScheduleRequest
         {
             StudyGroup = string.Empty,
             OutageGroup = "Test outage group or test outage group or test outage group or test outage group or test outage group or test outage group or test outage group",
             Date = ""
         };
-        var secondRequest = new AnonymousScheduleRequest
+        var secondRequest = new PersonalScheduleRequest
         {
             StudyGroup = "Test study groups or test study groups or test study groups or test study groups or test study groups or test study groups or test study groups",
             OutageGroup = "",

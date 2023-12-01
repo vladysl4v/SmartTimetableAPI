@@ -5,7 +5,7 @@ using WebTimetable.Application.Repositories;
 using WebTimetable.Application.Services;
 using WebTimetable.Tests.TestingUtilities;
 
-namespace WebTimetable.Tests.ServicesTests;
+namespace WebTimetable.Tests.ApplicationUnitTests.Services;
 
 
 public class SettingsServiceTests

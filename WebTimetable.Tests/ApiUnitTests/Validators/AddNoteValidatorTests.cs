@@ -1,7 +1,7 @@
 using WebTimetable.Api.Validators;
 using WebTimetable.Contracts.Requests;
 
-namespace WebTimetable.Tests.ValidatorsTests;
+namespace WebTimetable.Tests.ApiUnitTests.Validators;
 
 public class AddNoteValidatorTests
 {

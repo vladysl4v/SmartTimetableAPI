@@ -3,7 +3,7 @@ using WebTimetable.Application.Entities;
 using WebTimetable.Application.Repositories;
 using WebTimetable.Application.Services;
 
-namespace WebTimetable.Tests.ServicesTests;
+namespace WebTimetable.Tests.ApplicationUnitTests.Services;
 
 public class NotesServiceTests
 {

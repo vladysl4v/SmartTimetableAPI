@@ -7,7 +7,7 @@ using WebTimetable.Application.Services.Abstractions;
 using WebTimetable.Contracts.Requests;
 using WebTimetable.Contracts.Responses;
 
-namespace WebTimetable.Tests.ControllersTests;
+namespace WebTimetable.Tests.ApiUnitTests.Controllers;
 
 public class NotesControllerTests
 {

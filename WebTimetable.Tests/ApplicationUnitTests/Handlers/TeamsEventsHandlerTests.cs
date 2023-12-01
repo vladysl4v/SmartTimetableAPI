@@ -4,7 +4,7 @@ using WebTimetable.Application.Models;
 using WebTimetable.Tests.TestingUtilities;
 using GraphEvent = Microsoft.Graph.Models.Event;
 
-namespace WebTimetable.Tests.HandlersTests;
+namespace WebTimetable.Tests.ApplicationUnitTests.Handlers;
 
 public class TeamsEventsHandlerTests
 {

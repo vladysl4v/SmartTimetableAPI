@@ -3,7 +3,7 @@ using WebTimetable.Application.Handlers.Abstractions;
 using WebTimetable.Application.Models;
 using WebTimetable.Application.Services;
 
-namespace WebTimetable.Tests.ServicesTests;
+namespace WebTimetable.Tests.ApplicationUnitTests.Services;
 
 public class ScheduleServiceTests
 {

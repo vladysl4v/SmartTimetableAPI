@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 using WebTimetable.Application.Deserializers;
 using WebTimetable.Application.Models;
 
-namespace WebTimetable.Tests.DeserializersTests;
+namespace WebTimetable.Tests.ApplicationUnitTests.Deserializers;
 
 public class LessonFactoryTests
 {
