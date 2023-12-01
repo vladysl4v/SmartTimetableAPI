@@ -6,7 +6,7 @@ namespace WebTimetable.Tests.DeserializersTests;
 
 public class LessonFactoryTests
 {
-    private readonly LessonFactory _lessonFactory = new LessonFactory();
+    private readonly LessonFactory _lessonFactory = new();
 
     [Fact]
     public void LessonFactory_CreateAndPopulate_ReturnLessons()
@@ -58,5 +58,21 @@ public class LessonFactoryTests
             outList.Should().NotBeNull();
             outList.Should().BeEmpty();
         }
+    }
+
+    [Fact]
+    public void LessonFactory_WriteJson_ThrowsException()
+    {
+        // Act
+        var act = () => _lessonFactory.WriteJson(new JsonTextWriter(new StringWriter()), "", new JsonSerializer());
+        
+        // Assert
+        act.Should().Throw<NotSupportedException>();
+    }
+    
+    [Fact]
+    public void LessonFactory_CanWrite_ReturnFalse()
+    {
+        _lessonFactory.CanWrite.Should().BeFalse();
     }
 }

@@ -6,7 +6,7 @@ namespace WebTimetable.Tests.DeserializersTests;
 
 public class OutageFactoryTests
 {
-    private readonly OutageFactory _outageFactory = new OutageFactory();
+    private readonly OutageFactory _outageFactory = new();
 
     [Fact]
     public void OutageFactory_CreateAndPopulate_ReturnOutages()
@@ -32,6 +32,22 @@ public class OutageFactoryTests
                .AllSatisfy(x => x.Value.Should()
                    .AllSatisfy(y => y.IsDefinite.Should()
                        .NotBeNull()))); 
+    }
+    
+    [Fact]
+    public void OutageFactory_WriteJson_ThrowsException()
+    {
+        // Act
+        var act = () => _outageFactory.WriteJson(new JsonTextWriter(new StringWriter()), "", new JsonSerializer());
+        
+        // Assert
+        act.Should().Throw<NotSupportedException>();
+    }
+    
+    [Fact]
+    public void OutageFactory_CanWrite_ReturnFalse()
+    {
+        _outageFactory.CanWrite.Should().BeFalse();
     }
     
     private DayOfWeek ConvertToDayOfWeek(string value)
