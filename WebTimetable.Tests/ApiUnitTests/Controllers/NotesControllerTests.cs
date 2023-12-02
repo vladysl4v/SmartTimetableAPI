@@ -59,13 +59,7 @@ public class NotesControllerTests
             .Verifiable();
         var mockUsersService = new Mock<IUsersService>();
         mockUsersService.Setup(x => x.GetUser(It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new UserEntity
-            {
-                Id = Guid.NewGuid(),
-                FullName = "Test user",
-                Group = "Test group",
-                IsRestricted = true
-            });
+            .ReturnsAsync(new UserEntity() { IsRestricted = true });
         var controller = new NotesController(mockNotesService.Object, mockUsersService.Object);
 
         // Act

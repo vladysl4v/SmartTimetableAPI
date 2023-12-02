@@ -11,6 +11,7 @@
 
     <ItemGroup>
         <PackageReference Include="FluentAssertions" Version="6.12.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.14" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.1"/>
         <PackageReference Include="Moq" Version="4.20.69" />
         <PackageReference Include="Neleus.LambdaCompare" Version="1.0.3" />
@@ -30,11 +31,6 @@
       <ProjectReference Include="..\WebTimetable.Api\WebTimetable.Api.csproj" />
       <ProjectReference Include="..\WebTimetable.Application\WebTimetable.Application.csproj" />
       <ProjectReference Include="..\WebTimetable.Contracts\WebTimetable.Contracts.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="ApiUnitTests\" />
-      <Folder Include="ApplicationUnitTests\" />
     </ItemGroup>
 
 </Project>

@@ -8,6 +8,7 @@ public class AnonymousScheduleValidatorTests
     [Fact]
     public void AnonymousScheduleRequest_ShouldBeValid()
     {
+        // Arrange
         var validator = new AnonymousScheduleValidator();
         var request = new AnonymousScheduleRequest
         {
@@ -15,29 +16,34 @@ public class AnonymousScheduleValidatorTests
             OutageGroup = "Test outage group",
             Date = DateTime.Now.ToString("yyyy-MM-dd")
         };
-        var result = validator.Validate(request);   
+        
+        // Act
+        var result = validator.Validate(request);  
+        
+        // Assert
         result.IsValid.Should().BeTrue();
     }
     
-    [Fact]
-    public void AnonymousScheduleRequest_ShouldBeNotValid()
+    [Theory]
+    [InlineData("Test study groups or test study groups or test study groups or test study groups or test study groups or test study groups or test study groups", "Test outage group", "2001-09-11")]
+    [InlineData("Test study group", "Test outage group or test outage group or test outage group or test outage group or test outage group or test outage group or test outage group", "2001-09-11")]
+    [InlineData("Test study group", "Test outage group", "")]
+    [InlineData("Test study group", "Test outage group", "11-CUCUMBER-2001")]
+    public void AnonymousScheduleRequest_ShouldBeNotValid(string studyGroup, string outageGroup, string date)
     {
+        // Arrange
         var validator = new AnonymousScheduleValidator();
-        var firstRequest = new AnonymousScheduleRequest
+        var request = new AnonymousScheduleRequest
         {
-            StudyGroup = string.Empty,
-            OutageGroup = "Test outage group or test outage group or test outage group or test outage group or test outage group or test outage group or test outage group",
-            Date = ""
+            StudyGroup = studyGroup,
+            OutageGroup = outageGroup,
+            Date = date
         };
-        var secondRequest = new AnonymousScheduleRequest
-        {
-            StudyGroup = "Test study groups or test study groups or test study groups or test study groups or test study groups or test study groups or test study groups",
-            OutageGroup = "",
-            Date = "11-SEPTEMBER-2001"
-        };
-        var firstResult = validator.Validate(firstRequest);   
-        var secondResult = validator.Validate(secondRequest);   
-        firstResult.IsValid.Should().BeFalse();
-        secondResult.IsValid.Should().BeFalse();
+        
+        // Act
+        var result = validator.Validate(request);   
+        
+        // Assert
+        result.IsValid.Should().BeFalse();
     }
 }

@@ -12,7 +12,7 @@ namespace WebTimetable.Application.Repositories
             _context = context;
         }
 
-        public IQueryable<T> Get<T>() where T : class
+        public IQueryable<T> GetAll<T>() where T : class
         {
             return _context.Set<T>().AsQueryable();
         }
@@ -60,11 +60,6 @@ namespace WebTimetable.Application.Repositories
         public async Task SaveChangesAsync(CancellationToken token)
         {
             await _context.SaveChangesAsync(token);
-        }
-
-        public IQueryable<T> GetAll<T>() where T : class
-        {
-            return _context.Set<T>().AsQueryable();
         }
     }
 }
