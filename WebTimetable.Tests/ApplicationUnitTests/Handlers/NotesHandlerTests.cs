@@ -28,14 +28,14 @@ public class NotesHandlerTests
         };
         
         var notes = new[] { _existingNote }.AsQueryable();
-        var dbRepositoryMock = new Mock<IDbRepository>();
+        var notesRepoMock = new Mock<IRepository<NoteEntity>>();
         Expression<Func<NoteEntity, bool>> existing = entity =>
             entity.LessonId == _existingNote.LessonId && entity.Author.Group == _existingNote.Author.Group;
         
-        dbRepositoryMock.Setup(action => action.Get<NoteEntity>(It.Is<Expression<Func<NoteEntity, bool>>>(
+        notesRepoMock.Setup(action => action.Where(It.Is<Expression<Func<NoteEntity, bool>>>(
             expr => Lambda.ExpressionsEqual(expr, existing)))).Returns(notes);
         
-        _notesHandler = new NotesHandler(dbRepositoryMock.Object);
+        _notesHandler = new NotesHandler(notesRepoMock.Object);
     }
     
     [Fact]

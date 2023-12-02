@@ -6,7 +6,7 @@ using WebTimetable.Application.Repositories;
 
 namespace WebTimetable.Tests.ApplicationUnitTests.Repositories;
 
-public class DbRepositoryTests
+public class RepositoryTests
 {
     [Fact]
     public async Task DbRepository_GetAll_ReturnsQueryable()
@@ -15,7 +15,7 @@ public class DbRepositoryTests
         var dbRepository = await GetMockDbRepository(GetMockOutages());
         
         // Act
-        var result = dbRepository.GetAll<OutageEntity>();
+        var result = dbRepository.GetAll();
         
         // Assert
         result.Should().NotBeNull();
@@ -29,7 +29,7 @@ public class DbRepositoryTests
         var dbRepository = await GetMockDbRepository(GetMockOutages());
         
         // Act
-        var result = dbRepository.Get<OutageEntity>(x => x.DayOfWeek == DayOfWeek.Monday);
+        var result = dbRepository.Where(x => x.DayOfWeek == DayOfWeek.Monday);
         
         // Assert
         result.Should().NotBeNull();
@@ -44,7 +44,7 @@ public class DbRepositoryTests
         var dbRepository = await GetMockDbRepository(GetMockOutages());
         
         // Act
-        var result = dbRepository.Get<OutageEntity>(x => x.DayOfWeek == DayOfWeek.Thursday);
+        var result = dbRepository.Where(x => x.DayOfWeek == DayOfWeek.Thursday);
         
         // Assert
         result.Should().NotBeNull();
@@ -58,12 +58,19 @@ public class DbRepositoryTests
         var dbRepository = await GetMockDbRepository(new List<OutageEntity>());
         
         // Act
-        await dbRepository.Add(new OutageEntity { DayOfWeek = DayOfWeek.Thursday, City = "Test city", Group = "Test group", Outages = new List<Outage>() });
+        await dbRepository.AddAsync(new OutageEntity
+            {
+                DayOfWeek = DayOfWeek.Thursday,
+                City = "Test city",
+                Group = "Test group",
+                Outages = new List<Outage>()
+            },
+            CancellationToken.None);
         await dbRepository.SaveChangesAsync(CancellationToken.None);
         
         // Assert
-        dbRepository.GetAll<OutageEntity>().Should().HaveCount(1);
-        dbRepository.GetAll<OutageEntity>().Single().DayOfWeek.Should().Be(DayOfWeek.Thursday);
+        dbRepository.GetAll().Should().HaveCount(1);
+        dbRepository.GetAll().Single().DayOfWeek.Should().Be(DayOfWeek.Thursday);
     }
     
     [Fact]
@@ -74,12 +81,12 @@ public class DbRepositoryTests
         var seedData = GetMockOutages();
         
         // Act
-        await dbRepository.AddRange(seedData);
+        await dbRepository.AddRangeAsync(seedData, CancellationToken.None);
         await dbRepository.SaveChangesAsync(CancellationToken.None);
         
         // Assert
-        dbRepository.GetAll<OutageEntity>().Should().HaveCount(2);
-        dbRepository.GetAll<OutageEntity>().Should().BeEquivalentTo(seedData);
+        dbRepository.GetAll().Should().HaveCount(2);
+        dbRepository.GetAll().Should().BeEquivalentTo(seedData);
     }
     
     [Fact]
@@ -89,7 +96,7 @@ public class DbRepositoryTests
         var dbRepository = await GetMockDbRepository(GetMockOutages());
         
         // Act
-        var result = await dbRepository.FindAsync<OutageEntity>("Test city", "Test group", DayOfWeek.Monday);
+        var result = await dbRepository.FindAsync(CancellationToken.None, "Test city", "Test group", DayOfWeek.Monday);
         
         // Assert
         result.Should().NotBeNull();
@@ -109,7 +116,7 @@ public class DbRepositoryTests
         var dbRepository = await GetMockDbRepository(GetMockOutages());
         
         // Act
-        var result = await dbRepository.FindAsync<OutageEntity>(city, group, dayOfWeek);
+        var result = await dbRepository.FindAsync(CancellationToken.None, city, group, dayOfWeek);
         
         // Assert
         result.Should().BeNull();
@@ -128,7 +135,7 @@ public class DbRepositoryTests
         await dbRepository.SaveChangesAsync(CancellationToken.None);
         
         // Assert
-        dbRepository.GetAll<OutageEntity>().Should().NotContain(toDelete);
+        dbRepository.GetAll().Should().NotContain(toDelete);
     }
     
     [Fact]
@@ -151,7 +158,7 @@ public class DbRepositoryTests
         
         // Assert
         await act.Should().ThrowAsync<DbUpdateConcurrencyException>();
-        dbRepository.GetAll<OutageEntity>().Should().BeEquivalentTo(seedData);
+        dbRepository.GetAll().Should().BeEquivalentTo(seedData);
     }
     
     [Fact]
@@ -166,7 +173,7 @@ public class DbRepositoryTests
         await dbRepository.SaveChangesAsync(CancellationToken.None);
         
         // Assert
-        dbRepository.GetAll<OutageEntity>().Should().BeEmpty();
+        dbRepository.GetAll().Should().BeEmpty();
     }
     
     [Fact]
@@ -192,7 +199,7 @@ public class DbRepositoryTests
         
         // Assert
         await act.Should().ThrowAsync<DbUpdateConcurrencyException>();
-        dbRepository.GetAll<OutageEntity>().Should().BeEquivalentTo(seedData);
+        dbRepository.GetAll().Should().BeEquivalentTo(seedData);
     }
     
         [Fact]
@@ -210,8 +217,8 @@ public class DbRepositoryTests
         await dbRepository.SaveChangesAsync(CancellationToken.None);
         
         // Assert
-        dbRepository.GetAll<OutageEntity>().Should().NotContain(beforeUpdate);
-        dbRepository.GetAll<OutageEntity>().Should().Contain(toUpdate);
+        dbRepository.GetAll().Should().NotContain(beforeUpdate);
+        dbRepository.GetAll().Should().Contain(toUpdate);
     }
     
     [Fact]
@@ -234,54 +241,10 @@ public class DbRepositoryTests
         
         // Assert
         await act.Should().ThrowAsync<DbUpdateConcurrencyException>();
-        dbRepository.GetAll<OutageEntity>().Should().BeEquivalentTo(seedData);
+        dbRepository.GetAll().Should().BeEquivalentTo(seedData);
     }
     
-    [Fact]
-    public async Task DbRepository_UpdateRange_Successfully()
-    {
-        // Arrange
-        var seedData = GetMockOutages();
-        var toUpdate = seedData.First();
-        var beforeUpdate = new OutageEntity { City = toUpdate.City, Group = toUpdate.Group, DayOfWeek = toUpdate.DayOfWeek, Outages = toUpdate.Outages };
-        toUpdate.Outages = new List<Outage>(new[] { new Outage(), new Outage(), new Outage() });
-        var toUpdateList = new List<OutageEntity> { toUpdate };
-        var dbRepository = await GetMockDbRepository(seedData);
-        
-        // Act
-        dbRepository.UpdateRange(toUpdateList);
-        await dbRepository.SaveChangesAsync(CancellationToken.None);
-        
-        // Assert
-        dbRepository.GetAll<OutageEntity>().Should().NotContain(beforeUpdate);
-        dbRepository.GetAll<OutageEntity>().Should().Contain(toUpdate);
-    }
-    
-    [Fact]
-    public async Task DbRepository_UpdateRange_ShouldThrowException()
-    {
-        // Arrange
-        var seedData = GetMockOutages();
-        var tryToUpdate = new OutageEntity
-        {
-            City = "Random city",
-            Group = "Random group",
-            DayOfWeek = DayOfWeek.Monday,
-            Outages = new List<Outage>()
-        };
-        var tryToUpdateList = new List<OutageEntity> { tryToUpdate };
-        var dbRepository = await GetMockDbRepository(seedData);
-        
-        // Act
-        dbRepository.UpdateRange(tryToUpdateList);
-        var act = async () => await dbRepository.SaveChangesAsync(CancellationToken.None);
-        
-        // Assert
-        await act.Should().ThrowAsync<DbUpdateConcurrencyException>();
-        dbRepository.GetAll<OutageEntity>().Should().BeEquivalentTo(seedData);
-    }
-    
-    private async Task<DbRepository> GetMockDbRepository<T>(IEnumerable<T> sourceList) where T : class
+    private async Task<Repository<T>> GetMockDbRepository<T>(IEnumerable<T> sourceList) where T : class
     {
         var options = new DbContextOptionsBuilder<DataContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()).Options;
@@ -294,7 +257,7 @@ public class DbRepositoryTests
             await dbContext.SaveChangesAsync();
         }
 
-        return new DbRepository(dbContext);
+        return new Repository<T>(dbContext);
     }
 
     private List<OutageEntity> GetMockOutages()

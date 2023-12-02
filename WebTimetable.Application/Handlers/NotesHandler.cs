@@ -8,10 +8,10 @@ namespace WebTimetable.Application.Handlers;
 
 public class NotesHandler : INotesHandler
 {
-    private readonly IDbRepository _dbRepository;
-    public NotesHandler(IDbRepository dbRepository)
+    private readonly IRepository<NoteEntity> _notes;
+    public NotesHandler(IRepository<NoteEntity> notes)
     {
-        _dbRepository = dbRepository;
+        _notes = notes;
     }
 
     public void ConfigureNotes(IEnumerable<Lesson> schedule, string userGroup, Guid userId)
@@ -27,7 +27,7 @@ public class NotesHandler : INotesHandler
         Expression<Func<NoteEntity, bool>> expression = entity =>
             entity.LessonId == lessonId && entity.Author.Group == userGroup;
 
-        return _dbRepository.Get<NoteEntity>(expression).Select(x => new Note
+        return _notes.Where(expression).Select(x => new Note
         {
             AuthorId = x.AuthorId,
             CreationDate = x.CreationDate,

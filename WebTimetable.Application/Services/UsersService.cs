@@ -10,12 +10,12 @@ namespace WebTimetable.Application.Services;
 public class UsersService : IUsersService
 {
     private readonly GraphServiceClient _graphClient;
-    private readonly IDbRepository _dbRepository;
+    private readonly IRepository<UserEntity> _users;
 
-    public UsersService(GraphServiceClient graphClient, IDbRepository dbRepository)
+    public UsersService(GraphServiceClient graphClient, IRepository<UserEntity> users)
     {
         _graphClient = graphClient;
-        _dbRepository = dbRepository;
+        _users = users;
     }
 
     public async Task<UserEntity?> GetUser(CancellationToken token)
@@ -30,7 +30,7 @@ public class UsersService : IUsersService
             return null;
         }
 
-        var dbUser = _dbRepository.Get<UserEntity>(x => x.Id == Guid.Parse(user.Id)).SingleOrDefault();
+        var dbUser = _users.Where(x => x.Id == Guid.Parse(user.Id)).SingleOrDefault();
         if (dbUser == null)
         {
             dbUser = new UserEntity
@@ -39,8 +39,8 @@ public class UsersService : IUsersService
                 FullName = user.DisplayName,
                 Group = user.Department
             };
-            await _dbRepository.Add(dbUser);
-            await _dbRepository.SaveChangesAsync(token);
+            await _users.AddAsync(dbUser, token);
+            await _users.SaveChangesAsync(token);
         }
         else
         {
@@ -48,8 +48,8 @@ public class UsersService : IUsersService
             {
                 dbUser.FullName = user.DisplayName;
                 dbUser.Group = user.Department;
-                _dbRepository.Update(dbUser);
-                await _dbRepository.SaveChangesAsync(token);
+                _users.Update(dbUser);
+                await _users.SaveChangesAsync(token);
             }
         }
 

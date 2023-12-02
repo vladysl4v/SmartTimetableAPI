@@ -14,8 +14,8 @@ public class SettingsServiceTests
     public async Task SettingsService_GetFilters_ReturnDictionary()
     {
         // Arrange 
-        var mockDbRepository = new Mock<IDbRepository>();
-        mockDbRepository.Setup(x => x.Get(It.IsAny<Expression<Func<OutageEntity, bool>>>()))
+        var mockDbRepository = new Mock<IRepository<OutageEntity>>();
+        mockDbRepository.Setup(x => x.Where(It.IsAny<Expression<Func<OutageEntity, bool>>>()))
             .Returns(new List<OutageEntity>()
                 {
                     new() { Group = "Group 1" }, 
@@ -58,7 +58,7 @@ public class SettingsServiceTests
     {
         // Arrange 
         const string mockFiltersData = "{\"d\":[]}";
-        var mockDbRepository = new Mock<IDbRepository>();
+        var mockDbRepository = new Mock<IRepository<OutageEntity>>();
         var mockHttpFactory = new MockHttpFactory()
             .Setup(x => x.RequestUri.AbsoluteUri.Contains("GetStudentScheduleFiltersData"), mockFiltersData);
         var settingsService = new SettingsService(mockHttpFactory, mockDbRepository.Object);
@@ -75,7 +75,7 @@ public class SettingsServiceTests
     {
         // Arrange 
         const string mockFiltersData = "{\"d\":{\"__type\":\"VnzWeb.BetaSchedule+StudyGroupsData\",\"studyGroups\":[{\"Key\":\"89YFKCWMK592\",\"Value\":\"WTF-21\"},{\"Key\":\"6U0M6S8RJNGK\",\"Value\":\"LMAO-21\"},{\"Key\":\"3STTJCMVPQZF\",\"Value\":\"IDGAF-21\"},{\"Key\":\"6O5NH5SPYHBT\",\"Value\":\"LEET-21\"}],\"studyTypes\":null}}";
-        var mockDbRepository = new Mock<IDbRepository>();
+        var mockDbRepository = new Mock<IRepository<OutageEntity>>();
         var mockHttpFactory = new MockHttpFactory()
             .Setup(x => x.RequestUri.AbsoluteUri.Contains("GetStudyGroups"), mockFiltersData);
         var settingsService = new SettingsService(mockHttpFactory, mockDbRepository.Object);
@@ -94,7 +94,7 @@ public class SettingsServiceTests
     {
         // Arrange 
         const string mockFiltersData = "{\"d\":[]}";
-        var mockDbRepository = new Mock<IDbRepository>();
+        var mockDbRepository = new Mock<IRepository<OutageEntity>>();
         var mockHttpFactory = new MockHttpFactory()
             .Setup(x => x.RequestUri.AbsoluteUri.Contains("GetStudyGroups"), mockFiltersData);
         var settingsService = new SettingsService(mockHttpFactory, mockDbRepository.Object);

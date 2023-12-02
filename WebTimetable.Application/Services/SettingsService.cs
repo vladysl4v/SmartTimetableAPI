@@ -10,11 +10,11 @@ namespace WebTimetable.Application.Services;
 public class SettingsService : ISettingsService
 {
     private readonly IHttpClientFactory _httpFactory;
-    private readonly IDbRepository _dbRepository;
-    public SettingsService(IHttpClientFactory httpFactory, IDbRepository dbRepository)
+    private readonly IRepository<OutageEntity> _outages;
+    public SettingsService(IHttpClientFactory httpFactory, IRepository<OutageEntity> outages)
     {
         _httpFactory = httpFactory;
-        _dbRepository = dbRepository;
+        _outages = outages;
     }
 
     public async Task<Dictionary<string, List<KeyValuePair<string, string>>>> GetFilters(CancellationToken token)
@@ -77,7 +77,7 @@ public class SettingsService : ISettingsService
     
     private List<KeyValuePair<string, string>> GetOutageGroups()
     {
-        return _dbRepository.Get<OutageEntity>(x => x.City == "Kyiv").Select(y => y.Group)
+        return _outages.Where(x => x.City == "Kyiv").Select(y => y.Group)
             .Distinct().ToDictionary(key => key, value => value).ToList();
     }
 }

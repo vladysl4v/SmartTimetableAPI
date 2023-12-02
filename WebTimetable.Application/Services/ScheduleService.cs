@@ -36,7 +36,7 @@ public class ScheduleService : IScheduleService
         await _events.ConfigureEvents(lessons);
         if (outageGroup != string.Empty)
         {
-            await _outages.ConfigureOutagesAsync(lessons, outageGroup, "Kyiv");
+            await _outages.ConfigureOutagesAsync(lessons, outageGroup, "Kyiv", token);
         }
         
         return lessons;
@@ -47,7 +47,7 @@ public class ScheduleService : IScheduleService
         var lessons = await _schedule.GetSchedule(date, studyGroup, token);
         if (outageGroup != string.Empty)
         {
-            await _outages.ConfigureOutagesAsync(lessons, outageGroup, "Kyiv");
+            await _outages.ConfigureOutagesAsync(lessons, outageGroup, "Kyiv", token);
         }
 
         return lessons;

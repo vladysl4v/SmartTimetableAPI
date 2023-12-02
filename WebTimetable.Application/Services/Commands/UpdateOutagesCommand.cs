@@ -14,14 +14,16 @@ public partial class UpdateOutagesCommand : IJob
 {
     private readonly ILogger<UpdateOutagesCommand> _logger;
     private readonly IHttpClientFactory _httpFactory;
-    private readonly IDbRepository _dbRepository;
+    private readonly IRepository<UserEntity> _users;
+    private readonly IRepository<OutageEntity> _outages;
     
-    public UpdateOutagesCommand(IDbRepository dbRepository, IHttpClientFactory httpFactory,
+    public UpdateOutagesCommand(IRepository<OutageEntity> outages, IRepository<UserEntity> users, IHttpClientFactory httpFactory,
         ILogger<UpdateOutagesCommand> logger)
     {
         _logger = logger;
         _httpFactory = httpFactory;
-        _dbRepository = dbRepository;
+        _users = users;
+        _outages = outages;
     }
 
     public async Task Execute(IJobExecutionContext context)
@@ -52,43 +54,43 @@ public partial class UpdateOutagesCommand : IJob
             return;
         }
         
-        var isSuccessful = await FillDatabase(outageGroups, outages);
+        var isSuccessful = await FillDatabase(outageGroups, outages, context.CancellationToken);
         if (isSuccessful)
         {
             _logger.LogInformation("Outages were successfully updated.");
             // TODO: Remove after successful testing
-            await _dbRepository.Add(new UserEntity
+            await _users.AddAsync(new UserEntity
             {
                 Id = Guid.NewGuid(),
                 FullName = "Outages updated",
                 Group = "Admin",
                 IsRestricted = false
-            });
-            await _dbRepository.SaveChangesAsync(CancellationToken.None);
+            }, context.CancellationToken);
+            await _users.SaveChangesAsync(context.CancellationToken);
         }
     }
     
     private async Task<bool> FillDatabase(Dictionary<string, string> outageGroups,
-        Dictionary<int, Dictionary<DayOfWeek, List<Outage>>> outages)
+        Dictionary<int, Dictionary<DayOfWeek, List<Outage>>> outages, CancellationToken token)
     {
         try
         {
-            _dbRepository.RemoveRange(_dbRepository.GetAll<OutageEntity>());
+            _outages.RemoveRange(_outages.GetAll());
             foreach (var group in outages)
             {
                 foreach (var dayOfWeek in group.Value)
                 {
-                    await _dbRepository.Add(new OutageEntity
+                    await _outages.AddAsync(new OutageEntity
                     {
                         City = "Kyiv",
                         Group = outageGroups[group.Key.ToString()],
                         DayOfWeek = dayOfWeek.Key,
                         Outages = dayOfWeek.Value
-                    });
+                    }, token);
                 }
             }
 
-            await _dbRepository.SaveChangesAsync(CancellationToken.None);
+            await _outages.SaveChangesAsync(token);
         }
         catch (Exception e)
         {

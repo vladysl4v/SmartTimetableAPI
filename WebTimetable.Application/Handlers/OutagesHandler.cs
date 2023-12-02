@@ -7,17 +7,17 @@ namespace WebTimetable.Application.Handlers
 {
     public class OutagesHandler : IOutagesHandler
     {
-        private readonly IDbRepository _dbRepository;
-        public OutagesHandler(IDbRepository dbRepository)
+        private readonly IRepository<OutageEntity> _outages;
+        public OutagesHandler(IRepository<OutageEntity> outages)
         {
-            _dbRepository = dbRepository;
+            _outages = outages;
         }
 
-        public async Task ConfigureOutagesAsync(IEnumerable<Lesson> schedule, string outageGroup, string city)
+        public async Task ConfigureOutagesAsync(IEnumerable<Lesson> schedule, string outageGroup, string city, CancellationToken token)
         {
             foreach (var lesson in schedule)
             {
-                var outages = await _dbRepository.FindAsync<OutageEntity>(city, outageGroup, lesson.Date.DayOfWeek);
+                var outages = await _outages.FindAsync(token, city, outageGroup, lesson.Date.DayOfWeek);
                 lesson.Outages =
                     outages?.Outages.Where(x => IsIntervalsIntersects(x.Start, x.End, lesson.Start, lesson.End))
                         .ToList() ?? new List<Outage>();

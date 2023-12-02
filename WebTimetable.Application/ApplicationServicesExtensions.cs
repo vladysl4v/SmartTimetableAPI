@@ -35,7 +35,7 @@ namespace WebTimetable.Application
             {
                 options.UseNpgsql(config.GetConnectionString(connectionStringName));
             });
-            services.AddScoped<IDbRepository, DbRepository>();
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
             return services;
         }

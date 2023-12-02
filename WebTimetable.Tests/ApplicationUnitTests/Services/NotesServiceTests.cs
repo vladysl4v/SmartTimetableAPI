@@ -14,16 +14,16 @@ public class NotesServiceTests
         Expression<Func<NoteEntity, bool>> existing = entity =>
             entity.LessonId == Guid.Empty && entity.Author.Group == string.Empty;
         
-        var dbRepositoryMock = new Mock<IDbRepository>();   
-        dbRepositoryMock.Setup(x => x.Add<NoteEntity>(null!)).Throws<Exception>();
-        dbRepositoryMock.Setup(x => x.Add(It.IsAny<NoteEntity>())).Returns(Task.CompletedTask);
-        dbRepositoryMock.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
-        dbRepositoryMock.Setup(x => x.Remove(It.IsAny<NoteEntity>()));
-        dbRepositoryMock
-            .Setup(x => x.Get(It.IsAny<Expression<Func<NoteEntity, bool>>>()))
+        var mockNotesRepo = new Mock<IRepository<NoteEntity>>();   
+        mockNotesRepo.Setup(x => x.AddAsync(null!, CancellationToken.None)).Throws<Exception>();
+        mockNotesRepo.Setup(x => x.AddAsync(It.IsAny<NoteEntity>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+        mockNotesRepo.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+        mockNotesRepo.Setup(x => x.Remove(It.IsAny<NoteEntity>()));
+        mockNotesRepo
+            .Setup(x => x.Where(It.IsAny<Expression<Func<NoteEntity, bool>>>()))
             .Returns(new List<NoteEntity>().AsQueryable());
         
-        _notesService = new NotesService(dbRepositoryMock.Object);
+        _notesService = new NotesService(mockNotesRepo.Object);
     }
     
     [Fact]
@@ -47,13 +47,12 @@ public class NotesServiceTests
         {
             NoteId = Guid.NewGuid()
         };
-        var dbRepositoryMock = new Mock<IDbRepository>();   
-        dbRepositoryMock
-            .Setup(x => x.Get(It.IsAny<Expression<Func<NoteEntity, bool>>>()))
+        var mockNotesRepo = new Mock<IRepository<NoteEntity>>();   
+        mockNotesRepo
+            .Setup(x => x.Where(It.IsAny<Expression<Func<NoteEntity, bool>>>()))
             .Returns(new List<NoteEntity> { note }.AsQueryable());
         
-        var notesService = new NotesService(dbRepositoryMock.Object);
-
+        var notesService = new NotesService(mockNotesRepo.Object);
         
         // Act
         var result = await notesService.AddNoteAsync(note, CancellationToken.None);

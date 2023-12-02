@@ -21,10 +21,10 @@ public class UsersServiceTests
         
         var mockGraphClientFactory = new MockGraphClientFactory()
             .Setup(newUserInformation);
-        var dbRepositoryMock = new Mock<IDbRepository>();
-        dbRepositoryMock.Setup(x => x.Get(It.IsAny<Expression<Func<UserEntity, bool>>>()))
+        var mockUsersRepo = new Mock<IRepository<UserEntity>>();
+        mockUsersRepo.Setup(x => x.Where(It.IsAny<Expression<Func<UserEntity, bool>>>()))
             .Returns(new List<UserEntity> { oldUserInformationInDatabase }.AsQueryable());
-        var usersService = new UsersService(mockGraphClientFactory.CreateClient(), dbRepositoryMock.Object);
+        var usersService = new UsersService(mockGraphClientFactory.CreateClient(), mockUsersRepo.Object);
         
         // Act
         var user = await usersService.GetUser(CancellationToken.None);
@@ -45,8 +45,8 @@ public class UsersServiceTests
         
         var mockGraphClientFactory = new MockGraphClientFactory()
             .Setup(newUserInformation);
-        var dbRepositoryMock = new Mock<IDbRepository>();
-        dbRepositoryMock.Setup(x => x.Get(It.IsAny<Expression<Func<UserEntity, bool>>>()))
+        var dbRepositoryMock = new Mock<IRepository<UserEntity>>();
+        dbRepositoryMock.Setup(x => x.Where(It.IsAny<Expression<Func<UserEntity, bool>>>()))
             .Returns(new List<UserEntity>().AsQueryable());
         var usersService = new UsersService(mockGraphClientFactory.CreateClient(), dbRepositoryMock.Object);
         
@@ -69,8 +69,8 @@ public class UsersServiceTests
         
         var mockGraphClientFactory = new MockGraphClientFactory()
             .Setup(newUserInformation);
-        var dbRepositoryMock = new Mock<IDbRepository>();
-        dbRepositoryMock.Setup(x => x.Get(It.IsAny<Expression<Func<UserEntity, bool>>>()))
+        var dbRepositoryMock = new Mock<IRepository<UserEntity>>();
+        dbRepositoryMock.Setup(x => x.Where(It.IsAny<Expression<Func<UserEntity, bool>>>()))
             .Returns(new List<UserEntity>().AsQueryable());
         
         var usersService = new UsersService(mockGraphClientFactory.CreateClient(), dbRepositoryMock.Object);

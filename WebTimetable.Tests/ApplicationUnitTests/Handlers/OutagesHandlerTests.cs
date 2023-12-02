@@ -11,8 +11,8 @@ public class DtekOutagesHandlerTests
     
     public DtekOutagesHandlerTests()
     {
-        var mockDbRepository = new Mock<IDbRepository>();
-        mockDbRepository.Setup(x => x.FindAsync<OutageEntity>(It.IsAny<object?[]?>()))
+        var outagesRepoMock = new Mock<IRepository<OutageEntity>>();
+        outagesRepoMock.Setup(x => x.FindAsync(It.IsAny<CancellationToken>() ,It.IsAny<object?[]?>()))
             .ReturnsAsync(() => new OutageEntity
             {
                 Outages = new List<Outage>
@@ -24,7 +24,7 @@ public class DtekOutagesHandlerTests
                 }, 
             });
         
-        _outagesHandler = new OutagesHandler(mockDbRepository.Object);
+        _outagesHandler = new OutagesHandler(outagesRepoMock.Object);
     }
     
     [Fact]
@@ -44,7 +44,7 @@ public class DtekOutagesHandlerTests
         };
         
         // Act
-        await _outagesHandler.ConfigureOutagesAsync(schedule, "Group 1", "Kyiv");
+        await _outagesHandler.ConfigureOutagesAsync(schedule, "Group 1", "Kyiv", CancellationToken.None);
         
         // Assert
         schedule.Should().HaveCount(1);
@@ -70,7 +70,7 @@ public class DtekOutagesHandlerTests
         };
         
         // Act
-        await _outagesHandler.ConfigureOutagesAsync(schedule, "Group 1", "Kyiv");
+        await _outagesHandler.ConfigureOutagesAsync(schedule, "Group 1", "Kyiv", CancellationToken.None);
         
         // Assert
         schedule.Should().HaveCount(1);
