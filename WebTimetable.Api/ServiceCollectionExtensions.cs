@@ -98,7 +98,7 @@ public static class ServiceCollectionExtensions
 
             options.AddPolicy("ScheduleCache", policy => policy.Cache()
                 .Expire(TimeSpan.FromMinutes(1))
-                .SetVaryByQuery(new[] { "studyGroup", "outageGroup", "startDate", "endDate" }));
+                .SetVaryByQuery(new[] { "studyGroup", "outageGroup", "date" }));
         });
         return services;
     }
