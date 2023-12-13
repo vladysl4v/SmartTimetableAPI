@@ -10,7 +10,7 @@ public class AnonymousScheduleRequest
     /// <summary>
     /// Number of outage group, or leave empty to skip.
     /// </summary>
-    public required string OutageGroup { get; init; }
+    public required string OutageGroup { get; init; } = string.Empty;
 
     /// <summary>
     /// The date from which to start the schedule.

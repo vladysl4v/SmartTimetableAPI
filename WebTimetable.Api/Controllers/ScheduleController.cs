@@ -49,7 +49,6 @@ namespace WebTimetable.Api.Controllers
         [HttpGet(ApiEndpoints.Schedule.GetPersonalSchedule)]
         public async Task<IActionResult> GetPersonalSchedule([FromQuery] PersonalScheduleRequest request, CancellationToken token)
         {
-            
             var user = await _usersService.GetUser(token);
             var lessons = await _scheduleService.GetPersonalSchedule(DateTime.Parse(request.Date), request.StudyGroup, request.OutageGroup, user, token);
             if (lessons is null)
