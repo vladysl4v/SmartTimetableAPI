@@ -21,17 +21,12 @@ public class OutageFactoryTests
 
        var sortedGroups = allGroups.ToDictionary(group => int.Parse(group.Key),
             group => group.Value.ToDictionary(item => ConvertToDayOfWeek(item.Key),
-                item => item.Value.Where(x => x.IsDefinite is not null).ToList()));
+                item => item.Value));
        
        // Assert
        sortedGroups.Should().NotBeNull();
        sortedGroups.Should().HaveCount(2);
        sortedGroups.Should().AllSatisfy(pair => pair.Value.Should().HaveCount(7));
-       sortedGroups.Should()
-           .AllSatisfy(pair => pair.Value.Should()
-               .AllSatisfy(x => x.Value.Should()
-                   .AllSatisfy(y => y.IsDefinite.Should()
-                       .NotBeNull()))); 
     }
     
     [Fact]

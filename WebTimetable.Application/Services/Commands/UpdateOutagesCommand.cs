@@ -114,7 +114,7 @@ public partial class UpdateOutagesCommand : IJob
 
         return allGroups.ToDictionary(group => int.Parse(group.Key),
                 group => group.Value.ToDictionary(item => ConvertToDayOfWeek(item.Key),
-                    item => item.Value.Where(x => x.IsDefinite is not null).ToList()));
+                    item => item.Value));
     }
 
     private DayOfWeek ConvertToDayOfWeek(string value)

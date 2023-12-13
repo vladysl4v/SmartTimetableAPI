@@ -16,6 +16,11 @@ namespace WebTimetable.Application.Deserializers
                     "maybe" => false,
                     _ => null
                 };
+                
+                if (isDefinite is null)
+                {
+                    continue;
+                }
                 int time = int.Parse(pair.Key);
 
                 if (!TimeOnly.TryParseExact(time.ToString(), "%H", out var outageEnd))
@@ -24,7 +29,7 @@ namespace WebTimetable.Application.Deserializers
                 }
                 output.Add(new Outage
                 {
-                    IsDefinite = isDefinite,
+                    IsDefinite = isDefinite.Value,
                     Start = TimeOnly.ParseExact((time - 1).ToString(), "%H"),
                     End = outageEnd,
                 });
