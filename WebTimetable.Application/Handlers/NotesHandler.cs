@@ -14,7 +14,7 @@ public class NotesHandler : INotesHandler
         _notes = notes;
     }
 
-    public void ConfigureNotes(IEnumerable<Lesson> schedule, string userGroup, Guid userId)
+    public void ConfigureNotes(IEnumerable<StudentLesson> schedule, string userGroup, Guid userId)
     {
         foreach (var lesson in schedule)
         {

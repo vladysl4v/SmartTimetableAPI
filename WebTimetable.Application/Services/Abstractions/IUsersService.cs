@@ -5,6 +5,6 @@ namespace WebTimetable.Application.Services.Abstractions;
 
 public interface IUsersService
 {
-    public Task<UserEntity?> GetUser(CancellationToken token);
+    public Task<UserEntity?> GetUserAsync(CancellationToken token);
 
 }

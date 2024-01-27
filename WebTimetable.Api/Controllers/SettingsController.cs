@@ -1,8 +1,9 @@
-﻿using Asp.Versioning;
+﻿using System.Diagnostics;
+using Asp.Versioning;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
-
+using Microsoft.Identity.Web;
 using WebTimetable.Application.Services.Abstractions;
 using WebTimetable.Contracts.Requests;
 using WebTimetable.Contracts.Responses;
@@ -19,30 +20,16 @@ namespace WebTimetable.Api.Controllers
         {
             _settingsService = settingsService;
         }
-
-        [ProducesResponseType(typeof(FiltersResponse), StatusCodes.Status200OK)]
+        
+        [ProducesResponseType(typeof(StudentFiltersResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorDetailsResponse), StatusCodes.Status500InternalServerError)]
         [OutputCache(PolicyName = "SettingsCache")]
-        [HttpGet(ApiEndpoints.Settings.GetFilters)]
-        public async Task<IActionResult> GetFilters(CancellationToken token)
+        [HttpGet(ApiEndpoints.Settings.GetOutageGroups)]
+        public IActionResult GetOutageGroups(CancellationToken token)
         {
-            var response = new FiltersResponse
+            var response = new FilterResponse
             {
-                Filters = await _settingsService.GetFilters(token)
-            };
-            return Ok(response);
-        }
-
-        [ProducesResponseType(typeof(StudyGroupsResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ErrorDetailsResponse), StatusCodes.Status500InternalServerError)]
-        [OutputCache(PolicyName = "SettingsCache")]
-        [HttpGet(ApiEndpoints.Settings.GetStudyGroups)]
-        public async Task<IActionResult> GetStudyGroups([FromQuery] StudyGroupsRequest request, CancellationToken token)
-        {
-            var response = new StudyGroupsResponse
-            {
-                StudyGroups = await _settingsService.GetStudyGroups(request.Faculty, request.Course, request.EducationForm, token)
+                Filter = _settingsService.GetOutageGroups()
             };
             return Ok(response);
         }

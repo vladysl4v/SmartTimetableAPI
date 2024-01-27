@@ -18,7 +18,7 @@ public class UsersService : IUsersService
         _users = users;
     }
 
-    public async Task<UserEntity?> GetUser(CancellationToken token)
+    public async Task<UserEntity?> GetUserAsync(CancellationToken token)
     {
         var user = await _graphClient.Me.GetAsync((requestConfiguration) =>
         {

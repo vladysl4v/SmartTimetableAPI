@@ -1,9 +1,10 @@
 ﻿using WebTimetable.Application.Entities;
+using WebTimetable.Application.Models.Abstractions;
 
 
 namespace WebTimetable.Application.Models
 {
-    public class Lesson
+    public class StudentLesson : ILesson
     {
         public Guid Id { get; set; }
         public DateOnly Date { get; set; }

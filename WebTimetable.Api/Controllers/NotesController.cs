@@ -32,7 +32,7 @@ namespace WebTimetable.Api.Controllers
         [HttpPost(ApiEndpoints.Notes.AddNote)]
         public async Task<IActionResult> AddNote([FromBody] AddNoteRequest request, CancellationToken token)
         {
-            var user = await _usersService.GetUser(token);
+            var user = await _usersService.GetUserAsync(token);
             if (user is null)
             {
                 return Unauthorized("User department cannot be accessed by server.");

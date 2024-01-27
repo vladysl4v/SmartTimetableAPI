@@ -1,6 +1,6 @@
 ﻿namespace WebTimetable.Contracts.Requests;
 
-public class PersonalScheduleRequest
+public class StudentScheduleRequest
 {
     /// <summary>
     /// Identifier of user study group.

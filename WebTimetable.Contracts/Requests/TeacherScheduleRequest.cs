@@ -1,14 +1,14 @@
 ﻿namespace WebTimetable.Contracts.Requests;
 
-public class AnonymousScheduleRequest
+public class TeacherScheduleRequest
 {
     /// <summary>
-    /// Identifier of user study group.
+    /// Teacher identifier.
     /// </summary>
-    public required string StudyGroup { get; init; }
+    public required string TeacherId { get; init; }
 
     /// <summary>
-    /// Number of outage group, or leave empty to skip.
+    /// Number of outage group, or leave zero to skip.
     /// </summary>
     public required string OutageGroup { get; init; } = string.Empty;
 
@@ -16,5 +16,5 @@ public class AnonymousScheduleRequest
     /// The date from which to start the schedule.
     /// </summary>
     public required string Date { get; init; }
-    
+
 }

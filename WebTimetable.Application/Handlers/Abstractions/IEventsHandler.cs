@@ -1,9 +1,10 @@
 using WebTimetable.Application.Models;
+using WebTimetable.Application.Models.Abstractions;
 
 namespace WebTimetable.Application.Handlers.Abstractions
 {
     public interface IEventsHandler
     {
-        public Task ConfigureEvents(IEnumerable<Lesson> schedule);
+        public Task ConfigureEventsAsync(IEnumerable<ILesson> lessons, CancellationToken token);
     }
 }

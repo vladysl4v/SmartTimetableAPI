@@ -3,11 +3,11 @@
 
 namespace WebTimetable.Application.Deserializers
 {
-    public class LessonFactory : FactoryConverter<Lesson, Dictionary<string, string>>
+    public class StudentLessonFactory : FactoryConverter<StudentLesson, Dictionary<string, string>>
     {
-        public override Lesson CreateAndPopulate(Type objectType, Dictionary<string, string> arguments)
+        public override StudentLesson CreateAndPopulate(Type objectType, Dictionary<string, string> arguments)
         {
-            return new Lesson
+            return new StudentLesson
             {
                 Discipline = arguments["discipline"],
                 StudyType = arguments["study_type"],

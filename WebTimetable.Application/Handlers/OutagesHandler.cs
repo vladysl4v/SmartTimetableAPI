@@ -1,6 +1,7 @@
 using WebTimetable.Application.Entities;
 using WebTimetable.Application.Handlers.Abstractions;
 using WebTimetable.Application.Models;
+using WebTimetable.Application.Models.Abstractions;
 using WebTimetable.Application.Repositories;
 
 namespace WebTimetable.Application.Handlers
@@ -13,7 +14,7 @@ namespace WebTimetable.Application.Handlers
             _outages = outages;
         }
 
-        public async Task ConfigureOutagesAsync(IEnumerable<Lesson> schedule, string outageGroup, string city, CancellationToken token)
+        public async Task ConfigureOutagesAsync(IEnumerable<ILesson> schedule, string outageGroup, string city, CancellationToken token)
         {
             foreach (var lesson in schedule)
             {

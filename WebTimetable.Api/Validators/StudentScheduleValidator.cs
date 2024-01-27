@@ -3,9 +3,9 @@ using WebTimetable.Contracts.Requests;
 
 namespace WebTimetable.Api.Validators;
 
-public class AnonymousScheduleValidator : AbstractValidator<AnonymousScheduleRequest>
+public class StudentScheduleValidator : AbstractValidator<StudentScheduleRequest>
 {
-    public AnonymousScheduleValidator()
+    public StudentScheduleValidator()
     {
         RuleFor(x => x.StudyGroup)
             .NotEmpty()
@@ -25,6 +25,6 @@ public class AnonymousScheduleValidator : AbstractValidator<AnonymousScheduleReq
 
         RuleFor(x => x.Date)
             .Must(x=> DateTime.TryParse(x, out _))
-            .WithMessage("The given value is not valid DateTime.");
+            .WithMessage("The given value is not valid date.");
     }
 }

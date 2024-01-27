@@ -18,10 +18,11 @@ namespace WebTimetable.Application
             services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<INotesHandler, NotesHandler>();
             services.AddScoped<IEventsHandler, TeamsEventsHandler>();
-            services.AddScoped<IScheduleHandler, VnzOsvitaScheduleHandler>();
+            services.AddScoped<IRequestHandler, VnzOsvitaRequestsHandler>();
             services.AddScoped<IOutagesHandler, OutagesHandler>();
             services.AddScoped<INotesService, NotesService>();
-            services.AddScoped<IScheduleService, ScheduleService>();
+            services.AddScoped<IStudentService, StudentService>();
+            services.AddScoped<ITeacherService, TeacherService>();
             services.AddScoped<ISettingsService, SettingsService>();
             services.AddScoped<UpdateOutagesCommand>();
 

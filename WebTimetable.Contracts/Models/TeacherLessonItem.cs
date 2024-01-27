@@ -1,6 +1,6 @@
-﻿namespace WebTimetable.Contracts.Models;
+namespace WebTimetable.Contracts.Models;
 
-public class LessonItem
+public class TeacherLessonItem
 {
     public Guid Id { get; init; }
     public DateOnly Date { get; init; }
@@ -9,9 +9,7 @@ public class LessonItem
     public string Discipline { get; init; }
     public string StudyType { get; init; }
     public string Cabinet { get; init; }
-    public string Teacher { get; init; }
-    public string Subgroup { get; init; }
+    public string StudyGroup { get; init; }
     public List<EventItem>? Meetings { get; set; }
-    public List<NoteItem>? Notes { get; init; }
     public List<OutageItem> Outages { get; init; }
 }
