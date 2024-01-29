@@ -27,7 +27,7 @@ public class UsersServiceTests
         var usersService = new UsersService(mockGraphClientFactory.CreateClient(), mockUsersRepo.Object);
         
         // Act
-        var user = await usersService.GetUser(CancellationToken.None);
+        var user = await usersService.GetUserAsync(CancellationToken.None);
         
         // Assert
         user.Should().NotBeNull();
@@ -51,7 +51,7 @@ public class UsersServiceTests
         var usersService = new UsersService(mockGraphClientFactory.CreateClient(), dbRepositoryMock.Object);
         
         // Act
-        var user = await usersService.GetUser(CancellationToken.None);
+        var user = await usersService.GetUserAsync(CancellationToken.None);
         
         // Assert
         user.Should().NotBeNull();
@@ -76,7 +76,7 @@ public class UsersServiceTests
         var usersService = new UsersService(mockGraphClientFactory.CreateClient(), dbRepositoryMock.Object);
         
         // Act
-        var user = await usersService.GetUser(CancellationToken.None);
+        var user = await usersService.GetUserAsync(CancellationToken.None);
         
         // Assert
         user.Should().BeNull();

@@ -39,7 +39,7 @@ public class TeamsEventsHandlerTests
         });
         var teamsHandler = new TeamsEventsHandler(mockGraphFactory.CreateClient());
         
-        var lessons = new List<Lesson>
+        var lessons = new List<StudentLesson>
         {
             new()
             {
@@ -68,7 +68,7 @@ public class TeamsEventsHandlerTests
         };
 
         // Act
-        await teamsHandler.ConfigureEvents(lessons);
+        await teamsHandler.ConfigureEventsAsync(lessons, CancellationToken.None);
 
         // Assert
         lessons.Should().HaveCount(3);
@@ -83,7 +83,7 @@ public class TeamsEventsHandlerTests
         var mockGraphFactory = new MockGraphClientFactory().Setup((EventCollectionResponse)null!);
         var mockTeamsHandler = new TeamsEventsHandler(mockGraphFactory.CreateClient());
         
-        var lessons = new List<Lesson>
+        var lessons = new List<StudentLesson>
         {
             new()
             {
@@ -96,7 +96,7 @@ public class TeamsEventsHandlerTests
         };
         
         // Act
-        await mockTeamsHandler.ConfigureEvents(lessons);
+        await mockTeamsHandler.ConfigureEventsAsync(lessons, CancellationToken.None);
         
         // Assert
         lessons.Should().HaveCount(1);
@@ -110,10 +110,10 @@ public class TeamsEventsHandlerTests
         var mockGraphFactory = new MockGraphClientFactory().Setup((EventCollectionResponse)null!);
         var mockTeamsHandler = new TeamsEventsHandler(mockGraphFactory.CreateClient());
         
-        var lessons = new List<Lesson>();
+        var lessons = new List<StudentLesson>();
         
         // Act
-        var act = async () => await mockTeamsHandler.ConfigureEvents(lessons);
+        var act = async () => await mockTeamsHandler.ConfigureEventsAsync(lessons, CancellationToken.None);
         
         // Assert
         await act.Should().NotThrowAsync();

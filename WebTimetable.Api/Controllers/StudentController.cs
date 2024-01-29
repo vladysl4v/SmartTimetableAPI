@@ -77,16 +77,16 @@ namespace WebTimetable.Api.Controllers
             return Ok(response);
         }
 
-        [ProducesResponseType(typeof(FilterResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(FiltersResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorDetailsResponse), StatusCodes.Status500InternalServerError)]
         [OutputCache(PolicyName = "SettingsCache")]
         [HttpGet(ApiEndpoints.Student.GetStudyGroups)]
         public async Task<IActionResult> GetStudyGroups([FromQuery] StudyGroupsRequest request, CancellationToken token)
         {
-            var response = new FilterResponse
+            var response = new FiltersResponse
             {
-                Filter = await _studentService.GetStudyGroupsAsync(request.Faculty, request.Course, request.EducationForm, token)
+                Filters = await _studentService.GetStudyGroupsAsync(request.Faculty, request.Course, request.EducationForm, token)
             };
             return Ok(response);
         }

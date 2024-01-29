@@ -42,7 +42,7 @@ public class NotesHandlerTests
     public void NotesHandler_ConfigureNotes_ReturnLessonWithNotes()
     {
         // Arrange
-        var schedule = new List<Lesson>
+        var schedule = new List<StudentLesson>
         {
             new()
             {
@@ -66,7 +66,7 @@ public class NotesHandlerTests
     public void NotesHandler_ConfigureNotes_ReturnLessonWithoutNotes()
     {
         // Arrange
-        var schedule = new List<Lesson>
+        var schedule = new List<StudentLesson>
         {
             new()
             {

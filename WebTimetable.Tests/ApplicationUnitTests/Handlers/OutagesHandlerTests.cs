@@ -31,7 +31,7 @@ public class DtekOutagesHandlerTests
     public async Task DtekOutagesHandler_ConfigureOutages_ReturnsLessonWithOutages()
     {
         // Arrange
-        var schedule = new List<Lesson>
+        var schedule = new List<StudentLesson>
         {
             new()
             {
@@ -57,7 +57,7 @@ public class DtekOutagesHandlerTests
     public async Task DtekOutagesHandler_ConfigureOutages_ReturnsLessonWithoutOutages()
     {
         // Arrange
-        var schedule = new List<Lesson>
+        var schedule = new List<StudentLesson>
         {
             new()
             {

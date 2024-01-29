@@ -9,7 +9,7 @@ public class MappingExtensionsTests
     public void MappingExtensions_MapToLessonItems_ReturnsLessonItems()
     {
         // Arrange
-        var lessons = new List<Lesson>
+        var lessons = new List<StudentLesson>
         {
             new()
             {

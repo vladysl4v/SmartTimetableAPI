@@ -25,11 +25,11 @@ namespace WebTimetable.Api.Controllers
         [ProducesResponseType(typeof(ErrorDetailsResponse), StatusCodes.Status500InternalServerError)]
         [OutputCache(PolicyName = "SettingsCache")]
         [HttpGet(ApiEndpoints.Settings.GetOutageGroups)]
-        public IActionResult GetOutageGroups(CancellationToken token)
+        public IActionResult GetOutageGroups()
         {
-            var response = new FilterResponse
+            var response = new FiltersResponse
             {
-                Filter = _settingsService.GetOutageGroups()
+                Filters = _settingsService.GetOutageGroups()
             };
             return Ok(response);
         }

@@ -24,7 +24,7 @@ public class NotesControllerTests
         mockNotesService.Setup(x => x.AddNoteAsync(It.IsAny<NoteEntity>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
         var mockUsersService = new Mock<IUsersService>();
-        mockUsersService.Setup(x => x.GetUser(It.IsAny<CancellationToken>()))
+        mockUsersService.Setup(x => x.GetUserAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(new UserEntity
             {
                 Id = Guid.NewGuid(),
@@ -58,7 +58,7 @@ public class NotesControllerTests
         mockNotesService.Setup(x => x.AddNoteAsync(It.IsAny<NoteEntity>(), It.IsAny<CancellationToken>()))
             .Verifiable();
         var mockUsersService = new Mock<IUsersService>();
-        mockUsersService.Setup(x => x.GetUser(It.IsAny<CancellationToken>()))
+        mockUsersService.Setup(x => x.GetUserAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(new UserEntity() { IsRestricted = true });
         var controller = new NotesController(mockNotesService.Object, mockUsersService.Object);
 
@@ -84,7 +84,7 @@ public class NotesControllerTests
         mockNotesService.Setup(x => x.AddNoteAsync(It.IsAny<NoteEntity>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(false);
         var mockUsersService = new Mock<IUsersService>();
-        mockUsersService.Setup(x => x.GetUser(It.IsAny<CancellationToken>()))
+        mockUsersService.Setup(x => x.GetUserAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(new UserEntity
             {
                 Id = Guid.NewGuid(),
@@ -114,7 +114,7 @@ public class NotesControllerTests
         mockNotesService.Setup(x => x.AddNoteAsync(It.IsAny<NoteEntity>(), It.IsAny<CancellationToken>()))
             .Verifiable();
         var mockUsersService = new Mock<IUsersService>();
-        mockUsersService.Setup(x => x.GetUser(It.IsAny<CancellationToken>()))
+        mockUsersService.Setup(x => x.GetUserAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(null as UserEntity);
         var controller = new NotesController(mockNotesService.Object, mockUsersService.Object);
 

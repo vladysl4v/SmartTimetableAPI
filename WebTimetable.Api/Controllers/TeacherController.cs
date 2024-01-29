@@ -43,7 +43,7 @@ public class TeacherController : ControllerBase
     [Authorize]
     [RequiredScope("access_as_user")]
     [HttpGet(ApiEndpoints.Teacher.GetPersonalizedSchedule)]
-    public async Task<IActionResult> GetPersonalSchedule([FromQuery] StudentScheduleRequest request, CancellationToken token)
+    public async Task<IActionResult> GetPersonalSchedule([FromQuery] TeacherScheduleRequest request, CancellationToken token)
     {
         var user = await _usersService.GetUserAsync(token);
         if (user is null)
@@ -51,7 +51,7 @@ public class TeacherController : ControllerBase
             return Forbid();
         }
         
-        var lessons = await _teacherService.GetScheduleAsync(DateTime.Parse(request.Date), request.StudyGroup, request.OutageGroup, token, user);
+        var lessons = await _teacherService.GetScheduleAsync(DateTime.Parse(request.Date), request.TeacherId, request.OutageGroup, token, user);
         
         var response = new TeacherScheduleResponse
         {
@@ -66,37 +66,37 @@ public class TeacherController : ControllerBase
     [HttpGet(ApiEndpoints.Teacher.GetFaculties)]
     public async Task<IActionResult> GetFaculties(CancellationToken token)
     {
-        var response = new FilterResponse
+        var response = new FiltersResponse
         {
-            Filter = await _teacherService.GetFacultiesAsync(token)
+            Filters = await _teacherService.GetFacultiesAsync(token)
         };
         return Ok(response);
     }
 
-    [ProducesResponseType(typeof(FilterResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(FiltersResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorDetailsResponse), StatusCodes.Status500InternalServerError)]
     [OutputCache(PolicyName = "SettingsCache")]
     [HttpGet(ApiEndpoints.Teacher.GetChairs)]
     public async Task<IActionResult> GetChairs([FromQuery] ChairsRequest request, CancellationToken token)
     {
-        var response = new FilterResponse
+        var response = new FiltersResponse
         {
-            Filter = await _teacherService.GetChairsAsync(request.Faculty, token)
+            Filters = await _teacherService.GetChairsAsync(request.Faculty, token)
         };
         return Ok(response);
     }
     
-    [ProducesResponseType(typeof(FilterResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(FiltersResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorDetailsResponse), StatusCodes.Status500InternalServerError)]
     [OutputCache(PolicyName = "SettingsCache")]
     [HttpGet(ApiEndpoints.Teacher.GetEmployees)]
     public async Task<IActionResult> GetEmployees([FromQuery] EmployeesRequest request, CancellationToken token)
     {
-        var response = new FilterResponse
+        var response = new FiltersResponse
         {
-            Filter = await _teacherService.GetEmployeesAsync(request.Faculty, request.Chair, token)
+            Filters = await _teacherService.GetEmployeesAsync(request.Faculty, request.Chair, token)
         };
         return Ok(response);
     }

@@ -3,14 +3,14 @@ using WebTimetable.Contracts.Requests;
 
 namespace WebTimetable.Tests.ApiUnitTests.Validators;
 
-public class AnonymousScheduleValidatorTests
+public class StudentScheduleValidatorTests
 {
     [Fact]
-    public void AnonymousScheduleRequest_ShouldBeValid()
+    public void StudentScheduleRequest_ShouldBeValid()
     {
         // Arrange
-        var validator = new AnonymousScheduleValidator();
-        var request = new AnonymousScheduleRequest
+        var validator = new StudentScheduleValidator();
+        var request = new StudentScheduleRequest
         {
             StudyGroup = "Test group",
             OutageGroup = "Test outage group",
@@ -18,7 +18,7 @@ public class AnonymousScheduleValidatorTests
         };
         
         // Act
-        var result = validator.Validate(request);  
+        var result = validator.Validate(request);
         
         // Assert
         result.IsValid.Should().BeTrue();
@@ -29,11 +29,11 @@ public class AnonymousScheduleValidatorTests
     [InlineData("Test study group", "Test outage group or test outage group or test outage group or test outage group or test outage group or test outage group or test outage group", "2001-09-11")]
     [InlineData("Test study group", "Test outage group", "")]
     [InlineData("Test study group", "Test outage group", "11-CUCUMBER-2001")]
-    public void AnonymousScheduleRequest_ShouldBeNotValid(string studyGroup, string outageGroup, string date)
+    public void StudentScheduleRequest_ShouldBeNotValid(string studyGroup, string outageGroup, string date)
     {
         // Arrange
-        var validator = new AnonymousScheduleValidator();
-        var request = new AnonymousScheduleRequest
+        var validator = new StudentScheduleValidator();
+        var request = new StudentScheduleRequest
         {
             StudyGroup = studyGroup,
             OutageGroup = outageGroup,
