@@ -102,7 +102,7 @@ public class MappingExtensionsTests
         };
 
         // Act
-        var lessonItems = lessons.ToLessonItems();
+        var lessonItems = lessons.ToLessonDTO();
 
         // Assert
         lessonItems.Should().NotBeNull();

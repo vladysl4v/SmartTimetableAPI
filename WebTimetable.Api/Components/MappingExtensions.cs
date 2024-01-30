@@ -1,7 +1,7 @@
 using Riok.Mapperly.Abstractions;
 using WebTimetable.Application.Entities;
 using WebTimetable.Application.Models;
-using WebTimetable.Contracts.Models;
+using WebTimetable.Contracts.DataTransferObjects;
 using WebTimetable.Contracts.Requests;
 using WebTimetable.Contracts.Responses;
 
@@ -20,17 +20,19 @@ public static partial class MappingExtensions
     [MapProperty(nameof(@NoteEntity.Author.FullName), nameof(NoteResponse.AuthorName))]
     public static partial NoteResponse ToNoteResponse(this NoteEntity note);
     
-    public static partial List<StudentLessonItem> ToLessonItems(this List<StudentLesson> lessons);
-    public static partial List<TeacherLessonItem> ToLessonItems(this List<TeacherLesson> lessons);
+    public static partial List<StudentLessonDTO> ToLessonDTO(this List<StudentLesson> lessons);
+    public static partial List<TeacherLessonDTO> ToLessonDTO(this List<TeacherLesson> lessons);
     
-    [MapProperty(nameof(Event.StartTime), nameof(EventItem.Start))]
-    [MapProperty(nameof(Event.EndTime), nameof(EventItem.End))]
-    private static partial EventItem ToEventItem(this Event meeting);
+    [MapProperty(nameof(Event.StartTime), nameof(EventDTO.Start))]
+    [MapProperty(nameof(Event.EndTime), nameof(EventDTO.End))]
+    private static partial EventDTO ToEventDTO(this Event meeting);
     
-    [MapProperty(nameof(StudentLesson.Events), nameof(StudentLessonItem.Meetings))]
-    private static partial StudentLessonItem ToLessonItem(this StudentLesson studentLesson);
-    private static partial TeacherLessonItem ToLessonItem(this TeacherLesson studentLesson);
+    [MapProperty(nameof(StudentLesson.Events), nameof(StudentLessonDTO.Meetings))]
+    private static partial StudentLessonDTO ToLessonDTO(this StudentLesson studentLesson);
+    
+    [MapProperty(nameof(TeacherLesson.Events), nameof(TeacherLessonDTO.Meetings))]
+    private static partial TeacherLessonDTO ToLessonDTO(this TeacherLesson studentLesson);
     private static partial NoteEntity MapToNoteEntity(this AddNoteRequest request);
-    private static partial NoteItem ToNoteItem(this Note note);
-    private static partial OutageItem ToOutageItem(this Outage outage);
+    private static partial NoteDTO ToNoteDTO(this Note note);
+    private static partial OutageDTO ToOutageDTO(this Outage outage);
 }

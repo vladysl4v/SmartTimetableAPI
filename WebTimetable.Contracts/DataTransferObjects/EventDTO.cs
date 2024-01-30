@@ -1,6 +1,6 @@
-﻿namespace WebTimetable.Contracts.Models;
+﻿namespace WebTimetable.Contracts.DataTransferObjects;
 
-public class EventItem
+public class EventDTO
 {
     public string Title { get; init; }
     public TimeOnly Start { get; init; }

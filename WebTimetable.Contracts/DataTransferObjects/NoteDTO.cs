@@ -1,6 +1,6 @@
-﻿namespace WebTimetable.Contracts.Models;
+﻿namespace WebTimetable.Contracts.DataTransferObjects;
 
-public class NoteItem
+public class NoteDTO
 {
     public Guid NoteId { get; init; }
     public Guid AuthorId { get; init; }

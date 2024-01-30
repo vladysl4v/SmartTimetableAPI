@@ -1,8 +1,8 @@
-﻿using WebTimetable.Contracts.Models;
+﻿using WebTimetable.Contracts.DataTransferObjects;
 
 namespace WebTimetable.Contracts.Responses;
 
 public class StudentScheduleResponse
 {
-    public List<StudentLessonItem> Schedule { get; init; }
+    public List<StudentLessonDTO> Schedule { get; init; }
 }

@@ -1,6 +1,6 @@
-namespace WebTimetable.Contracts.Models;
+namespace WebTimetable.Contracts.DataTransferObjects;
 
-public class TeacherLessonItem
+public class TeacherLessonDTO
 {
     public Guid Id { get; init; }
     public DateOnly Date { get; init; }
@@ -10,6 +10,6 @@ public class TeacherLessonItem
     public string StudyType { get; init; }
     public string Cabinet { get; init; }
     public string StudyGroup { get; init; }
-    public List<EventItem>? Meetings { get; set; }
-    public List<OutageItem> Outages { get; init; }
+    public List<EventDTO>? Meetings { get; set; }
+    public List<OutageDTO> Outages { get; init; }
 }

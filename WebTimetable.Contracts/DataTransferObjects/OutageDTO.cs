@@ -1,6 +1,6 @@
-﻿namespace WebTimetable.Contracts.Models;
+﻿namespace WebTimetable.Contracts.DataTransferObjects;
 
-public class OutageItem
+public class OutageDTO
 {
     public bool IsDefinite { get; init; }
     public TimeOnly Start { get; init; }

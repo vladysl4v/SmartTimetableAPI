@@ -32,7 +32,7 @@ public class TeacherController : ControllerBase
         
         var response = new TeacherScheduleResponse
         {
-            Schedule = lessons.ToLessonItems()
+            Schedule = lessons.ToLessonDTO()
         };
         return Ok(response);
     }
@@ -55,7 +55,7 @@ public class TeacherController : ControllerBase
         
         var response = new TeacherScheduleResponse
         {
-            Schedule = lessons.ToLessonItems()
+            Schedule = lessons.ToLessonDTO()
         };
         return Ok(response);
     }

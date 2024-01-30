@@ -36,7 +36,7 @@ namespace WebTimetable.Api.Controllers
             
             var response = new StudentScheduleResponse
             {
-                Schedule = lessons.ToLessonItems()
+                Schedule = lessons.ToLessonDTO()
             };
             return Ok(response);
         }
@@ -59,7 +59,7 @@ namespace WebTimetable.Api.Controllers
             
             var response = new StudentScheduleResponse
             {
-                Schedule = lessons.ToLessonItems()
+                Schedule = lessons.ToLessonDTO()
             };
             return Ok(response);
         }
