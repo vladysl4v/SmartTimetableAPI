@@ -30,13 +30,13 @@ public class StudentService : IStudentService
         
         if (outageGroup != string.Empty)
         {
-            await _outages.ConfigureOutagesAsync(lessons, outageGroup, "Kyiv", token);
+            await _outages.ConfigureOutagesAsync(lessons, outageGroup, token);
         }
         if (user is null)
         {
             return lessons;
         }
-        _notes.ConfigureNotes(lessons, user.Group, user.Id);
+        _notes.ConfigureNotes(lessons, user.Group);
         await _events.ConfigureEventsAsync(lessons, token);
         return lessons;
     }

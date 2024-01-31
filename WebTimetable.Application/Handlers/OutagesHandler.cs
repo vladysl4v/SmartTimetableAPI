@@ -1,26 +1,25 @@
-using WebTimetable.Application.Entities;
 using WebTimetable.Application.Handlers.Abstractions;
 using WebTimetable.Application.Models;
 using WebTimetable.Application.Models.Abstractions;
-using WebTimetable.Application.Repositories;
+using WebTimetable.Application.Repositories.Abstractions;
 
 namespace WebTimetable.Application.Handlers
 {
     public class OutagesHandler : IOutagesHandler
     {
-        private readonly IRepository<OutageEntity> _outages;
-        public OutagesHandler(IRepository<OutageEntity> outages)
+        private readonly IOutagesRepository _outagesRepository;
+        public OutagesHandler(IOutagesRepository outagesRepository)
         {
-            _outages = outages;
+            _outagesRepository = outagesRepository;
         }
 
-        public async Task ConfigureOutagesAsync(IEnumerable<ILesson> schedule, string outageGroup, string city, CancellationToken token)
+        public async Task ConfigureOutagesAsync(IEnumerable<ILesson> schedule, string outageGroup, CancellationToken token)
         {
             foreach (var lesson in schedule)
             {
-                var outages = await _outages.FindAsync(token, city, outageGroup, lesson.Date.DayOfWeek);
+                var outages = await _outagesRepository.GetOutagesByDayOfWeekAsync(lesson.Date.DayOfWeek, outageGroup, token);
                 lesson.Outages =
-                    outages?.Outages.Where(x => IsIntervalsIntersects(x.Start, x.End, lesson.Start, lesson.End))
+                    outages?.Where(x => IsIntervalsIntersects(x.Start, x.End, lesson.Start, lesson.End))
                         .ToList() ?? new List<Outage>();
             }
         }

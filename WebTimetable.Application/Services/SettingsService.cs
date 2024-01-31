@@ -1,5 +1,6 @@
 ﻿using WebTimetable.Application.Entities;
 using WebTimetable.Application.Repositories;
+using WebTimetable.Application.Repositories.Abstractions;
 using WebTimetable.Application.Services.Abstractions;
 
 
@@ -7,15 +8,14 @@ namespace WebTimetable.Application.Services;
 
 public class SettingsService : ISettingsService
 {
-    private readonly IRepository<OutageEntity> _outages;
-    public SettingsService(IRepository<OutageEntity> outages)
+    private readonly IOutagesRepository _outagesRepository;
+    public SettingsService(IOutagesRepository outagesRepository)
     {
-        _outages = outages;
+        _outagesRepository = outagesRepository;
     }
     
     public List<KeyValuePair<string, string>> GetOutageGroups()
     {
-        return _outages.Where(x => x.City == "Kyiv").Select(y => y.Group)
-            .Distinct().ToDictionary(key => key, value => value).ToList();
+        return _outagesRepository.GetOutageGroups();
     }
 }

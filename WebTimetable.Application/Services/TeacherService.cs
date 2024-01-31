@@ -27,7 +27,7 @@ public class TeacherService : ITeacherService
         
         if (outageGroup != string.Empty)
         {
-            await _outages.ConfigureOutagesAsync(lessons, outageGroup, "Kyiv", token);
+            await _outages.ConfigureOutagesAsync(lessons, outageGroup, token);
         }
         if (user is null)
         {

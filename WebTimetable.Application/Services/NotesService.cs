@@ -1,43 +1,35 @@
-﻿using System.Linq.Expressions;
-
-using WebTimetable.Application.Entities;
-using WebTimetable.Application.Models;
-using WebTimetable.Application.Repositories;
+﻿using WebTimetable.Application.Entities;
+using WebTimetable.Application.Repositories.Abstractions;
 using WebTimetable.Application.Services.Abstractions;
-
 
 namespace WebTimetable.Application.Services;
 
 public class NotesService : INotesService
 {
-    private readonly IRepository<NoteEntity> _notes;
-    public NotesService(IRepository<NoteEntity> notes)
+    private readonly INotesRepository _notesRepository;
+    public NotesService(INotesRepository notesRepository)
     {
-        _notes = notes;
+        _notesRepository = notesRepository;
     }
 
     public async Task<bool> AddNoteAsync(NoteEntity note, CancellationToken token)
     {
-        var noteExists = _notes.Where(x => x.Author.Id == note.Author.Id && x.LessonId == note.LessonId).Any();
-        if (noteExists)
+        if (_notesRepository.IsNoteExists(note.Author.Id, note.LessonId))
         {
             return false;
         }
-        await _notes.AddAsync(note, token);
-        await _notes.SaveChangesAsync(token);
+        
+        await _notesRepository.AddAsync(note, token);
         return true;
     }
 
     public NoteEntity? GetNoteById(Guid id)
     {
-        Expression<Func<NoteEntity, bool>> expression = entity => entity.NoteId == id;
-
-        return _notes.Where(expression).SingleOrDefault();
+        return _notesRepository.GetNoteById(id);
     }
 
     public async Task RemoveNote(NoteEntity note, CancellationToken token)
     {
-        _notes.Remove(note);
-        await _notes.SaveChangesAsync(token);
+        await _notesRepository.RemoveAsync(note, token);
     }
 }

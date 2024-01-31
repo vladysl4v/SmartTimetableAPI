@@ -7,6 +7,7 @@ using WebTimetable.Application.Deserializers;
 using WebTimetable.Application.Entities;
 using WebTimetable.Application.Models;
 using WebTimetable.Application.Repositories;
+using WebTimetable.Application.Repositories.Abstractions;
 
 namespace WebTimetable.Application.Services.Commands;
 
@@ -14,16 +15,16 @@ public partial class UpdateOutagesCommand : IJob
 {
     private readonly ILogger<UpdateOutagesCommand> _logger;
     private readonly IHttpClientFactory _httpFactory;
-    private readonly IRepository<UserEntity> _users;
-    private readonly IRepository<OutageEntity> _outages;
+    private readonly IUsersRepository _usersRepository;
+    private readonly IOutagesRepository _outagesRepository;
     
-    public UpdateOutagesCommand(IRepository<OutageEntity> outages, IRepository<UserEntity> users, IHttpClientFactory httpFactory,
+    public UpdateOutagesCommand(IOutagesRepository outagesRepository, IUsersRepository usersRepository, IHttpClientFactory httpFactory,
         ILogger<UpdateOutagesCommand> logger)
     {
         _logger = logger;
         _httpFactory = httpFactory;
-        _users = users;
-        _outages = outages;
+        _usersRepository = usersRepository;
+        _outagesRepository = outagesRepository;
     }
 
     public async Task Execute(IJobExecutionContext context)
@@ -53,52 +54,12 @@ public partial class UpdateOutagesCommand : IJob
             _logger.LogCritical("Outages or outage groups are empty.");
             return;
         }
+        await _outagesRepository.AddOutagesAsync(outages, outageGroups, context.CancellationToken);
+        _logger.LogInformation("Outages were successfully updated.");
         
-        var isSuccessful = await FillDatabase(outageGroups, outages, context.CancellationToken);
-        if (isSuccessful)
-        {
-            _logger.LogInformation("Outages were successfully updated.");
-            // TODO: Remove after successful testing
-            await _users.AddAsync(new UserEntity
-            {
-                Id = Guid.NewGuid(),
-                FullName = "Outages updated",
-                Group = "Admin",
-                IsRestricted = false
-            }, context.CancellationToken);
-            await _users.SaveChangesAsync(context.CancellationToken);
-        }
-    }
-    
-    private async Task<bool> FillDatabase(Dictionary<string, string> outageGroups,
-        Dictionary<int, Dictionary<DayOfWeek, List<Outage>>> outages, CancellationToken token)
-    {
-        try
-        {
-            _outages.RemoveRange(_outages.GetAll());
-            foreach (var group in outages)
-            {
-                foreach (var dayOfWeek in group.Value)
-                {
-                    await _outages.AddAsync(new OutageEntity
-                    {
-                        City = "Kyiv",
-                        Group = outageGroups[group.Key.ToString()],
-                        DayOfWeek = dayOfWeek.Key,
-                        Outages = dayOfWeek.Value
-                    }, token);
-                }
-            }
-
-            await _outages.SaveChangesAsync(token);
-        }
-        catch (Exception e)
-        {
-            _logger.LogCritical(e.Message);
-            return false;
-        }
-
-        return true;
+        // TODO: Remove after successful testing
+        await _usersRepository.LogOutageUpdateAsync(context.CancellationToken);
+        
     }
     
     private Dictionary<string, string> DeserializeGroups(string serializedGroups)

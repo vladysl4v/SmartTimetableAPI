@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using WebTimetable.Application.Handlers;
 using WebTimetable.Application.Handlers.Abstractions;
 using WebTimetable.Application.Repositories;
+using WebTimetable.Application.Repositories.Abstractions;
 using WebTimetable.Application.Services;
 using WebTimetable.Application.Services.Abstractions;
 using WebTimetable.Application.Services.Commands;
@@ -36,7 +37,9 @@ namespace WebTimetable.Application
             {
                 options.UseNpgsql(config.GetConnectionString(connectionStringName));
             });
-            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddScoped(typeof(INotesRepository), typeof(NotesRepository));
+            services.AddScoped(typeof(IOutagesRepository), typeof(OutagesRepository));
+            services.AddScoped(typeof(IUsersRepository), typeof(UsersRepository));
 
             return services;
         }

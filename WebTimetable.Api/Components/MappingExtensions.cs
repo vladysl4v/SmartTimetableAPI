@@ -33,6 +33,8 @@ public static partial class MappingExtensions
     [MapProperty(nameof(TeacherLesson.Events), nameof(TeacherLessonDTO.Meetings))]
     private static partial TeacherLessonDTO ToLessonDTO(this TeacherLesson studentLesson);
     private static partial NoteEntity MapToNoteEntity(this AddNoteRequest request);
-    private static partial NoteDTO ToNoteDTO(this Note note);
+    
+    [MapProperty(nameof(@NoteEntity.Author.FullName), nameof(NoteDTO.AuthorName))]
+    private static partial NoteDTO ToNoteDTO(this NoteEntity note);
     private static partial OutageDTO ToOutageDTO(this Outage outage);
 }

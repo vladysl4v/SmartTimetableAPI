@@ -2,6 +2,7 @@
 
 using WebTimetable.Application.Entities;
 using WebTimetable.Application.Repositories;
+using WebTimetable.Application.Repositories.Abstractions;
 using WebTimetable.Application.Services.Abstractions;
 
 
@@ -10,12 +11,12 @@ namespace WebTimetable.Application.Services;
 public class UsersService : IUsersService
 {
     private readonly GraphServiceClient _graphClient;
-    private readonly IRepository<UserEntity> _users;
+    private readonly IUsersRepository _usersRepository;
 
-    public UsersService(GraphServiceClient graphClient, IRepository<UserEntity> users)
+    public UsersService(GraphServiceClient graphClient, IUsersRepository usersRepository)
     {
         _graphClient = graphClient;
-        _users = users;
+        _usersRepository = usersRepository;
     }
 
     public async Task<UserEntity?> GetUserAsync(CancellationToken token)
@@ -29,30 +30,11 @@ public class UsersService : IUsersService
         {
             return null;
         }
+        
+        var userEntity =
+            await _usersRepository.CreateOrUpdateUserAsync(Guid.Parse(user.Id), user.DisplayName, user.Department,
+                token);
 
-        var dbUser = _users.Where(x => x.Id == Guid.Parse(user.Id)).SingleOrDefault();
-        if (dbUser == null)
-        {
-            dbUser = new UserEntity
-            {
-                Id = Guid.Parse(user.Id),
-                FullName = user.DisplayName,
-                Group = user.Department
-            };
-            await _users.AddAsync(dbUser, token);
-            await _users.SaveChangesAsync(token);
-        }
-        else
-        {
-            if (dbUser.FullName != user.DisplayName || dbUser.Group != user.Department)
-            {
-                dbUser.FullName = user.DisplayName;
-                dbUser.Group = user.Department;
-                _users.Update(dbUser);
-                await _users.SaveChangesAsync(token);
-            }
-        }
-
-        return dbUser;
+        return userEntity;
     }
 }
