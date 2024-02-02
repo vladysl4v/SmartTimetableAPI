@@ -1,89 +1,79 @@
 using System.Linq.Expressions;
 using WebTimetable.Application.Entities;
 using WebTimetable.Application.Repositories;
+using WebTimetable.Application.Repositories.Abstractions;
 using WebTimetable.Application.Services;
 
 namespace WebTimetable.Tests.ApplicationUnitTests.Services;
 
 public class NotesServiceTests
 {
-    private readonly NotesService _notesService;
-    
-    public NotesServiceTests()
-    {
-        Expression<Func<NoteEntity, bool>> existing = entity =>
-            entity.LessonId == Guid.Empty && entity.Author.Group == string.Empty;
-        
-        var mockNotesRepo = new Mock<IRepository<NoteEntity>>();   
-        mockNotesRepo.Setup(x => x.AddAsync(null!, CancellationToken.None)).Throws<Exception>();
-        mockNotesRepo.Setup(x => x.AddAsync(It.IsAny<NoteEntity>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
-        mockNotesRepo.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
-        mockNotesRepo.Setup(x => x.Remove(It.IsAny<NoteEntity>()));
-        mockNotesRepo
-            .Setup(x => x.Where(It.IsAny<Expression<Func<NoteEntity, bool>>>()))
-            .Returns(new List<NoteEntity>().AsQueryable());
-        
-        _notesService = new NotesService(mockNotesRepo.Object);
-    }
-    
     [Fact]
     public async Task NotesService_AddNoteAsync_ReturnTrue()
     {
         // Arrange
-        var note = new NoteEntity();
+        var mockNotesRepo = new Mock<INotesRepository>();
+        mockNotesRepo.Setup(x => x.IsNoteExists(It.IsAny<Guid>(), It.IsAny<Guid>())).Returns(false);
+        mockNotesRepo.Setup(x => x.AddAsync(It.IsAny<NoteEntity>(), It.IsAny<CancellationToken>())).Verifiable();
+        var user = new NoteEntity { LessonId = Guid.NewGuid(), Author = new UserEntity { Id = Guid.NewGuid() } };
+        var notesService = new NotesService(mockNotesRepo.Object);
         
         // Act
-        var result = await _notesService.AddNoteAsync(note, CancellationToken.None);
+        var result = await notesService.AddNoteAsync(user, CancellationToken.None);
 
         // Assert
         result.Should().BeTrue();
+        mockNotesRepo.Verify(x => x.AddAsync(It.IsAny<NoteEntity>(), It.IsAny<CancellationToken>()), Times.Once);
     }
     
     [Fact]
     public async Task NotesService_AddNoteAsync_ReturnFalse()
     {
         // Arrange
-        var note = new NoteEntity
-        {
-            NoteId = Guid.NewGuid()
-        };
-        var mockNotesRepo = new Mock<IRepository<NoteEntity>>();   
-        mockNotesRepo
-            .Setup(x => x.Where(It.IsAny<Expression<Func<NoteEntity, bool>>>()))
-            .Returns(new List<NoteEntity> { note }.AsQueryable());
-        
+        var mockNotesRepo = new Mock<INotesRepository>();
+        mockNotesRepo.Setup(x => x.IsNoteExists(It.IsAny<Guid>(), It.IsAny<Guid>())).Returns(true);
+        mockNotesRepo.Setup(x => x.AddAsync(It.IsAny<NoteEntity>(), It.IsAny<CancellationToken>())).Verifiable();
+        var user = new NoteEntity { LessonId = Guid.NewGuid(), Author = new UserEntity { Id = Guid.NewGuid() } };
         var notesService = new NotesService(mockNotesRepo.Object);
         
         // Act
-        var result = await notesService.AddNoteAsync(note, CancellationToken.None);
+        var result = await notesService.AddNoteAsync(user, CancellationToken.None);
 
         // Assert
         result.Should().BeFalse();
+        mockNotesRepo.Verify(x => x.AddAsync(It.IsAny<NoteEntity>(), It.IsAny<CancellationToken>()), Times.Never);
+
     }
 
     [Fact]
-    public void NotesService_GetNoteById_ReturnTrue()
+    public void NotesService_GetNoteById_ReturnNote()
     {
         // Arrange
-        var id = Guid.NewGuid();
+        var expectedNote = new NoteEntity { NoteId = Guid.NewGuid() };
+        var mockNotesRepo = new Mock<INotesRepository>();
+        mockNotesRepo.Setup(x => x.GetNoteById(It.Is<Guid>(y => y == expectedNote.NoteId))).Returns(expectedNote);
+        var notesService = new NotesService(mockNotesRepo.Object);
         
         // Act
-        var result = _notesService.GetNoteById(id);
+        var result = notesService.GetNoteById(expectedNote.NoteId);
         
         // Assert
-        result.Should().BeNull();
+        result.Should().NotBeNull();
+        result.Should().BeEquivalentTo(expectedNote);
     }
     
     [Fact]
     public async Task NotesService_RemoveNote_NotThrowsAnything()
     {
         // Arrange
-        var note = new NoteEntity();
+        var mockNotesRepo = new Mock<INotesRepository>();
+        mockNotesRepo.Setup(x => x.RemoveAsync(It.IsAny<NoteEntity>(), It.IsAny<CancellationToken>())).Verifiable();
+        var notesService = new NotesService(mockNotesRepo.Object);
         
         // Act
-        var act = async () => await _notesService.RemoveNote(note, CancellationToken.None);
+        await notesService.RemoveNote(new NoteEntity(), CancellationToken.None);
         
         // Assert
-        await act.Should().NotThrowAsync();
+        mockNotesRepo.Verify(x => x.RemoveAsync(It.IsAny<NoteEntity>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 }

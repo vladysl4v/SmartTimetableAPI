@@ -16,7 +16,7 @@ public class TeacherServiceTests
             It.IsAny<CancellationToken>())).ReturnsAsync(new List<TeacherLesson> { new(), new(), new() });
         
         var mockOutagesHandler = new Mock<IOutagesHandler>();
-        mockOutagesHandler.Setup(x => x.ConfigureOutagesAsync(It.IsAny<IEnumerable<TeacherLesson>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>())).Verifiable();
+        mockOutagesHandler.Setup(x => x.ConfigureOutagesAsync(It.IsAny<IEnumerable<TeacherLesson>>(), It.IsAny<string>(), It.IsAny<CancellationToken>())).Verifiable();
         var mockEventsHandler = new Mock<IEventsHandler>();
         
         var scheduleService = new TeacherService(mockEventsHandler.Object, mockScheduleHandler.Object,
@@ -27,7 +27,7 @@ public class TeacherServiceTests
             await scheduleService.GetScheduleAsync(DateTime.Now, "Test", "Group 1", CancellationToken.None);
         
         // Assert
-        mockOutagesHandler.Verify(mr => mr.ConfigureOutagesAsync(It.IsAny<IEnumerable<TeacherLesson>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once());
+        mockOutagesHandler.Verify(mr => mr.ConfigureOutagesAsync(It.IsAny<IEnumerable<TeacherLesson>>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once());
         lessons.Should().NotBeNull();
         lessons.Should().HaveCount(3);
     }
@@ -41,7 +41,7 @@ public class TeacherServiceTests
             It.IsAny<CancellationToken>())).ReturnsAsync(new List<TeacherLesson> { new(), new(), new() });
         
         var mockOutagesHandler = new Mock<IOutagesHandler>();
-        mockOutagesHandler.Setup(x => x.ConfigureOutagesAsync(It.IsAny<IEnumerable<TeacherLesson>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>())).Verifiable();
+        mockOutagesHandler.Setup(x => x.ConfigureOutagesAsync(It.IsAny<IEnumerable<TeacherLesson>>(), It.IsAny<string>(), It.IsAny<CancellationToken>())).Verifiable();
         var mockEventsHandler = new Mock<IEventsHandler>();
         
         var scheduleService = new TeacherService(mockEventsHandler.Object, mockScheduleHandler.Object,
@@ -52,7 +52,7 @@ public class TeacherServiceTests
             await scheduleService.GetScheduleAsync(DateTime.Now, "Test", "", CancellationToken.None);
         
         // Assert
-        mockOutagesHandler.Verify(mr => mr.ConfigureOutagesAsync(It.IsAny<IEnumerable<TeacherLesson>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never());
+        mockOutagesHandler.Verify(mr => mr.ConfigureOutagesAsync(It.IsAny<IEnumerable<TeacherLesson>>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never());
         lessons.Should().NotBeNull();
         lessons.Should().HaveCount(3);
     }
@@ -67,7 +67,7 @@ public class TeacherServiceTests
             It.IsAny<CancellationToken>())).ReturnsAsync(new List<TeacherLesson> { new(), new(), new() });
         
         var mockOutagesHandler = new Mock<IOutagesHandler>();
-        mockOutagesHandler.Setup(x => x.ConfigureOutagesAsync(It.IsAny<IEnumerable<TeacherLesson>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>())).Verifiable();
+        mockOutagesHandler.Setup(x => x.ConfigureOutagesAsync(It.IsAny<IEnumerable<TeacherLesson>>(), It.IsAny<string>(), It.IsAny<CancellationToken>())).Verifiable();
         
         var mockEventsHandler = new Mock<IEventsHandler>();
         mockEventsHandler.Setup(x => x.ConfigureEventsAsync(It.IsAny<List<TeacherLesson>>(), It.IsAny<CancellationToken>())).Verifiable();
@@ -79,7 +79,7 @@ public class TeacherServiceTests
         var lessons = await scheduleService.GetScheduleAsync(DateTime.Now, "Test", "Group 1", CancellationToken.None, new UserEntity());
 
         // Assert
-        mockOutagesHandler.Verify(x => x.ConfigureOutagesAsync(It.IsAny<IEnumerable<TeacherLesson>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once());
+        mockOutagesHandler.Verify(x => x.ConfigureOutagesAsync(It.IsAny<IEnumerable<TeacherLesson>>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once());
         mockEventsHandler.Verify(x => x.ConfigureEventsAsync(It.IsAny<List<TeacherLesson>>(), It.IsAny<CancellationToken>()), Times.Once());
         lessons.Should().NotBeNull();
         lessons.Should().HaveCount(3);
@@ -95,7 +95,7 @@ public class TeacherServiceTests
             It.IsAny<CancellationToken>())).ReturnsAsync(new List<TeacherLesson> { new(), new(), new() });
         
         var mockOutagesHandler = new Mock<IOutagesHandler>();
-        mockOutagesHandler.Setup(x => x.ConfigureOutagesAsync(It.IsAny<IEnumerable<TeacherLesson>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>())).Verifiable();
+        mockOutagesHandler.Setup(x => x.ConfigureOutagesAsync(It.IsAny<IEnumerable<TeacherLesson>>(), It.IsAny<string>(), It.IsAny<CancellationToken>())).Verifiable();
         
         var mockEventsHandler = new Mock<IEventsHandler>();
         mockEventsHandler.Setup(x => x.ConfigureEventsAsync(It.IsAny<List<TeacherLesson>>(), It.IsAny<CancellationToken>())).Verifiable();
@@ -108,7 +108,7 @@ public class TeacherServiceTests
         var lessons = await scheduleService.GetScheduleAsync(DateTime.Now, "Test", "", CancellationToken.None, new UserEntity());
 
         // Assert
-        mockOutagesHandler.Verify(x => x.ConfigureOutagesAsync(It.IsAny<IEnumerable<TeacherLesson>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never());
+        mockOutagesHandler.Verify(x => x.ConfigureOutagesAsync(It.IsAny<IEnumerable<TeacherLesson>>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never());
         mockEventsHandler.Verify(x => x.ConfigureEventsAsync(It.IsAny<List<TeacherLesson>>(), It.IsAny<CancellationToken>()), Times.Once());
         lessons.Should().NotBeNull();
         lessons.Should().HaveCount(3);

@@ -1,6 +1,4 @@
-using System.Linq.Expressions;
-using WebTimetable.Application.Entities;
-using WebTimetable.Application.Repositories;
+using WebTimetable.Application.Repositories.Abstractions;
 using WebTimetable.Application.Services;
 
 namespace WebTimetable.Tests.ApplicationUnitTests.Services;
@@ -12,17 +10,14 @@ public class SettingsServiceTests
     public void SettingsService_GetOutageGroups_ReturnsOutages()
     {
         // Arrange
-        var mockDbRepository = new Mock<IRepository<OutageEntity>>();
-        mockDbRepository.Setup(x => x.Where(It.IsAny<Expression<Func<OutageEntity, bool>>>()))
-            .Returns(new List<OutageEntity>()
+        var mockDbRepository = new Mock<IOutagesRepository>();
+        mockDbRepository.Setup(x => x.GetOutageGroups())
+            .Returns(new List<KeyValuePair<string, string>>()
             {
-                new() { Group = "Group 1" }, 
-                new() { Group = "Group 1" }, 
-                new() { Group = "Group 2" }, 
-                new() { Group = "Group 2" }, 
-                new() { Group = "Group 3" }, 
-                new() { Group = "Group 3" }
-            }.AsQueryable());
+                new("Group 1", "Group 1"), 
+                new("Group 2", "Group 2"), 
+                new("Group 3", "Group 3")
+            });
         
         var settingsService = new SettingsService(mockDbRepository.Object);
 

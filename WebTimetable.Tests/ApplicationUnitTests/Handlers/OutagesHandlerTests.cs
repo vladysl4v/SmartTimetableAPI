@@ -2,33 +2,45 @@ using WebTimetable.Application.Entities;
 using WebTimetable.Application.Handlers;
 using WebTimetable.Application.Models;
 using WebTimetable.Application.Repositories;
+using WebTimetable.Tests.TestingUtilities;
 
 namespace WebTimetable.Tests.ApplicationUnitTests.Handlers;
 
-public class DtekOutagesHandlerTests
+public class OutagesHandlerTests
 {
     private readonly OutagesHandler _outagesHandler;
     
-    public DtekOutagesHandlerTests()
+    public OutagesHandlerTests()
     {
-        var outagesRepoMock = new Mock<IRepository<OutageEntity>>();
-        outagesRepoMock.Setup(x => x.FindAsync(It.IsAny<CancellationToken>() ,It.IsAny<object?[]?>()))
-            .ReturnsAsync(() => new OutageEntity
+        var mockDataContext = new MockDataContext();
+        mockDataContext.AddRange(new OutageEntity
             {
+                Group = "1st",
+                City = "Kyiv",
+                DayOfWeek = DayOfWeek.Monday,
                 Outages = new List<Outage>
                 {
                     new() { Start = new TimeOnly(11, 00), End = new TimeOnly(12, 00) },
-                    new() { Start = new TimeOnly(12, 00), End = new TimeOnly(13, 00) },
+                }
+            },
+            new OutageEntity
+            {
+                Group = "2nd",
+                City = "Kyiv",
+                DayOfWeek = DayOfWeek.Monday,
+                Outages = new List<Outage>
+                {
                     new() { Start = new TimeOnly(13, 00), End = new TimeOnly(14, 00) },
                     new() { Start = new TimeOnly(15, 00), End = new TimeOnly(16, 00) }
-                }, 
+                },
             });
         
-        _outagesHandler = new OutagesHandler(outagesRepoMock.Object);
+        var outagesRepository = new OutagesRepository(mockDataContext);
+        _outagesHandler = new OutagesHandler(outagesRepository);
     }
     
     [Fact]
-    public async Task DtekOutagesHandler_ConfigureOutages_ReturnsLessonWithOutages()
+    public async Task OutagesHandler_ConfigureOutages_ReturnsLessonWithOutages()
     {
         // Arrange
         var schedule = new List<StudentLesson>
@@ -37,24 +49,24 @@ public class DtekOutagesHandlerTests
             {
                 Id = Guid.NewGuid(),
                 Discipline = "Blah-blah",
-                Date = new DateOnly(2011, 11, 11),
+                Date = new DateOnly(2024, 02, 05),
                 Start = new TimeOnly(11, 30),
                 End = new TimeOnly(12, 50)
             }
         };
         
         // Act
-        await _outagesHandler.ConfigureOutagesAsync(schedule, "Group 1", "Kyiv", CancellationToken.None);
+        await _outagesHandler.ConfigureOutagesAsync(schedule, "1st", CancellationToken.None);
         
         // Assert
         schedule.Should().HaveCount(1);
         var lesson = schedule.First();
-        lesson.Outages.Should().HaveCount(2);
+        lesson.Outages.Should().HaveCount(1);
         lesson.Outages.Should().AllSatisfy(x => IsIntervalsIntersects(lesson.Start, lesson.End, x.Start, x.End).Should().BeTrue());
     }
     
     [Fact]
-    public async Task DtekOutagesHandler_ConfigureOutages_ReturnsLessonWithoutOutages()
+    public async Task OutagesHandler_ConfigureOutages_ReturnsLessonWithoutOutages()
     {
         // Arrange
         var schedule = new List<StudentLesson>
@@ -63,19 +75,20 @@ public class DtekOutagesHandlerTests
             {
                 Id = Guid.NewGuid(),
                 Discipline = "Blah-blah",
-                Date = new DateOnly(2011, 11, 11),
-                Start = new TimeOnly(16, 01),
-                End = new TimeOnly(17, 00)
+                Date = new DateOnly(2024, 02, 07),
+                Start = new TimeOnly(11, 30),
+                End = new TimeOnly(12, 50)
             }
         };
         
         // Act
-        await _outagesHandler.ConfigureOutagesAsync(schedule, "Group 1", "Kyiv", CancellationToken.None);
+        await _outagesHandler.ConfigureOutagesAsync(schedule, "1st", CancellationToken.None);
         
         // Assert
         schedule.Should().HaveCount(1);
         var lesson = schedule.First();
         lesson.Outages.Should().BeEmpty();
+        lesson.Outages.Should();
     }
     
     private bool IsIntervalsIntersects(TimeOnly start1, TimeOnly end1, TimeOnly start2, TimeOnly end2)

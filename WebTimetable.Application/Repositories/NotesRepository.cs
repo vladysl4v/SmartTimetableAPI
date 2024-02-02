@@ -15,7 +15,7 @@ public class NotesRepository : INotesRepository
     
     public List<NoteEntity> GetNotesByLessonId(Guid lessonId, string userGroup)
     {
-        return _context.Notes.AsNoTracking().Where(entity =>
+        return _context.Notes.AsNoTracking().Include(x => x.Author).Where(entity =>
             entity.LessonId == lessonId && entity.Author.Group == userGroup).ToList();
     }
 

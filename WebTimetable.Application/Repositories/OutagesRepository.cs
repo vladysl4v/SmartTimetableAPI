@@ -29,7 +29,15 @@ public class OutagesRepository : IOutagesRepository
     public async Task AddOutagesAsync(Dictionary<int, Dictionary<DayOfWeek, List<Outage>>> outages,
         Dictionary<string, string> outageGroups, CancellationToken token)
     {
-        await _context.Outages.ExecuteDeleteAsync(cancellationToken: token);
+        try
+        {
+            await _context.Outages.ExecuteDeleteAsync(cancellationToken: token);
+        }
+        catch (InvalidOperationException)
+        {
+            _context.Outages.RemoveRange(_context.Outages);
+            await _context.SaveChangesAsync(token);
+        }
         foreach (var group in outages)
         {
             foreach (var dayOfWeek in group.Value)

@@ -1,4 +1,5 @@
 using WebTimetable.Api.Components;
+using WebTimetable.Application.Entities;
 using WebTimetable.Application.Models;
 
 namespace WebTimetable.Tests.ApiUnitTests.Components;
@@ -37,21 +38,21 @@ public class MappingExtensionsTests
                         EndTime = new TimeOnly(17, 45)
                     }
                 },
-                Notes = new List<Note>
+                Notes = new List<NoteEntity>
                 {
                     new()
                     {
                         Message = "Test message",
                         NoteId = Guid.NewGuid(),
                         AuthorId = Guid.NewGuid(),
-                        AuthorName = "Test name"
+                        Author = new UserEntity { FullName = "Test name" }
                     },
                     new()
                     {
                         Message = "Second test message",
                         NoteId = Guid.NewGuid(),
                         AuthorId = Guid.NewGuid(),
-                        AuthorName = "Second test name"
+                        Author = new UserEntity { FullName = "Second test name" }
                     }
                 }
             },
@@ -81,21 +82,21 @@ public class MappingExtensionsTests
                         EndTime = new TimeOnly(17, 45)
                     }
                 },
-                Notes = new List<Note>
+                Notes = new List<NoteEntity>
                 {
                     new()
                     {
                         Message = "Test message",
                         NoteId = Guid.NewGuid(),
                         AuthorId = Guid.NewGuid(),
-                        AuthorName = "Test name"
+                        Author = new UserEntity { FullName = "Test name" }
                     },
                     new()
                     {
                         Message = "Second test message",
                         NoteId = Guid.NewGuid(),
                         AuthorId = Guid.NewGuid(),
-                        AuthorName = "Second test name"
+                        Author = new UserEntity { FullName = "Second test name" }
                     }
                 }
             }

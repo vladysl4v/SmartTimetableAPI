@@ -26,7 +26,7 @@ public class UsersRepository
     
     public async Task<UserEntity> CreateOrUpdateUserAsync(Guid userId, string fullName, string group, CancellationToken token)
     {
-        var user = _context.Users.AsNoTracking().FirstOrDefault(x => x.Id == userId);
+        var user = _context.Users.FirstOrDefault(x => x.Id == userId);
         if (user is null)
         {
             user = new UserEntity
@@ -46,8 +46,6 @@ public class UsersRepository
             }
             user.FullName = fullName;
             user.Group = group;
-            _context.Users.Update(user);
-            await _context.SaveChangesAsync(token);
         }
 
         return user;
