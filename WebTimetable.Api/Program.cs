@@ -39,7 +39,7 @@ builder.Services.ConfigureValidation();
 builder.Services.ConfigureCors("PublicCORSPolicy");
 if (builder.Environment.IsProduction())
 {
-    builder.Services.ConfigureCronJob("0 0 0/4 * * ?");
+    // builder.Services.ConfigureCronJob("0 0 0/4 * * ?");
 }
 
 
