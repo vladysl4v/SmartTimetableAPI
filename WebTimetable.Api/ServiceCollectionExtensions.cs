@@ -94,7 +94,7 @@ public static class ServiceCollectionExtensions
 
             options.AddPolicy("SettingsCache", policy => policy.Cache()
                 .Expire(TimeSpan.FromMinutes(5))
-                .SetVaryByQuery(new[] { "faculty", "educationForm", "course" }));
+                .SetVaryByQuery(new[] { "faculty", "educationForm", "course", "chair" }));
 
             options.AddPolicy("ScheduleCache", policy => policy.Cache()
                 .Expire(TimeSpan.FromMinutes(1))

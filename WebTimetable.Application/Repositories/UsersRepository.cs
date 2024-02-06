@@ -1,9 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using WebTimetable.Application.Entities;
+using WebTimetable.Application.Repositories.Abstractions;
 
 namespace WebTimetable.Application.Repositories;
 
-public class UsersRepository
+public class UsersRepository : IUsersRepository
 {
     private readonly DataContext _context;
 
