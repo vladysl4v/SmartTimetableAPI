@@ -8,7 +8,7 @@ using WebTimetable.Contracts.Responses;
 
 namespace WebTimetable.Tests.ApiUnitTests.Controllers;
 
-public class StudentControllerTests
+public class StudentsControllerTests
 {
     [Fact]
     public async Task StudentController_GetAnonymousSchedule_ReturnsOk()
@@ -21,16 +21,15 @@ public class StudentControllerTests
             {
                 new() { Id = Guid.NewGuid(), Discipline = "Test subject" }
             });
-        var request = new StudentScheduleRequest
+        var request = new ScheduleRequest
         {
             Date = DateTime.Now.ToString("yyyy-MM-dd"),
-            StudyGroup = "test",
-            OutageGroup = "test"
+            Identifier = "test"
         };
-        var controller = new StudentController(mockScheduleService.Object, mockUsersService.Object);
+        var controller = new StudentsController(mockScheduleService.Object, mockUsersService.Object);
 
         // Act
-        var result = await controller.GetAnonymousSchedule(request, CancellationToken.None);
+        var result = await controller.GetAnonymousSchedule(request, CancellationToken.None, "test");
 
         // Assert
         result.Should().BeOfType<OkObjectResult>();
@@ -41,7 +40,7 @@ public class StudentControllerTests
     }
     
     [Fact]
-    public async Task StudentController_GetPersonalSchedule_ReturnsOk()
+    public async Task StudentController_GetIndividualSchedule_ReturnsOk()
     {
         // Arrange
         var mockScheduleService = new Mock<IStudentService>();
@@ -59,16 +58,15 @@ public class StudentControllerTests
             {
                 new() { Id = Guid.NewGuid(), Discipline = "Test subject" }
             });
-        var request = new StudentScheduleRequest
+        var request = new ScheduleRequest
         {
             Date = DateTime.Now.ToString("yyyy-MM-dd"),
-            StudyGroup = "test",
-            OutageGroup = "test"
+            Identifier = "test"
         };
-        var controller = new StudentController(mockScheduleService.Object, mockUsersService.Object);
+        var controller = new StudentsController(mockScheduleService.Object, mockUsersService.Object);
 
         // Act
-        var result = await controller.GetPersonalSchedule(request, CancellationToken.None);
+        var result = await controller.GetIndividualSchedule(request, CancellationToken.None, "test");
 
         // Assert
         result.Should().BeOfType<OkObjectResult>();
@@ -79,7 +77,7 @@ public class StudentControllerTests
     }
     
     [Fact]
-    public async Task StudentController_GetPersonalSchedule_ReturnsForbid()
+    public async Task StudentController_GetIndividualSchedule_ReturnsForbid()
     {
         // Arrange
         var mockScheduleService = new Mock<IStudentService>();
@@ -88,16 +86,15 @@ public class StudentControllerTests
             .ReturnsAsync(null as UserEntity);
         mockScheduleService.Setup(x => x.GetScheduleAsync(It.IsAny<DateTime>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>(), It.IsAny<UserEntity>()))
             .ReturnsAsync(new List<StudentLesson>()).Verifiable();
-        var request = new StudentScheduleRequest
+        var request = new ScheduleRequest
         {
             Date = DateTime.Now.ToString("yyyy-MM-dd"),
-            StudyGroup = "test",
-            OutageGroup = "test"
+            Identifier = "test"
         };
-        var controller = new StudentController(mockScheduleService.Object, mockUsersService.Object);
+        var controller = new StudentsController(mockScheduleService.Object, mockUsersService.Object);
 
         // Act
-        var result = await controller.GetPersonalSchedule(request, CancellationToken.None);
+        var result = await controller.GetIndividualSchedule(request, CancellationToken.None, "test");
 
         // Assert
         result.Should().BeOfType<ForbidResult>();
@@ -117,7 +114,7 @@ public class StudentControllerTests
                 { "educForms", new List<KeyValuePair<string, string>>() },
                 { "faculties", new List<KeyValuePair<string, string>>() },
             });
-        var controller = new StudentController(mockStudentService.Object, mockUsersService.Object);
+        var controller = new StudentsController(mockStudentService.Object, mockUsersService.Object);
 
         // Act
         var result = await controller.GetFilters(CancellationToken.None);
@@ -126,8 +123,9 @@ public class StudentControllerTests
         result.Should().BeOfType<OkObjectResult>();
         ((OkObjectResult)result).Value.Should().BeOfType<StudentFiltersResponse>();
         var response = (StudentFiltersResponse)((OkObjectResult)result).Value!;
-        response.Filters.Should().NotBeNull();
-        response.Filters.Should().HaveCount(3);
+        response.Courses.Should().NotBeNull();
+        response.EducForms.Should().NotBeNull();
+        response.Faculties.Should().NotBeNull();
     }
     
     [Fact]
@@ -143,7 +141,7 @@ public class StudentControllerTests
                 new("test2", "2"),
                 new("test3", "3"),
             });
-        var controller = new StudentController(mockStudentService.Object, mockUsersService.Object);
+        var controller = new StudentsController(mockStudentService.Object, mockUsersService.Object);
         var request = new StudyGroupsRequest
         {
             Course = 1,

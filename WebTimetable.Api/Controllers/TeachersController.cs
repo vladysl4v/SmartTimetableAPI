@@ -9,12 +9,12 @@ using WebTimetable.Contracts.Responses;
 
 namespace WebTimetable.Api.Controllers;
 
-public class TeacherController : ControllerBase
+public class TeachersController : ControllerBase
 {
     private readonly ITeacherService _teacherService;
     private readonly IUsersService _usersService;
 
-    public TeacherController(ITeacherService teacherService, IUsersService usersService)
+    public TeachersController(ITeacherService teacherService, IUsersService usersService)
     {
         _teacherService = teacherService;
         _usersService = usersService;
@@ -25,10 +25,10 @@ public class TeacherController : ControllerBase
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorDetailsResponse), StatusCodes.Status500InternalServerError)]
     [OutputCache(PolicyName = "ScheduleCache")]
-    [HttpGet(ApiEndpoints.Teacher.GetSchedule)]
-    public async Task<IActionResult> GetAnonymousSchedule([FromQuery] TeacherScheduleRequest request, CancellationToken token)
+    [HttpGet(ApiEndpoints.Teachers.GetAnonymousSchedule)]
+    public async Task<IActionResult> GetAnonymousSchedule([FromRoute] ScheduleRequest request, CancellationToken token, string outageGroup = "")
     {
-        var lessons = await _teacherService.GetScheduleAsync(DateTime.Parse(request.Date), request.TeacherId, request.OutageGroup, token);
+        var lessons = await _teacherService.GetScheduleAsync(DateTime.Parse(request.Date), request.Identifier, outageGroup, token);
         
         var response = new TeacherScheduleResponse
         {
@@ -42,8 +42,8 @@ public class TeacherController : ControllerBase
     [ProducesResponseType(typeof(ErrorDetailsResponse), StatusCodes.Status500InternalServerError)]
     [Authorize]
     [RequiredScope("access_as_user")]
-    [HttpGet(ApiEndpoints.Teacher.GetPersonalizedSchedule)]
-    public async Task<IActionResult> GetPersonalSchedule([FromQuery] TeacherScheduleRequest request, CancellationToken token)
+    [HttpGet(ApiEndpoints.Teachers.GetIndividualSchedule)]
+    public async Task<IActionResult> GetIndividualSchedule([FromRoute] ScheduleRequest request, CancellationToken token, string outageGroup = "")
     {
         var user = await _usersService.GetUserAsync(token);
         if (user is null)
@@ -51,7 +51,7 @@ public class TeacherController : ControllerBase
             return Forbid();
         }
         
-        var lessons = await _teacherService.GetScheduleAsync(DateTime.Parse(request.Date), request.TeacherId, request.OutageGroup, token, user);
+        var lessons = await _teacherService.GetScheduleAsync(DateTime.Parse(request.Date), request.Identifier, outageGroup, token, user);
         
         var response = new TeacherScheduleResponse
         {
@@ -63,7 +63,7 @@ public class TeacherController : ControllerBase
     [ProducesResponseType(typeof(StudentFiltersResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorDetailsResponse), StatusCodes.Status500InternalServerError)]
     [OutputCache(PolicyName = "SettingsCache")]
-    [HttpGet(ApiEndpoints.Teacher.GetFaculties)]
+    [HttpGet(ApiEndpoints.Teachers.GetFaculties)]
     public async Task<IActionResult> GetFaculties(CancellationToken token)
     {
         var response = new FiltersResponse
@@ -77,7 +77,7 @@ public class TeacherController : ControllerBase
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorDetailsResponse), StatusCodes.Status500InternalServerError)]
     [OutputCache(PolicyName = "SettingsCache")]
-    [HttpGet(ApiEndpoints.Teacher.GetChairs)]
+    [HttpGet(ApiEndpoints.Teachers.GetChairs)]
     public async Task<IActionResult> GetChairs([FromQuery] ChairsRequest request, CancellationToken token)
     {
         var response = new FiltersResponse
@@ -91,7 +91,7 @@ public class TeacherController : ControllerBase
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorDetailsResponse), StatusCodes.Status500InternalServerError)]
     [OutputCache(PolicyName = "SettingsCache")]
-    [HttpGet(ApiEndpoints.Teacher.GetEmployees)]
+    [HttpGet(ApiEndpoints.Teachers.GetEmployees)]
     public async Task<IActionResult> GetEmployees([FromQuery] EmployeesRequest request, CancellationToken token)
     {
         var response = new FiltersResponse

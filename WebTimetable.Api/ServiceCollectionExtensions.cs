@@ -93,12 +93,13 @@ public static class ServiceCollectionExtensions
             options.AddBasePolicy(policy => policy.Cache());
 
             options.AddPolicy("SettingsCache", policy => policy.Cache()
-                .Expire(TimeSpan.FromMinutes(5))
+                .Expire(TimeSpan.FromMinutes(60))
                 .SetVaryByQuery(new[] { "faculty", "educationForm", "course", "chair" }));
 
             options.AddPolicy("ScheduleCache", policy => policy.Cache()
-                .Expire(TimeSpan.FromMinutes(1))
-                .SetVaryByQuery(new[] { "studyGroup", "outageGroup", "date" }));
+                .Expire(TimeSpan.FromMinutes(5))
+                .SetVaryByQuery(new[] { "outageGroup" })
+                .SetVaryByRouteValue(new[] { "identifier", "date" }));
         });
         return services;
     }

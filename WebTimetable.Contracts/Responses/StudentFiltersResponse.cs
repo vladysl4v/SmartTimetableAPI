@@ -2,5 +2,7 @@
 
 public class StudentFiltersResponse
 {
-    public Dictionary<string, List<KeyValuePair<string, string>>> Filters { get; init; }
+    public List<KeyValuePair<string, string>> Faculties { get; init; }
+    public List<KeyValuePair<string, string>> Courses { get; init; }
+    public List<KeyValuePair<string, string>> EducForms { get; init; }
 }

@@ -3,22 +3,18 @@ using WebTimetable.Contracts.Requests;
 
 namespace WebTimetable.Api.Validators;
 
-public class StudentScheduleValidator : AbstractValidator<StudentScheduleRequest>
+public class ScheduleRequestValidator : AbstractValidator<ScheduleRequest>
 {
-    public StudentScheduleValidator()
+    public ScheduleRequestValidator()
     {
-        RuleFor(x => x.StudyGroup)
+        RuleFor(x => x.Identifier)
             .NotEmpty()
-            .WithMessage("Study group cannot be empty.");
+            .WithMessage("Identifier cannot be empty.");
 
-        RuleFor(x => x.StudyGroup)
+        RuleFor(x => x.Identifier)
             .MaximumLength(100)
             .WithMessage("Study group cannot be longer than 100 characters.");
-
-        RuleFor(x => x.OutageGroup)
-            .MaximumLength(100)
-            .WithMessage("Outage group cannot be longer than 100 characters.");
-
+        
         RuleFor(x => x.Date)
             .NotEmpty()
             .WithMessage("Date cannot be empty.");
