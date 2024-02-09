@@ -2,13 +2,16 @@
 using Asp.Versioning;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.Identity.Web;
+using Microsoft.Kiota.Abstractions.Extensions;
 using Microsoft.OpenApi.Models;
 using Moesif.Middleware;
 using Quartz;
 using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 using WebTimetable.Api.Validators;
 using WebTimetable.Application.Services.Commands;
+using WebTimetable.Contracts.Requests;
 
 namespace WebTimetable.Api;
 
@@ -92,14 +95,14 @@ public static class ServiceCollectionExtensions
         {
             options.AddBasePolicy(policy => policy.Cache());
 
-            options.AddPolicy("SettingsCache", policy => policy.Cache()
+            options.AddPolicy("FiltersCache", policy => policy.Cache()
                 .Expire(TimeSpan.FromMinutes(60))
-                .SetVaryByQuery(new[] { "faculty", "educationForm", "course", "chair" }));
+                .SetVaryByQueryFromProperties(typeof(StudyGroupsRequest), typeof(EmployeesRequest), typeof(ChairsRequest)));
 
             options.AddPolicy("ScheduleCache", policy => policy.Cache()
                 .Expire(TimeSpan.FromMinutes(5))
                 .SetVaryByQuery(new[] { "outageGroup" })
-                .SetVaryByRouteValue(new[] { "identifier", "date" }));
+                .SetVaryByRouteFromProperties(typeof(ScheduleRequest)));
         });
         return services;
     }
@@ -178,5 +181,25 @@ public static class ServiceCollectionExtensions
         });
 
         return services;
+    }
+
+    private static void SetVaryByQueryFromProperties(this OutputCachePolicyBuilder builder, params Type[] types)
+    {
+        var properties = new List<string>();
+        foreach (var type in types)
+        {
+            properties.AddRange(type.GetProperties().Select(x => x.Name.ToFirstCharacterLowerCase()!));
+        }
+        builder.SetVaryByQuery(properties.Distinct().ToArray());
+    }
+    
+    private static void SetVaryByRouteFromProperties(this OutputCachePolicyBuilder builder, params Type[] types)
+    {
+        var properties = new List<string>();
+        foreach (var type in types)
+        {
+            properties.AddRange(type.GetProperties().Select(x => x.Name.ToFirstCharacterLowerCase()!));
+        }
+        builder.SetVaryByRouteValue(properties.Distinct().ToArray());
     }
 }

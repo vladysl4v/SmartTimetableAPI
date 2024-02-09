@@ -66,7 +66,7 @@ namespace WebTimetable.Api.Controllers
         
         [ProducesResponseType(typeof(StudentFiltersResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorDetailsResponse), StatusCodes.Status500InternalServerError)]
-        [OutputCache(PolicyName = "SettingsCache")]
+        [OutputCache(PolicyName = "FiltersCache")]
         [HttpGet(ApiEndpoints.Students.GetFilters)]
         public async Task<IActionResult> GetFilters(CancellationToken token)
         {
@@ -83,7 +83,7 @@ namespace WebTimetable.Api.Controllers
         [ProducesResponseType(typeof(FiltersResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorDetailsResponse), StatusCodes.Status500InternalServerError)]
-        [OutputCache(PolicyName = "SettingsCache")]
+        [OutputCache(PolicyName = "FiltersCache")]
         [HttpGet(ApiEndpoints.Students.GetStudyGroups)]
         public async Task<IActionResult> GetStudyGroups([FromQuery] StudyGroupsRequest request, CancellationToken token)
         {

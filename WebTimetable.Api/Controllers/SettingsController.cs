@@ -23,7 +23,7 @@ namespace WebTimetable.Api.Controllers
         
         [ProducesResponseType(typeof(StudentFiltersResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorDetailsResponse), StatusCodes.Status500InternalServerError)]
-        [OutputCache(PolicyName = "SettingsCache")]
+        [OutputCache(PolicyName = "FiltersCache")]
         [HttpGet(ApiEndpoints.Settings.GetOutageGroups)]
         public IActionResult GetOutageGroups()
         {

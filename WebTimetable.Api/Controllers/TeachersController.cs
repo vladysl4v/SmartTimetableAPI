@@ -62,7 +62,7 @@ public class TeachersController : ControllerBase
     
     [ProducesResponseType(typeof(StudentFiltersResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorDetailsResponse), StatusCodes.Status500InternalServerError)]
-    [OutputCache(PolicyName = "SettingsCache")]
+    [OutputCache(PolicyName = "FiltersCache")]
     [HttpGet(ApiEndpoints.Teachers.GetFaculties)]
     public async Task<IActionResult> GetFaculties(CancellationToken token)
     {
@@ -76,7 +76,7 @@ public class TeachersController : ControllerBase
     [ProducesResponseType(typeof(FiltersResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorDetailsResponse), StatusCodes.Status500InternalServerError)]
-    [OutputCache(PolicyName = "SettingsCache")]
+    [OutputCache(PolicyName = "FiltersCache")]
     [HttpGet(ApiEndpoints.Teachers.GetChairs)]
     public async Task<IActionResult> GetChairs([FromQuery] ChairsRequest request, CancellationToken token)
     {
@@ -90,7 +90,7 @@ public class TeachersController : ControllerBase
     [ProducesResponseType(typeof(FiltersResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorDetailsResponse), StatusCodes.Status500InternalServerError)]
-    [OutputCache(PolicyName = "SettingsCache")]
+    [OutputCache(PolicyName = "FiltersCache")]
     [HttpGet(ApiEndpoints.Teachers.GetEmployees)]
     public async Task<IActionResult> GetEmployees([FromQuery] EmployeesRequest request, CancellationToken token)
     {
