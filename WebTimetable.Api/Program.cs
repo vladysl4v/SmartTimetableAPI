@@ -53,13 +53,13 @@ if (app.Environment.IsDevelopment())
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.UseMiddleware<ExceptionsMiddleware>();
 
 if (builder.Environment.IsProduction())
 {
     app.UseMoesif("MoesifKey");
 }
 
+app.UseMiddleware<ExceptionsMiddleware>();
 app.UseCors("PublicCORSPolicy");
 app.UseOutputCache();
 
