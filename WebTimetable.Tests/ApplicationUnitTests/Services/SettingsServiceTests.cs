@@ -11,7 +11,7 @@ public class SettingsServiceTests
     {
         // Arrange
         var mockDbRepository = new Mock<IOutagesRepository>();
-        mockDbRepository.Setup(x => x.GetOutageGroups())
+        mockDbRepository.Setup(x => x.GetOutageGroups(It.IsAny<string>()))
             .Returns(new List<KeyValuePair<string, string>>()
             {
                 new("Group 1", "Group 1"), 
@@ -22,7 +22,7 @@ public class SettingsServiceTests
         var settingsService = new SettingsService(mockDbRepository.Object);
 
         // Act
-        var outages = settingsService.GetOutageGroups();
+        var outages = settingsService.GetOutageGroups("Any");
 
         // Assert
         outages.Should().NotBeNull();

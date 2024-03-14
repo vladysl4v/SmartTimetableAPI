@@ -26,7 +26,7 @@ public class TeachersController : ControllerBase
     [ProducesResponseType(typeof(ErrorDetailsResponse), StatusCodes.Status500InternalServerError)]
     [OutputCache(PolicyName = "ScheduleCache")]
     [HttpGet(ApiEndpoints.Teachers.GetSchedule)]
-    public async Task<IActionResult> GetAnonymousSchedule([FromRoute] ScheduleRequest request, CancellationToken token, string outageGroup = "")
+    public async Task<IActionResult> GetSchedule([FromRoute] ScheduleRequest request, CancellationToken token, string outageGroup = "")
     {
         var lessons = await _teacherService.GetScheduleAsync(DateTime.Parse(request.Date), request.Identifier, outageGroup, token);
         

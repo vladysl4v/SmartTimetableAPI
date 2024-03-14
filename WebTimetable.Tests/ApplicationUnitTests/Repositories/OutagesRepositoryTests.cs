@@ -1,7 +1,6 @@
 using WebTimetable.Application.Entities;
 using WebTimetable.Application.Models;
 using WebTimetable.Application.Repositories;
-using WebTimetable.Application.Services;
 using WebTimetable.Tests.TestingUtilities;
 
 namespace WebTimetable.Tests.ApplicationUnitTests.Repositories;
@@ -27,13 +26,37 @@ public class OutagesRepositoryTests
         var outagesRepository = new OutagesRepository(_mockDataContext);
 
         // Act
-        var outages = outagesRepository.GetOutageGroups();
+        var outages = outagesRepository.GetOutageGroups("Kyiv");
 
         // Assert
         outages.Should().NotBeNull();
         outages.Should().HaveCount(3);
         outages.Should().AllSatisfy(x => x.Value.Should().StartWith("Group"));
         outages.Should().AllSatisfy(x => x.Key.Should().Be(x.Value));
+    }
+    
+    [Fact]
+    public void OutagesRepository_GetOutageGroups_ReturnsNothing()
+    {
+        // Arrange
+        _mockDataContext.AddRange(new List<OutageEntity>
+        {
+            new() { Group = "Group 1", City = "Kyiv", DayOfWeek = DayOfWeek.Monday, Outages = new List<Outage>() }, 
+            new() { Group = "Group 1", City = "Kyiv", DayOfWeek = DayOfWeek.Tuesday, Outages = new List<Outage>() }, 
+            new() { Group = "Group 2", City = "Kyiv", DayOfWeek = DayOfWeek.Monday, Outages = new List<Outage>() }, 
+            new() { Group = "Group 2", City = "Kyiv", DayOfWeek = DayOfWeek.Tuesday, Outages = new List<Outage>() }, 
+            new() { Group = "Group 3", City = "Kyiv", DayOfWeek = DayOfWeek.Monday, Outages = new List<Outage>() }, 
+            new() { Group = "Group 3", City = "Kyiv", DayOfWeek = DayOfWeek.Tuesday, Outages = new List<Outage>() }
+        });
+        
+        var outagesRepository = new OutagesRepository(_mockDataContext);
+
+        // Act
+        var outages = outagesRepository.GetOutageGroups("Dnipro");
+
+        // Assert
+        outages.Should().NotBeNull();
+        outages.Should().BeEmpty();
     }
 
     [Fact]

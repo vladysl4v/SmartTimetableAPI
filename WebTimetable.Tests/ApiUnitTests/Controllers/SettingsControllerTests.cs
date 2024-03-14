@@ -13,7 +13,7 @@ public class SettingsControllerTests
     {
         // Arrange
         var mockSettingsService = new Mock<ISettingsService>();
-        mockSettingsService.Setup(x => x.GetOutageGroups())
+        mockSettingsService.Setup(x => x.GetOutageGroups(It.IsAny<string>()))
             .Returns(new List<KeyValuePair<string, string>>
             {
                 new("test", "test")
@@ -21,7 +21,7 @@ public class SettingsControllerTests
         var controller = new SettingsController(mockSettingsService.Object);
 
         // Act
-        var result = controller.GetOutageGroups();
+        var result = controller.GetOutageGroups("Any");
 
         // Assert
         result.Should().BeOfType<OkObjectResult>();

@@ -24,36 +24,6 @@ public class MappingExtensionsTests
                     new() { IsDefinite = true },
                     new() { IsDefinite = true },
                     new() { IsDefinite = true }
-                },
-                Events = new List<Event>
-                {
-                    new()
-                    {
-                        StartTime = new TimeOnly(14, 50),
-                        EndTime = new TimeOnly(16, 10)
-                    },
-                    new()
-                    {
-                        StartTime = new TimeOnly(16, 25),
-                        EndTime = new TimeOnly(17, 45)
-                    }
-                },
-                Notes = new List<NoteEntity>
-                {
-                    new()
-                    {
-                        Message = "Test message",
-                        NoteId = Guid.NewGuid(),
-                        AuthorId = Guid.NewGuid(),
-                        Author = new UserEntity { FullName = "Test name" }
-                    },
-                    new()
-                    {
-                        Message = "Second test message",
-                        NoteId = Guid.NewGuid(),
-                        AuthorId = Guid.NewGuid(),
-                        Author = new UserEntity { FullName = "Second test name" }
-                    }
                 }
             },
             new()
@@ -68,36 +38,6 @@ public class MappingExtensionsTests
                     new() { IsDefinite = false },
                     new() { IsDefinite = true },
                     new() { IsDefinite = false }
-                },
-                Events = new List<Event>
-                {
-                    new()
-                    {
-                        StartTime = new TimeOnly(14, 50),
-                        EndTime = new TimeOnly(16, 10)
-                    },
-                    new()
-                    {
-                        StartTime = new TimeOnly(16, 25),
-                        EndTime = new TimeOnly(17, 45)
-                    }
-                },
-                Notes = new List<NoteEntity>
-                {
-                    new()
-                    {
-                        Message = "Test message",
-                        NoteId = Guid.NewGuid(),
-                        AuthorId = Guid.NewGuid(),
-                        Author = new UserEntity { FullName = "Test name" }
-                    },
-                    new()
-                    {
-                        Message = "Second test message",
-                        NoteId = Guid.NewGuid(),
-                        AuthorId = Guid.NewGuid(),
-                        Author = new UserEntity { FullName = "Second test name" }
-                    }
                 }
             }
         };
