@@ -2,5 +2,5 @@
 
 public interface ISettingsService
 {
-    public List<KeyValuePair<string, string>> GetOutageGroups();
+    public List<KeyValuePair<string, string>> GetOutageGroups(string city);
 }

@@ -54,9 +54,9 @@ public class OutagesRepository : IOutagesRepository
         await _context.SaveChangesAsync(token);
     }
     
-    public List<KeyValuePair<string, string>> GetOutageGroups()
+    public List<KeyValuePair<string, string>> GetOutageGroups(string city)
     {
-        return _context.Outages.AsNoTracking().Where(x => x.City == "Kyiv").Select(y => y.Group)
+        return _context.Outages.AsNoTracking().Where(x => x.City == city).Select(y => y.Group)
             .Distinct().ToDictionary(key => key, value => value).ToList();
     }
 }

@@ -97,6 +97,7 @@ public static class ServiceCollectionExtensions
 
             options.AddPolicy("FiltersCache", policy => policy.Cache()
                 .Expire(TimeSpan.FromMinutes(60))
+                .SetVaryByRouteValue(new[] { "city" })
                 .SetVaryByQueryFromProperties(typeof(StudyGroupsRequest), typeof(EmployeesRequest), typeof(ChairsRequest)));
 
             options.AddPolicy("ScheduleCache", policy => policy.Cache()

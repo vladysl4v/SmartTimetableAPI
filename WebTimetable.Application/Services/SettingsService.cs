@@ -14,8 +14,8 @@ public class SettingsService : ISettingsService
         _outagesRepository = outagesRepository;
     }
     
-    public List<KeyValuePair<string, string>> GetOutageGroups()
+    public List<KeyValuePair<string, string>> GetOutageGroups(string city)
     {
-        return _outagesRepository.GetOutageGroups();
+        return _outagesRepository.GetOutageGroups(city);
     }
 }

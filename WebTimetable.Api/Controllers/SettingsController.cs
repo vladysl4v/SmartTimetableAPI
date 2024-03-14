@@ -1,11 +1,8 @@
-﻿using System.Diagnostics;
-using Asp.Versioning;
+﻿using Asp.Versioning;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
-using Microsoft.Identity.Web;
 using WebTimetable.Application.Services.Abstractions;
-using WebTimetable.Contracts.Requests;
 using WebTimetable.Contracts.Responses;
 
 
@@ -25,11 +22,11 @@ namespace WebTimetable.Api.Controllers
         [ProducesResponseType(typeof(ErrorDetailsResponse), StatusCodes.Status500InternalServerError)]
         [OutputCache(PolicyName = "FiltersCache")]
         [HttpGet(ApiEndpoints.Settings.GetOutageGroups)]
-        public IActionResult GetOutageGroups()
+        public IActionResult GetOutageGroups([FromRoute] string city)
         {
             var response = new FiltersResponse
             {
-                Filters = _settingsService.GetOutageGroups()
+                Filters = _settingsService.GetOutageGroups(city)
             };
             return Ok(response);
         }
