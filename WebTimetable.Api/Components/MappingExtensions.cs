@@ -27,10 +27,11 @@ public static partial class MappingExtensions
     [MapProperty(nameof(Event.EndTime), nameof(EventDTO.End))]
     private static partial EventDTO ToEventDTO(this Event meeting);
     
-    [MapProperty(nameof(StudentLesson.Events), nameof(StudentLessonDTO.Meetings))]
-    private static partial StudentLessonDTO ToLessonDTO(this StudentLesson studentLesson);
+    [MapProperty(nameof(LessonDetails.Events), nameof(LessonDetailsResponse.Meetings))]
+    [MapProperty(nameof(LessonDetails.Notes), nameof(LessonDetailsResponse.Notes))]
+    public static partial LessonDetailsResponse ToLessonDetailsResponse(this LessonDetails details);
     
-    [MapProperty(nameof(TeacherLesson.Events), nameof(TeacherLessonDTO.Meetings))]
+    private static partial StudentLessonDTO ToLessonDTO(this StudentLesson studentLesson);
     private static partial TeacherLessonDTO ToLessonDTO(this TeacherLesson studentLesson);
     private static partial NoteEntity MapToNoteEntity(this AddNoteRequest request);
     

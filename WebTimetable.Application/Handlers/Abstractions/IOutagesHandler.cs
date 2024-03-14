@@ -1,4 +1,3 @@
-using WebTimetable.Application.Models;
 using WebTimetable.Application.Models.Abstractions;
 
 namespace WebTimetable.Application.Handlers.Abstractions

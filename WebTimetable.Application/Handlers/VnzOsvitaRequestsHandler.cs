@@ -6,6 +6,7 @@ using WebTimetable.Application.Deserializers;
 using WebTimetable.Application.Exceptions;
 using WebTimetable.Application.Handlers.Abstractions;
 using WebTimetable.Application.Models;
+using WebTimetable.Application.Models.Abstractions;
 
 namespace WebTimetable.Application.Handlers;
 
@@ -167,7 +168,7 @@ public class VnzOsvitaRequestsHandler : IRequestHandler
 
         foreach (var lesson in response["d"])
         {
-            lesson.Id = GenerateTeacherLessonIdentifier(lesson);
+            lesson.Id = GenerateLessonIdentifier(lesson);
         }
 
         return response["d"];
@@ -204,27 +205,21 @@ public class VnzOsvitaRequestsHandler : IRequestHandler
 
         foreach (var lesson in response["d"])
         {
-            lesson.Id = GenerateStudentLessonIdentifier(lesson, groupId);
+            lesson.Id = GenerateLessonIdentifier(lesson);
         }
 
         return response["d"];
     }
 
-    private Guid GenerateTeacherLessonIdentifier(TeacherLesson teacherLesson)
+    private Guid GenerateLessonIdentifier(ILesson lesson)
     {
-        string compressedValue = teacherLesson.Discipline + teacherLesson.StudyGroup + teacherLesson.StudyType +
-                                 teacherLesson.Date.ToString("dd.MM.yyyy") + teacherLesson.Start.ToString("HH:mm");
-        var md5Hasher = MD5.Create();
-        var data = md5Hasher.ComputeHash(Encoding.Default.GetBytes(compressedValue));
-        return new Guid(data);
-    }
-    
-    private Guid GenerateStudentLessonIdentifier(StudentLesson studentLesson, string groupId)
-    {
-        string compressedValue = studentLesson.Discipline + studentLesson.StudyType + groupId +
-                                 studentLesson.Date.ToString("dd.MM.yyyy") + studentLesson.Start.ToString("HH:mm");
-        var md5Hasher = MD5.Create();
-        var data = md5Hasher.ComputeHash(Encoding.Default.GetBytes(compressedValue));
-        return new Guid(data);
+        string compressedValue = lesson.Discipline +
+                                 lesson.StudyType +
+                                 lesson.Cabinet +
+                                 lesson.Date.ToString("dd.MM.yyyy") +
+                                 lesson.Start.ToString("HH:mm") +
+                                 lesson.End.ToString("HH:mm");
+        var hashedData = MD5.HashData(Encoding.Default.GetBytes(compressedValue));
+        return new Guid(hashedData);
     }
 }

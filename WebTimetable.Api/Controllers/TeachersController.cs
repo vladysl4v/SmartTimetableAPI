@@ -25,7 +25,7 @@ public class TeachersController : ControllerBase
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorDetailsResponse), StatusCodes.Status500InternalServerError)]
     [OutputCache(PolicyName = "ScheduleCache")]
-    [HttpGet(ApiEndpoints.Teachers.GetAnonymousSchedule)]
+    [HttpGet(ApiEndpoints.Teachers.GetSchedule)]
     public async Task<IActionResult> GetAnonymousSchedule([FromRoute] ScheduleRequest request, CancellationToken token, string outageGroup = "")
     {
         var lessons = await _teacherService.GetScheduleAsync(DateTime.Parse(request.Date), request.Identifier, outageGroup, token);
@@ -37,26 +37,22 @@ public class TeachersController : ControllerBase
         return Ok(response);
     }
 
-    [ProducesResponseType(typeof(TeacherScheduleResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(LessonDetailsResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorDetailsResponse), StatusCodes.Status500InternalServerError)]
     [Authorize]
     [RequiredScope("access_as_user")]
-    [HttpGet(ApiEndpoints.Teachers.GetIndividualSchedule)]
-    public async Task<IActionResult> GetIndividualSchedule([FromRoute] ScheduleRequest request, CancellationToken token, string outageGroup = "")
+    [HttpGet(ApiEndpoints.Teachers.GetDetails)]
+    public async Task<IActionResult> GetLessonDetails([FromRoute] Guid lessonIdentifier, [FromQuery] LessonDetailsRequest request, CancellationToken token)
     {
         var user = await _usersService.GetUserAsync(token);
         if (user is null)
         {
             return Forbid();
         }
-        
-        var lessons = await _teacherService.GetScheduleAsync(DateTime.Parse(request.Date), request.Identifier, outageGroup, token, user);
-        
-        var response = new TeacherScheduleResponse
-        {
-            Schedule = lessons.ToLessonDTO()
-        };
+        var details = await _teacherService.GetLessonDetails(lessonIdentifier, DateOnly.Parse(request.Date),
+            TimeOnly.Parse(request.StartTime), TimeOnly.Parse(request.EndTime), user.Group, token);
+        var response = details.ToLessonDetailsResponse();
         return Ok(response);
     }
     

@@ -17,7 +17,6 @@ namespace WebTimetable.Application
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
             services.AddScoped<IUsersService, UsersService>();
-            services.AddScoped<INotesHandler, NotesHandler>();
             services.AddScoped<IEventsHandler, TeamsEventsHandler>();
             services.AddScoped<IRequestHandler, VnzOsvitaRequestsHandler>();
             services.AddScoped<IOutagesHandler, OutagesHandler>();

@@ -5,7 +5,10 @@ namespace WebTimetable.Application.Services.Abstractions;
 
 public interface ITeacherService
 {
-    public Task<List<TeacherLesson>> GetScheduleAsync(DateTime date, string teacherId, string outageGroup, CancellationToken token, UserEntity? user = null);
+    public Task<List<TeacherLesson>> GetScheduleAsync(DateTime date, string teacherId, string outageGroup, CancellationToken token);
+
+    public Task<LessonDetails> GetLessonDetails(Guid id, DateOnly date, TimeOnly lessonStart, TimeOnly lessonEnd,
+        string userGroup, CancellationToken token);
     
     public Task<List<KeyValuePair<string, string>>> GetFacultiesAsync(CancellationToken token);
 

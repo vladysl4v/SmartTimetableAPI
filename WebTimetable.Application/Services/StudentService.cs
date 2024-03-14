@@ -1,54 +1,59 @@
-﻿using WebTimetable.Application.Entities;
-using WebTimetable.Application.Handlers.Abstractions;
+﻿using WebTimetable.Application.Handlers.Abstractions;
 using WebTimetable.Application.Services.Abstractions;
 using WebTimetable.Application.Models;
+using WebTimetable.Application.Repositories.Abstractions;
 
 
 namespace WebTimetable.Application.Services;
 
 public class StudentService : IStudentService
 {
-    private readonly INotesHandler _notes;
+    private readonly INotesRepository _notes;
     private readonly IEventsHandler _events;
     private readonly IOutagesHandler _outages;
-    private readonly IRequestHandler _schedule;
+    private readonly IRequestHandler _requests;
 
     public StudentService(IEventsHandler events,
-        IRequestHandler schedule,
+        IRequestHandler requests,
         IOutagesHandler outages,
-        INotesHandler notes)
+        INotesRepository notes)
     {
-        _schedule = schedule;
+        _requests = requests;
         _outages = outages;
         _events = events;
         _notes = notes;
     }
 
-    public async Task<List<StudentLesson>> GetScheduleAsync(DateTime date, string studyGroup, string outageGroup, CancellationToken token, UserEntity? user = null)
+    public async Task<List<StudentLesson>> GetScheduleAsync(DateTime date, string studyGroup, string outageGroup, CancellationToken token)
     {
-        var lessons = await _schedule.GetStudentSchedule(date, studyGroup, token);
+        var lessons = await _requests.GetStudentSchedule(date, studyGroup, token);
         
         if (outageGroup != string.Empty)
         {
             await _outages.ConfigureOutagesAsync(lessons, outageGroup, token);
         }
-        if (user is null)
-        {
-            return lessons;
-        }
-        _notes.ConfigureNotes(lessons, user.Group);
-        await _events.ConfigureEventsAsync(lessons, token);
+
         return lessons;
+    }
+    
+    public async Task<LessonDetails> GetLessonDetails(Guid id, DateOnly date, TimeOnly lessonStart, TimeOnly lessonEnd, string userGroup, CancellationToken token)
+    {
+        return new LessonDetails
+        {
+            Id = id,
+            Events = await _events.GetEventsAsync(date, lessonStart, lessonEnd, token),
+            Notes = _notes.GetNotesByLessonId(id, userGroup)
+        };
     }
 
     public Task<Dictionary<string, List<KeyValuePair<string, string>>>> GetFiltersAsync(CancellationToken token)
     {
-        return _schedule.GetStudentFilters(token);
+        return _requests.GetStudentFilters(token);
     }
 
     public Task<List<KeyValuePair<string, string>>> GetStudyGroupsAsync(string faculty, int course, int educForm, CancellationToken token)
     {
-        return _schedule.GetStudentStudyGroups(faculty, course, educForm, token);
+        return _requests.GetStudentStudyGroups(faculty, course, educForm, token);
     }
     
 }

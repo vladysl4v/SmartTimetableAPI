@@ -1,7 +1,6 @@
 using Microsoft.Graph;
 using Microsoft.Graph.Models;
 using WebTimetable.Application.Handlers.Abstractions;
-using WebTimetable.Application.Models.Abstractions;
 using Event = WebTimetable.Application.Models.Event;
 
 namespace WebTimetable.Application.Handlers
@@ -17,41 +16,33 @@ namespace WebTimetable.Application.Handlers
                 GetUtcOffset(DateTime.UtcNow).Hours;
         }
 
-        public async Task ConfigureEventsAsync(IEnumerable<ILesson> schedule, CancellationToken token)
+        public async Task<List<Event>> GetEventsAsync(DateOnly date, TimeOnly start, TimeOnly end, CancellationToken token)
         {
-            var lessons = schedule.ToList();
-            if (!lessons.Any())
-            {
-                return;
-            }
+            var requestStartTime = start.AddHours(-_utcOffset).ToString("HH:mm:ss");
+            var requestEndTime = end.AddHours(-_utcOffset).ToString("HH:mm:ss");
+            
             var calendarData = await _graphClient.Me.Calendar.CalendarView.GetAsync((requestConfiguration) =>
             {
-                requestConfiguration.QueryParameters.StartDateTime = lessons.First().Date.ToString("yyyy-MM-dd") + "T00:00:00";
-                requestConfiguration.QueryParameters.EndDateTime = lessons.Last().Date.ToString("yyyy-MM-dd") + "T23:59:59";
+                requestConfiguration.QueryParameters.StartDateTime = $"{date.ToString("yyyy-MM-dd")}T{requestStartTime}";
+                requestConfiguration.QueryParameters.EndDateTime = $"{date.ToString("yyyy-MM-dd")}T{requestEndTime}";
                 requestConfiguration.QueryParameters.Filter = "isCancelled eq false";
             }, token);
 
             if (calendarData?.Value is null)
             {
-                return;
+                return new List<Event>();
             }
 
-            var eventList = calendarData.Value.Select(anEvent => new Event
+            var eventList = calendarData.Value.Where(x => x.OnlineMeeting?.JoinUrl != null).Select(anEvent => new Event
             {
-                Title = anEvent.Subject,
-                Link = anEvent.OnlineMeeting?.JoinUrl,
+                Title = anEvent.Subject ?? "Не вказано",
+                Link = anEvent.OnlineMeeting?.JoinUrl!,
                 Date = DateOnly.FromDateTime(anEvent.Start.ToDateTime()),
                 StartTime = TimeOnly.FromDateTime(anEvent.Start.ToDateTime()).AddHours(_utcOffset),
                 EndTime = TimeOnly.FromDateTime(anEvent.End.ToDateTime()).AddHours(_utcOffset)
             }).ToList();
 
-            foreach (var lesson in lessons)
-            {
-                lesson.Events = eventList.FindAll(x => x.Date == lesson.Date &&
-                                                       x.StartTime >= lesson.Start &&
-                                                       x.StartTime < lesson.End &&
-                                                       x.Link != null);
-            }
+            return eventList;
         }
     }
 }

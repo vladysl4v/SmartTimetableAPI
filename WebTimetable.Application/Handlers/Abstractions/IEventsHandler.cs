@@ -5,6 +5,6 @@ namespace WebTimetable.Application.Handlers.Abstractions
 {
     public interface IEventsHandler
     {
-        public Task ConfigureEventsAsync(IEnumerable<ILesson> lessons, CancellationToken token);
+        public Task<List<Event>> GetEventsAsync(DateOnly date, TimeOnly start, TimeOnly end, CancellationToken token);
     }
 }

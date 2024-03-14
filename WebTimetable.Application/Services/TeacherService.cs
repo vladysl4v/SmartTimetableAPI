@@ -1,55 +1,65 @@
-using WebTimetable.Application.Entities;
 using WebTimetable.Application.Handlers.Abstractions;
 using WebTimetable.Application.Models;
+using WebTimetable.Application.Repositories.Abstractions;
 using WebTimetable.Application.Services.Abstractions;
 
 namespace WebTimetable.Application.Services;
 
 public class TeacherService : ITeacherService
 {
+    private readonly INotesRepository _notes;
     private readonly IEventsHandler _events;
     private readonly IOutagesHandler _outages;
-    private readonly IRequestHandler _schedule;
+    private readonly IRequestHandler _requests;
 
     public TeacherService(IEventsHandler events,
-        IRequestHandler schedule,
-        IOutagesHandler outages)
+        IRequestHandler requests,
+        IOutagesHandler outages,
+        INotesRepository notes)
     {
-        _schedule = schedule;
+        _requests = requests;
         _outages = outages;
         _events = events;
+        _notes = notes;
     }
 
     public async Task<List<TeacherLesson>> GetScheduleAsync(DateTime date, string teacherId, string outageGroup,
-        CancellationToken token, UserEntity? user = null)
+        CancellationToken token)
     {
-        var lessons = await _schedule.GetTeacherSchedule(date, teacherId, token);
+        var lessons = await _requests.GetTeacherSchedule(date, teacherId, token);
         
         if (outageGroup != string.Empty)
         {
             await _outages.ConfigureOutagesAsync(lessons, outageGroup, token);
         }
-        if (user is null)
-        {
-            return lessons;
-        }
-        await _events.ConfigureEventsAsync(lessons, token);
+
         return lessons;
+    }
+    
+    // TODO refactor this shit
+    public async Task<LessonDetails> GetLessonDetails(Guid id, DateOnly date, TimeOnly lessonStart, TimeOnly lessonEnd, string userGroup, CancellationToken token)
+    {
+        return new LessonDetails
+        {
+            Id = id,
+            Events = await _events.GetEventsAsync(date, lessonStart, lessonEnd, token),
+            Notes = _notes.GetNotesByLessonId(id, userGroup)
+        };
     }
     
     public Task<List<KeyValuePair<string, string>>> GetFacultiesAsync(CancellationToken token)
     {
-        return _schedule.GetTeacherFaculties(token);
+        return _requests.GetTeacherFaculties(token);
     }
 
     public Task<List<KeyValuePair<string, string>>> GetChairsAsync(string faculty, CancellationToken token)
     {
-        return _schedule.GetTeacherChairs(faculty, token);
+        return _requests.GetTeacherChairs(faculty, token);
     }
 
     public Task<List<KeyValuePair<string, string>>> GetEmployeesAsync(string faculty, string chair,
         CancellationToken token)
     {
-        return _schedule.GetTeacherEmployees(faculty, chair, token);
+        return _requests.GetTeacherEmployees(faculty, chair, token);
     }
 }

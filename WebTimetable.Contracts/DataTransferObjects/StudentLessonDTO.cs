@@ -11,7 +11,5 @@ public class StudentLessonDTO
     public string Cabinet { get; init; }
     public string Teacher { get; init; }
     public string Subgroup { get; init; }
-    public List<EventDTO>? Meetings { get; set; }
-    public List<NoteDTO>? Notes { get; init; }
-    public List<OutageDTO> Outages { get; init; }
+    public List<OutageDTO>? Outages { get; init; }
 }

@@ -10,6 +10,5 @@ public class TeacherLessonDTO
     public string StudyType { get; init; }
     public string Cabinet { get; init; }
     public string StudyGroup { get; init; }
-    public List<EventDTO>? Meetings { get; set; }
-    public List<OutageDTO> Outages { get; init; }
+    public List<OutageDTO>? Outages { get; init; }
 }
