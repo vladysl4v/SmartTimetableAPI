@@ -18,6 +18,9 @@ namespace WebTimetable.Api.Controllers
             _settingsService = settingsService;
         }
         
+        /// <summary>
+        /// Retrieves the list of outage groups for the specified city.
+        /// </summary>
         [ProducesResponseType(typeof(StudentFiltersResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorDetailsResponse), StatusCodes.Status500InternalServerError)]
         [OutputCache(PolicyName = "FiltersCache")]

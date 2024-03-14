@@ -24,7 +24,11 @@ namespace WebTimetable.Api.Controllers
             _studentService = studentService;
             _usersService = usersService;
         }
-
+        
+        /// <summary>
+        /// Returns the student schedule for the specified study group and date.
+        /// </summary>
+        /// <param name="outageGroup">Optional. The group for which to obtain the outage schedule.</param>
         [ProducesResponseType(typeof(StudentScheduleResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorDetailsResponse), StatusCodes.Status500InternalServerError)]
@@ -41,7 +45,11 @@ namespace WebTimetable.Api.Controllers
             return Ok(response);
         }
         
-
+        /// <summary>
+        /// Authorized only. Returns the personalized notes and online-meetings of the specified lesson.
+        /// </summary>
+        /// <param name="lessonIdentifier">Identifier of lesson.</param>
+        /// <returns></returns>
         [ProducesResponseType(typeof(LessonDetailsResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorDetailsResponse), StatusCodes.Status500InternalServerError)]
@@ -61,6 +69,9 @@ namespace WebTimetable.Api.Controllers
             return Ok(response);
         }
         
+        /// <summary>
+        /// Returns the filters for the configuration of students schedule.
+        /// </summary>
         [ProducesResponseType(typeof(StudentFiltersResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorDetailsResponse), StatusCodes.Status500InternalServerError)]
         [OutputCache(PolicyName = "FiltersCache")]
@@ -77,6 +88,9 @@ namespace WebTimetable.Api.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Returns the study groups for the specified faculty, course and education form.
+        /// </summary>
         [ProducesResponseType(typeof(FiltersResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorDetailsResponse), StatusCodes.Status500InternalServerError)]

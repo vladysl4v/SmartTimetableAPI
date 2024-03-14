@@ -1,1 +1,1 @@
-dotnet run --project WebTimetable.Api --no-build --launch-profile "https"
+dotnet run --project WebTimetable.Api --no-build --launch-profile "dev"

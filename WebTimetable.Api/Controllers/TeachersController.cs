@@ -20,7 +20,10 @@ public class TeachersController : ControllerBase
         _usersService = usersService;
     }
     
-    
+    /// <summary>
+    /// Returns the teacher schedule for the specified teacher identifier and date.
+    /// </summary>
+    /// <param name="outageGroup">Optional. The group for which to obtain the outage schedule.</param>
     [ProducesResponseType(typeof(TeacherScheduleResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorDetailsResponse), StatusCodes.Status500InternalServerError)]
@@ -37,6 +40,11 @@ public class TeachersController : ControllerBase
         return Ok(response);
     }
 
+    /// <summary>
+    /// Authorized only. Returns the personalized notes and online-meetings of the specified lesson.
+    /// </summary>
+    /// <param name="lessonIdentifier">Identifier of lesson.</param>
+    /// <returns></returns>
     [ProducesResponseType(typeof(LessonDetailsResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorDetailsResponse), StatusCodes.Status500InternalServerError)]
@@ -56,6 +64,9 @@ public class TeachersController : ControllerBase
         return Ok(response);
     }
     
+    /// <summary>
+    /// Returns the filters for the configuration of teachers schedule.
+    /// </summary>
     [ProducesResponseType(typeof(StudentFiltersResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorDetailsResponse), StatusCodes.Status500InternalServerError)]
     [OutputCache(PolicyName = "FiltersCache")]
@@ -69,6 +80,9 @@ public class TeachersController : ControllerBase
         return Ok(response);
     }
 
+    /// <summary>
+    /// Returns the chairs for the specified faculty.
+    /// </summary>
     [ProducesResponseType(typeof(FiltersResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorDetailsResponse), StatusCodes.Status500InternalServerError)]
@@ -83,6 +97,9 @@ public class TeachersController : ControllerBase
         return Ok(response);
     }
     
+    /// <summary>
+    /// Returns the employees for the specified faculty and chair.
+    /// </summary>
     [ProducesResponseType(typeof(FiltersResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorDetailsResponse), StatusCodes.Status500InternalServerError)]

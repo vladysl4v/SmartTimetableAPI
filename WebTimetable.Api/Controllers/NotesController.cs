@@ -24,6 +24,9 @@ namespace WebTimetable.Api.Controllers
             _usersService = usersService;
         }
 
+        /// <summary>
+        /// Authorized only. Creates a new note for the lesson in user group.
+        /// </summary>
         [ProducesResponseType(typeof(NoteResponse), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -53,6 +56,9 @@ namespace WebTimetable.Api.Controllers
             return Created("", note.ToNoteResponse());
         }
 
+        /// <summary>
+        /// Authorized only. Removes user's note from the lesson.
+        /// </summary>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
