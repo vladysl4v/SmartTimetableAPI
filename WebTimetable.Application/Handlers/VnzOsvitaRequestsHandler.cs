@@ -166,12 +166,13 @@ public class VnzOsvitaRequestsHandler : IRequestHandler
                 "Requested schedule cannot be properly deserialized.");
         }
 
-        foreach (var lesson in response["d"])
+        var schedule = response["d"];
+        foreach (var lesson in schedule)
         {
             lesson.Id = GenerateLessonIdentifier(lesson);
         }
-
-        return response["d"];
+        
+        return DistinctByStudyGroups(schedule);
     }
     
     public async Task<List<StudentLesson>> GetStudentSchedule(DateTime date, string groupId, CancellationToken token)
@@ -221,5 +222,33 @@ public class VnzOsvitaRequestsHandler : IRequestHandler
                                  lesson.End.ToString("HH:mm");
         var hashedData = MD5.HashData(Encoding.Default.GetBytes(compressedValue));
         return new Guid(hashedData);
+    }
+    
+    private List<TeacherLesson> DistinctByStudyGroups(IEnumerable<TeacherLesson> schedule)
+    {
+        var groupedLessons = schedule.GroupBy(lesson => lesson.Id).ToList();
+        var distinctLessons = new List<TeacherLesson>();
+        foreach (var group in groupedLessons)
+        {
+            var firstItem = group.First();
+            if (groupedLessons.Count == 1)
+            {
+                distinctLessons.Add(firstItem);
+                continue;
+            }
+            distinctLessons.Add(new TeacherLesson
+            {
+                Id = group.Key,
+                Date = firstItem.Date,
+                Start = firstItem.Start,
+                End = firstItem.End,
+                Discipline = firstItem.Discipline,
+                StudyType = firstItem.StudyType,
+                Cabinet = firstItem.Cabinet,
+                Outages = firstItem.Outages,
+                StudyGroups = group.SelectMany(lesson => lesson.StudyGroups).ToList()
+            });
+        }
+        return distinctLessons;
     }
 }

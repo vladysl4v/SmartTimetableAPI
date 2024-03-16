@@ -11,7 +11,7 @@ public class TeacherLessonFactory : FactoryConverter<TeacherLesson, Dictionary<s
             Discipline = arguments["discipline"],
             StudyType = arguments["study_type"],
             Cabinet = arguments["cabinet"],
-            StudyGroup = arguments["study_group"],
+            StudyGroups = new List<string> { arguments["study_group"] },
             Date = DateOnly.ParseExact(arguments["full_date"], "dd.MM.yyyy"),
             Start = TimeOnly.ParseExact(arguments["study_time_begin"],"HH:mm"),
             End = TimeOnly.ParseExact(arguments["study_time_end"], "HH:mm")

@@ -11,6 +11,6 @@ public class TeacherLesson : ILesson
     public string Discipline { get; set; }
     public string StudyType { get; set; }
     public string Cabinet { get; set; }
-    public string StudyGroup { get; set; }
+    public List<string> StudyGroups { get; set; }
     public List<Outage>? Outages { get; set; }
 }

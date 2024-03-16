@@ -9,6 +9,6 @@ public class TeacherLessonDTO
     public string Discipline { get; init; }
     public string StudyType { get; init; }
     public string Cabinet { get; init; }
-    public string StudyGroup { get; init; }
+    public List<string> StudyGroups { get; init; }
     public List<OutageDTO>? Outages { get; init; }
 }

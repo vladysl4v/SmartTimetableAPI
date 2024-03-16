@@ -21,7 +21,7 @@ public class TeacherLessonFactoryTests
             Discipline = "Physics",
             StudyType = "Lecture",
             Cabinet = "005",
-            StudyGroup = "NNN",
+            StudyGroups = new List<string> { "NNN" },
         };
         
         // Act
