@@ -12,7 +12,7 @@ public class VnzOsvitaRequestsHandlerTests
     public async Task VnzOsvitaRequestsHandler_GetStudentSchedule_ReturnStudentSchedule()
     {
         // Arrange
-        var mockResponse = "{\"d\":[{\"__type\":\"VnzWeb.BetaSchedule+ScheduleDataRow\",\"study_time\":\"14:50-16:10\",\"study_time_begin\":\"14:50\",\"study_time_end\":\"16:10\",\"week_day\":\"Monday\",\"full_date\":\"11.11.2011\",\"discipline\":\"Physics\",\"study_type\":\"Lecture\",\"cabinet\":\"005\",\"employee\":\"Great Greatness Greatier\",\"study_subgroup\":null},{\"__type\":\"VnzWeb.BetaSchedule+ScheduleDataRow\",\"study_time\":\"16:25-17:45\",\"study_time_begin\":\"16:25\",\"study_time_end\":\"17:45\",\"week_day\":\"Monday\",\"full_date\":\"11.11.2011\",\"discipline\":\"Math\",\"study_type\":\"Practice\",\"cabinet\":\"010\",\"employee\":\"Empty Emptiness Emptier\",\"study_subgroup\":null}]}";
+        var mockResponse = "{\"d\":[{\"__type\":\"VnzWeb.WidgetSchedule+ScheduleDataRow\",\"study_time\":\"14:50-16:10\",\"study_time_begin\":\"14:50\",\"study_time_end\":\"16:10\",\"week_day\":\"Monday\",\"full_date\":\"11.11.2011\",\"discipline\":\"Physics\",\"study_type\":\"Lecture\",\"cabinet\":\"005\",\"employee\":\"Great Greatness Greatier\",\"study_subgroup\":null},{\"__type\":\"VnzWeb.WidgetSchedule+ScheduleDataRow\",\"study_time\":\"16:25-17:45\",\"study_time_begin\":\"16:25\",\"study_time_end\":\"17:45\",\"week_day\":\"Monday\",\"full_date\":\"11.11.2011\",\"discipline\":\"Math\",\"study_type\":\"Practice\",\"cabinet\":\"010\",\"employee\":\"Empty Emptiness Emptier\",\"study_subgroup\":null}]}";
         var mockHttpFactory = new MockHttpFactory()
             .Setup(x => x.RequestUri.AbsoluteUri.Contains("01.11.2011"), mockResponse);
         var requests = new VnzOsvitaRequestsHandler(mockHttpFactory);
@@ -80,7 +80,7 @@ public class VnzOsvitaRequestsHandlerTests
     public async Task VnzOsvitaRequestsHandler_GetTeacherSchedule_ReturnTeacherSchedule()
     {
         // Arrange
-        var mockResponse = "{\"d\":[{\"__type\":\"VnzWeb.BetaSchedule+ScheduleDataRow\",\"study_time\":\"14:50-16:10\",\"study_time_begin\":\"14:50\",\"study_time_end\":\"16:10\",\"week_day\":\"Monday\",\"full_date\":\"11.11.2011\",\"discipline\":\"Physics\",\"study_type\":\"Lecture\",\"cabinet\":\"005\",\"study_group\":\"NNN\",\"study_subgroup\":null},{\"__type\":\"VnzWeb.BetaSchedule+ScheduleDataRow\",\"study_time\":\"16:25-17:45\",\"study_time_begin\":\"16:25\",\"study_time_end\":\"17:45\",\"week_day\":\"Monday\",\"full_date\":\"11.11.2011\",\"discipline\":\"Math\",\"study_type\":\"Practice\",\"cabinet\":\"010\",\"study_group\":\"NNN\",\"study_subgroup\":null}]}";
+        var mockResponse = "{\"d\":[{\"__type\":\"VnzWeb.WidgetSchedule+ScheduleDataRow\",\"study_time\":\"14:50-16:10\",\"study_time_begin\":\"14:50\",\"study_time_end\":\"16:10\",\"week_day\":\"Monday\",\"full_date\":\"11.11.2011\",\"discipline\":\"Physics\",\"study_type\":\"Lecture\",\"cabinet\":\"005\",\"study_group\":\"NNN\",\"study_subgroup\":null},{\"__type\":\"VnzWeb.WidgetSchedule+ScheduleDataRow\",\"study_time\":\"16:25-17:45\",\"study_time_begin\":\"16:25\",\"study_time_end\":\"17:45\",\"week_day\":\"Monday\",\"full_date\":\"11.11.2011\",\"discipline\":\"Math\",\"study_type\":\"Practice\",\"cabinet\":\"010\",\"study_group\":\"NNN\",\"study_subgroup\":null}]}";
         var mockHttpFactory = new MockHttpFactory()
             .Setup(x => x.RequestUri.AbsoluteUri.Contains("01.11.2011"), mockResponse);
         var requests = new VnzOsvitaRequestsHandler(mockHttpFactory);
@@ -149,7 +149,7 @@ public class VnzOsvitaRequestsHandlerTests
     public async Task VnzOsvitaRequestsHandler_GetStudentFilters_ReturnDictionary()
     {
         // Arrange
-        const string mockFiltersData = "{\"d\":{\"__type\":\"VnzWeb.BetaSchedule+StudentScheduleFiltersData\",\"faculties\":[{\"Key\":\"467UNWISGQ6Z\",\"Value\":\"Aluminium\"},{\"Key\":\"7F0UOMJ9ATTN\",\"Value\":\"Oxygen\"},{\"Key\":\"IWTS0T0RHVHV\",\"Value\":\"Helium\"}],\"educForms\":[{\"Key\":\"1\",\"Value\":\"Light\"},{\"Key\":\"7\",\"Value\":\"Medium\"},{\"Key\":\"3\",\"Value\":\"Hard\"}],\"courses\":[{\"Key\":\"1\",\"Value\":\"1 course\"},{\"Key\":\"2\",\"Value\":\"2 course\"},{\"Key\":\"3\",\"Value\":\"3 course\"},{\"Key\":\"4\",\"Value\":\"4 course\"}]}}";
+        const string mockFiltersData = "{\"d\":{\"__type\":\"VnzWeb.WidgetSchedule+StudentScheduleFiltersData\",\"faculties\":[{\"Key\":\"467UNWISGQ6Z\",\"Value\":\"Aluminium\"},{\"Key\":\"7F0UOMJ9ATTN\",\"Value\":\"Oxygen\"},{\"Key\":\"IWTS0T0RHVHV\",\"Value\":\"Helium\"}],\"educForms\":[{\"Key\":\"1\",\"Value\":\"Light\"},{\"Key\":\"7\",\"Value\":\"Medium\"},{\"Key\":\"3\",\"Value\":\"Hard\"}],\"courses\":[{\"Key\":\"1\",\"Value\":\"1 course\"},{\"Key\":\"2\",\"Value\":\"2 course\"},{\"Key\":\"3\",\"Value\":\"3 course\"},{\"Key\":\"4\",\"Value\":\"4 course\"}]}}";
         
         var mockHttpFactory = new MockHttpFactory()
             .Setup(x => x.RequestUri.AbsoluteUri.Contains("GetStudentScheduleFiltersData"), mockFiltersData);
@@ -197,7 +197,7 @@ public class VnzOsvitaRequestsHandlerTests
     public async Task VnzOsvitaRequestsHandler_GetStudentStudyGroups_ReturnDictionary()
     {
         // Arrange 
-        const string mockFiltersData = "{\"d\":{\"__type\":\"VnzWeb.BetaSchedule+StudyGroupsData\",\"studyGroups\":[{\"Key\":\"89YFKCWMK592\",\"Value\":\"WTF-21\"},{\"Key\":\"6U0M6S8RJNGK\",\"Value\":\"LMAO-21\"},{\"Key\":\"3STTJCMVPQZF\",\"Value\":\"IDGAF-21\"},{\"Key\":\"6O5NH5SPYHBT\",\"Value\":\"LEET-21\"}],\"studyTypes\":null}}";
+        const string mockFiltersData = "{\"d\":{\"__type\":\"VnzWeb.WidgetSchedule+StudyGroupsData\",\"studyGroups\":[{\"Key\":\"89YFKCWMK592\",\"Value\":\"WTF-21\"},{\"Key\":\"6U0M6S8RJNGK\",\"Value\":\"LMAO-21\"},{\"Key\":\"3STTJCMVPQZF\",\"Value\":\"IDGAF-21\"},{\"Key\":\"6O5NH5SPYHBT\",\"Value\":\"LEET-21\"}],\"studyTypes\":null}}";
         var mockHttpFactory = new MockHttpFactory()
             .Setup(x => x.RequestUri.AbsoluteUri.Contains("GetStudyGroups"), mockFiltersData);
         var requests = new VnzOsvitaRequestsHandler(mockHttpFactory);
@@ -272,7 +272,7 @@ public class VnzOsvitaRequestsHandlerTests
     public async Task VnzOsvitaRequestHandler_GetTeacherChairs_ReturnFilters()
     {
         // Arrange
-        const string mockFiltersData = "{\"d\":{\"__type\":\"VnzWeb.BetaSchedule+EmployeeWithUnchairedData\",\"chairs\":[{\"Key\":\"467UNWISGQ6Z\",\"Value\":\"Aluminium\"},{\"Key\":\"7F0UOMJ9ATTN\",\"Value\":\"Oxygen\"},{\"Key\":\"IWTS0T0RHVHV\",\"Value\":\"Helium\"}]}}";
+        const string mockFiltersData = "{\"d\":{\"__type\":\"VnzWeb.WidgetSchedule+EmployeeWithUnchairedData\",\"chairs\":[{\"Key\":\"467UNWISGQ6Z\",\"Value\":\"Aluminium\"},{\"Key\":\"7F0UOMJ9ATTN\",\"Value\":\"Oxygen\"},{\"Key\":\"IWTS0T0RHVHV\",\"Value\":\"Helium\"}]}}";
         var mockHttpFactory = new MockHttpFactory()
             .Setup(x => x.RequestUri.AbsoluteUri.Contains("GetEmployeeChairs"), mockFiltersData);
         var requests = new VnzOsvitaRequestsHandler(mockHttpFactory);

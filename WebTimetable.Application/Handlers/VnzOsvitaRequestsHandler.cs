@@ -21,7 +21,7 @@ public class VnzOsvitaRequestsHandler : IRequestHandler
     
     public async Task<Dictionary<string, List<KeyValuePair<string, string>>>> GetStudentFilters(CancellationToken token)
     {
-        var url = "https://vnz.osvita.net/BetaSchedule.asmx/GetStudentScheduleFiltersData?&" +
+        var url = "https://vnz.osvita.net/WidgetSchedule.asmx/GetStudentScheduleFiltersData?&" +
                   "aVuzID=11784";
         var httpClient = _httpFactory.CreateClient();
         try
@@ -52,7 +52,7 @@ public class VnzOsvitaRequestsHandler : IRequestHandler
 
     public async Task<List<KeyValuePair<string, string>>> GetStudentStudyGroups(string faculty, int course, int educForm, CancellationToken token)
     {
-        var url = $"https://vnz.osvita.net/BetaSchedule.asmx/GetStudyGroups?&" +
+        var url = $"https://vnz.osvita.net/WidgetSchedule.asmx/GetStudyGroups?&" +
                   $"aVuzID=11784&" +
                   $"aFacultyID=\"{faculty}\"&" +
                   $"aEducationForm=\"{educForm}\"&" +
@@ -76,7 +76,7 @@ public class VnzOsvitaRequestsHandler : IRequestHandler
 
     public async Task<List<KeyValuePair<string, string>>> GetTeacherFaculties(CancellationToken token)
     {
-        var url = $"https://vnz.osvita.net/BetaSchedule.asmx/GetEmployeeFaculties?" +
+        var url = $"https://vnz.osvita.net/WidgetSchedule.asmx/GetEmployeeFaculties?" +
                   $"aVuzID=11784";
 
         var httpClient = _httpFactory.CreateClient();
@@ -95,7 +95,7 @@ public class VnzOsvitaRequestsHandler : IRequestHandler
 
     public async Task<List<KeyValuePair<string, string>>> GetTeacherChairs(string faculty, CancellationToken token)
     {
-        var url = $"https://vnz.osvita.net/BetaSchedule.asmx/GetEmployeeChairs?" +
+        var url = $"https://vnz.osvita.net/WidgetSchedule.asmx/GetEmployeeChairs?" +
             $"aVuzID=11784&" +
             $"aFacultyID=\"{faculty}\"&" +
             $"aGiveStudyTimes=false";
@@ -118,7 +118,7 @@ public class VnzOsvitaRequestsHandler : IRequestHandler
     public async Task<List<KeyValuePair<string, string>>> GetTeacherEmployees(string faculty, string chair,
         CancellationToken token)
     {
-        var url = $"https://vnz.osvita.net/BetaSchedule.asmx/GetEmployees?" +
+        var url = $"https://vnz.osvita.net/WidgetSchedule.asmx/GetEmployees?" +
                   $"aVuzID=11784&" +
                   $"aFacultyID=\"{faculty}\"&" +
                   $"aChairID=\"{chair}\"";
@@ -141,7 +141,7 @@ public class VnzOsvitaRequestsHandler : IRequestHandler
     {
         var httpClient = _httpFactory.CreateClient();
         var formattedDate = date.ToString("dd.MM.yyyy");
-        string url = "https://vnz.osvita.net/BetaSchedule.asmx/GetScheduleDataEmp?" +
+        string url = "https://vnz.osvita.net/WidgetSchedule.asmx/GetScheduleDataEmp?" +
                      "aVuzID=11784&" +
                      "aEmployeeID=\"" + teacherId + "\"&" +
                      "aStartDate=\"" + formattedDate + "\"&" +
@@ -179,7 +179,7 @@ public class VnzOsvitaRequestsHandler : IRequestHandler
     {
         var httpClient = _httpFactory.CreateClient();
         var formattedDate = date.ToString("dd.MM.yyyy");
-        string url = "https://vnz.osvita.net/BetaSchedule.asmx/GetScheduleDataX?" +
+        string url = "https://vnz.osvita.net/WidgetSchedule.asmx/GetScheduleDataX?" +
                      "aVuzID=11784&" +
                      "aStudyGroupID=\"" + groupId + "\"&" +
                      "aStartDate=\"" + formattedDate + "\"&" +
