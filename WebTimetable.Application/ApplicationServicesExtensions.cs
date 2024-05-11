@@ -16,7 +16,9 @@ namespace WebTimetable.Application
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
+            services.AddSingleton<ICacheHandler, MemoryCacheHandler>();
             services.AddScoped<IUsersService, UsersService>();
+            services.AddScoped<ICabinetsService, CabinetsService>();
             services.AddScoped<IEventsHandler, TeamsEventsHandler>();
             services.AddScoped<IRequestHandler, VnzOsvitaRequestsHandler>();
             services.AddScoped<IOutagesHandler, OutagesHandler>();
@@ -36,9 +38,9 @@ namespace WebTimetable.Application
             {
                 options.UseNpgsql(config.GetConnectionString(connectionStringName));
             });
-            services.AddScoped(typeof(INotesRepository), typeof(NotesRepository));
-            services.AddScoped(typeof(IOutagesRepository), typeof(OutagesRepository));
-            services.AddScoped(typeof(IUsersRepository), typeof(UsersRepository));
+            services.AddScoped<INotesRepository, NotesRepository>();
+            services.AddScoped<IOutagesRepository, OutagesRepository>();
+            services.AddScoped<IUsersRepository, UsersRepository>();
 
             return services;
         }

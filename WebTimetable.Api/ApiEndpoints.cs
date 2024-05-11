@@ -16,6 +16,14 @@ public static class ApiEndpoints
         public const string GetEmployees = $"{Base}/employees";
     }
 
+    public static class Cabinets
+    {
+        private const string Base = $"{ApiBase}/cabinets";
+
+        public const string GetCabinetPath = $"{Base}/{{cabinet}}";
+        public const string IsCabinetExists = $"{Base}/{{cabinet}}";
+    }
+
     public static class Students
     {
         private const string Base = $"{ApiBase}/students";
