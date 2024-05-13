@@ -10,7 +10,7 @@ public class TeacherLessonFactory : FactoryConverter<TeacherLesson, Dictionary<s
         {
             Discipline = arguments["discipline"],
             StudyType = arguments["study_type"],
-            Cabinet = arguments["cabinet"],
+            Cabinet = arguments["cabinet"]?.Replace("_", ""),
             StudyGroups = new List<string> { arguments["study_group"] },
             Date = DateOnly.ParseExact(arguments["full_date"], "dd.MM.yyyy"),
             Start = TimeOnly.ParseExact(arguments["study_time_begin"],"HH:mm"),

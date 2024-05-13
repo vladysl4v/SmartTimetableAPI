@@ -11,7 +11,7 @@ namespace WebTimetable.Application.Deserializers
             {
                 Discipline = arguments["discipline"],
                 StudyType = arguments["study_type"],
-                Cabinet = arguments["cabinet"],
+                Cabinet = arguments["cabinet"]?.Replace("_", ""),
                 Teacher = arguments["employee"],
                 Subgroup = arguments["study_subgroup"],
                 Date = DateOnly.ParseExact(arguments["full_date"], "dd.MM.yyyy"),
