@@ -36,7 +36,7 @@ namespace WebTimetable.Application
         {
             services.AddDbContext<DataContext>(options =>
             {
-                options.UseNpgsql(config.GetConnectionString(connectionStringName));
+                options.UseSqlServer(config.GetConnectionString(connectionStringName));
             });
             services.AddScoped<INotesRepository, NotesRepository>();
             services.AddScoped<IOutagesRepository, OutagesRepository>();

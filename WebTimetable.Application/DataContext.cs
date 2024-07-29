@@ -31,12 +31,12 @@ namespace WebTimetable.Application
             modelBuilder.Entity<NoteEntity>().HasKey(x => x.NoteId);
             modelBuilder.Entity<NoteEntity>().HasIndex(x => x.LessonId).HasMethod("hash");
             modelBuilder.Entity<NoteEntity>().Property(x => x.Message).HasMaxLength(256);
-            modelBuilder.Entity<NoteEntity>().Property(x => x.NoteId).HasDefaultValueSql("gen_random_uuid()");
-            modelBuilder.Entity<NoteEntity>().Property(x => x.CreationDate).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            modelBuilder.Entity<NoteEntity>().Property(x => x.NoteId).HasDefaultValueSql("NEWID()");
+            modelBuilder.Entity<NoteEntity>().Property(x => x.CreationDate).HasDefaultValueSql("GETDATE()");
 
             modelBuilder.Entity<UserEntity>().Property(x => x.Group).HasMaxLength(60);
             modelBuilder.Entity<UserEntity>().Property(x => x.FullName).HasMaxLength(120);
-            modelBuilder.Entity<UserEntity>().Property(x => x.CreationDate).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            modelBuilder.Entity<UserEntity>().Property(x => x.CreationDate).HasDefaultValueSql("GETDATE()");
 
             modelBuilder.Entity<UserEntity>()
                 .HasMany(e => e.Notes)
